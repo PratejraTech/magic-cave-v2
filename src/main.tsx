@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import './index.css';
+import { initSentry } from './lib/sentry';
 
 // Initialize Firebase
 import { initializeApp } from 'firebase/app';
@@ -43,6 +44,9 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
 // Make Firebase instances available globally for other modules
 (window as any).firebaseApp = firebaseApp;
 (window as any).firebaseMessaging = messaging;
+
+// Initialize error tracking
+initSentry();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
