@@ -155,13 +155,47 @@ Here is a detailed **tasks file draft** — `tasks-calendar-2.0.md` — breaking
 
 ---
 
-### 8.0 QA, Privacy & Launch Preparation  
-- [ ] 8.0.1 Create branch: `feature/qa-privacy-launch`  
-- [ ] 8.0.2 Conduct security audit: verify authentication flows, media access controls, data deletion paths, encrypted storage of sensitive tokens, secure transport (HTTPS), compliance with privacy best-practices  
-- [ ] 8.0.3 Implement data deletion feature: allow parent to delete account / child / calendar → cascade delete all related data including media and analytics; ensure media assets removed from storage  
-- [ ] 8.0.4 Perform UX & accessibility review: test calendar UI, tile flow, child login flows, mobile and desktop views, media rendering, PDF export, notification permissions — ensure user-friendly and accessible  
-- [ ] 8.0.5 Performance testing: media load times, calendar rendering, PDF generation responsiveness, notification delivery/latency under load, concurrency issues if many users  
-- [ ] 8.0.6 Documentation: update README, privacy policy / data-handling docs, parental consent notice, user instructions (parent & child), feature flag description (if used), versioning policy, changelog template  
+### 4.1 Application Integration & Routing (CRITICAL - Immediate)
+- [ ] 4.1.1 Create global authentication context and routing guards
+- [ ] 4.1.2 Implement main app routing: /auth, /parent/dashboard, /parent/calendar, /child/calendar
+- [ ] 4.1.3 Build parent dashboard with calendar overview, profile management, settings
+- [ ] 4.1.4 Integrate TileEditor into parent calendar view with data fetching
+- [ ] 4.1.5 Integrate ChildCalendar into child view with unlock functionality
+- [ ] 4.1.6 Add loading states and error boundaries throughout the app
+- [ ] 4.1.7 Implement data fetching hooks for calendars, tiles, and user profiles
+- [ ] 4.1.8 Add navigation between parent/child views and logout functionality
+
+### 4.2 User Experience Improvements (CRITICAL - Immediate)
+- [ ] 4.2.1 Make all components mobile-responsive with proper touch targets
+- [ ] 4.2.2 Add accessibility features (ARIA labels, keyboard navigation, screen reader support)
+- [ ] 4.2.3 Implement proper loading states and skeleton screens
+- [ ] 4.2.4 Add confirmation dialogs for destructive actions (delete, logout)
+- [ ] 4.2.5 Improve error messages and user feedback throughout the app
+- [ ] 4.2.6 Add progress indicators for multi-step processes (registration, unlock flow)
+
+### 4.3 Data Management & State (HIGH - Immediate)
+- [ ] 4.3.1 Implement proper state management for user sessions and calendar data
+- [ ] 4.3.2 Add offline support for viewing unlocked tiles
+- [ ] 4.3.3 Implement data caching and optimistic updates
+- [ ] 4.3.4 Add proper error handling for network failures
+- [ ] 4.3.5 Implement data validation on both client and server sides
+
+### 5.0 Daily Notifications (New Tile Alerts)
+- [ ] 5.0.1 Create branch: `feature/daily-notifications`
+- [ ] 5.0.2 Extend calendar settings to include `notifications_enabled` and store child/parent timezone or locale for scheduling
+- [ ] 5.0.3 Build opt-in UI: allow parent (and optionally child) to consent to notifications; record preference
+- [ ] 5.0.4 Implement backend scheduling logic: for each active calendar with notifications enabled — schedule a notification at 00:00 *local time* (child's timezone) for each day from 1 to 25
+- [ ] 5.0.5 Integrate with push-notification service (or email fallback) to send daily alert: "New tile available today!" with link to calendar
+- [ ] 5.0.6 Build UI for notification settings: allow disable/enable, change preferences, unsubscribe; store preferences persistently
+- [ ] 5.0.7 Write tests for scheduling logic, time zone correctness, sending/not sending based on preference, unsubscribe flow
+
+### 8.0 QA, Privacy & Launch Preparation
+- [ ] 8.0.1 Create branch: `feature/qa-privacy-launch`
+- [ ] 8.0.2 Conduct security audit: verify authentication flows, media access controls, data deletion paths, encrypted storage of sensitive tokens, secure transport (HTTPS), compliance with privacy best-practices
+- [ ] 8.0.3 Implement data deletion feature: allow parent to delete account / child / calendar → cascade delete all related data including media and analytics; ensure media assets removed from storage
+- [ ] 8.0.4 Perform UX & accessibility review: test calendar UI, tile flow, child login flows, mobile and desktop views, media rendering, PDF export, notification permissions — ensure user-friendly and accessible
+- [ ] 8.0.5 Performance testing: media load times, calendar rendering, PDF generation responsiveness, notification delivery/latency under load, concurrency issues if many users
+- [ ] 8.0.6 Documentation: update README, privacy policy / data-handling docs, parental consent notice, user instructions (parent & child), feature flag description (if used), versioning policy, changelog template
 - [ ] 8.0.7 Beta release plan: define rollout strategy (e.g. small group of users), feedback collection mechanism, bug-reporting flow, rollback plan if necessary  
 
 **Success Criteria for 8.0:**  

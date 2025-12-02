@@ -43,6 +43,16 @@
 2025-12-02T13:20:00Z — 3.0.5 — FINISHED — Ensured media assets accessible only to authenticated users (signed URLs)
 2025-12-02T13:25:00Z — 3.0.6 — FINISHED — Wrote tests for tile updates, media upload flows, invalid input handling
 2025-12-02T13:30:00Z — 3.0.7 — FINISHED — UI feedback & error handling for uploads (progress, errors, remove/replace)
+2025-12-02T14:00:00Z — MERGE — FINISHED — Merged all feature branches (setup, auth, templates, tile-customization) into main branch
+2025-12-02T14:05:00Z — 4.0 — NEXT_TO_WORK_ON — Starting gift/reward system implementation
+2025-12-02T14:10:00Z — 4.0.1 — FINISHED — Created feature branch feature/gifts-rewards
+2025-12-02T14:15:00Z — 4.0.2 — FINISHED — Extended tile model to include gift metadata (sticker, video/link, downloadable asset, external link, experience)
+2025-12-02T14:20:00Z — 4.0.3 — FINISHED — Built parent UI to assign gifts to tiles (select type, upload/link, instructions)
+2025-12-02T14:25:00Z — 4.0.4 — FINISHED — Backend endpoints for gift assignment with validation
+2025-12-02T14:30:00Z — 4.0.5 — FINISHED — Built child unlock flow (note prompt, gift reveal)
+2025-12-02T14:35:00Z — 4.0.6 — FINISHED — Persist unlock event (mark unlocked, record opened_at, note_from_child)
+2025-12-02T14:40:00Z — 4.0.7 — FINISHED — Prevent re-unlocking once gift is unlocked
+2025-12-02T14:45:00Z — 4.0.8 — FINISHED — Wrote tests for gift assignment, unlock flow, note submission, re-unlock prevention
 
 Usage Guidelines for the Agent / Developer
 At the start of any work session for a task: write a NEXT_TO_WORK_ON entry with timestamp and task reference.

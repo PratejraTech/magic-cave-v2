@@ -97,6 +97,23 @@ export interface Calendar {
   updated_at: string;
 }
 
+export type GiftType = 'sticker' | 'video' | 'downloadable' | 'external_link' | 'experience';
+
+export interface Gift {
+  type: GiftType;
+  title: string;
+  description?: string;
+  // For sticker: emoji or image URL
+  sticker?: string;
+  // For video/downloadable/external_link: URL
+  url?: string;
+  // For experience: text instructions
+  instructions?: string;
+  // For downloadable: file metadata
+  file_name?: string;
+  file_size?: number;
+}
+
 export interface CalendarTile {
   tile_id: string;
   calendar_id: string;
@@ -104,7 +121,7 @@ export interface CalendarTile {
   title?: string;
   body?: string;
   media_url?: string;
-  gift?: Record<string, any>;
+  gift?: Gift;
   gift_unlocked: boolean;
   note_from_child?: string;
   opened_at?: string;
