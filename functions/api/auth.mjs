@@ -6,12 +6,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { AuthUtils } from '../../src/lib/auth.js';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 /**
  * Validate request method and CORS
  */
@@ -31,7 +25,7 @@ function handleCORS(request) {
 /**
  * Get user from authorization header
  */
-async function getUserFromToken(request) {
+async function getUserFromToken(request, supabase) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -51,7 +45,7 @@ async function getUserFromToken(request) {
 /**
  * POST /api/auth/signup - Parent sign up
  */
-  async function handleParentSignup(request) {
+  async function handleParentSignup(request, supabase) {
     try {
       const { email, password, name, childProfile, selectedTemplate } = await request.json();
 
@@ -313,7 +307,7 @@ async function getUserFromToken(request) {
 /**
  * POST /api/auth/child-login - Child login with family UUID and password
  */
-async function handleChildLogin(request) {
+async function handleChildLogin(request, supabase) {
   try {
     const { familyUuid, password } = await request.json();
 
@@ -412,9 +406,9 @@ async function handleChildLogin(request) {
 /**
  * GET /api/auth/profile - Get current user profile
  */
-async function handleGetProfile(request) {
+async function handleGetProfile(request, supabase) {
   try {
-    const user = await getUserFromToken(request);
+    const user = await getUserFromToken(request, supabase);
     if (!user) {
       return new Response(JSON.stringify({
         error: 'Unauthorized'
@@ -471,9 +465,9 @@ async function handleGetProfile(request) {
 /**
  * PUT /api/auth/profile - Update user profile
  */
-async function handleUpdateProfile(request) {
+async function handleUpdateProfile(request, supabase) {
   try {
-    const user = await getUserFromToken(request);
+    const user = await getUserFromToken(request, supabase);
     if (!user) {
       return new Response(JSON.stringify({
         error: 'Unauthorized'
@@ -588,7 +582,22 @@ async function handleUpdateProfile(request) {
 }
 
 export async function onRequest(context) {
-  const { request } = context;
+  const { request, env } = context;
+
+  // Initialize Supabase client from environment
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    return new Response(JSON.stringify({
+      error: 'Supabase configuration missing'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  const supabase = createClient(
+    env.SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
   // Handle CORS
   const corsResponse = handleCORS(request);
@@ -599,19 +608,19 @@ export async function onRequest(context) {
 
   // Route requests
   if (request.method === 'POST' && path === '/signup') {
-    return handleParentSignup(request);
+    return handleParentSignup(request, supabase);
   }
 
   if (request.method === 'POST' && path === '/child-login') {
-    return handleChildLogin(request);
+    return handleChildLogin(request, supabase);
   }
 
   if (request.method === 'GET' && path === '/profile') {
-    return handleGetProfile(request);
+    return handleGetProfile(request, supabase);
   }
 
   if (request.method === 'PUT' && path === '/profile') {
-    return handleUpdateProfile(request);
+    return handleUpdateProfile(request, supabase);
   }
 
   return new Response(JSON.stringify({

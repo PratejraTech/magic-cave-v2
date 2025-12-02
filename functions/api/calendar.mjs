@@ -5,12 +5,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 /**
  * Validate request method and CORS
  */
@@ -30,7 +24,7 @@ function handleCORS(request) {
 /**
  * Get user from authorization header
  */
-async function getUserFromToken(request) {
+async function getUserFromToken(request, supabase) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -50,9 +44,9 @@ async function getUserFromToken(request) {
 /**
  * GET /api/calendar/tiles - Get calendar tiles for authenticated user
  */
-async function handleGetTiles(request) {
+async function handleGetTiles(request, supabase) {
   try {
-    const user = await getUserFromToken(request);
+    const user = await getUserFromToken(request, supabase);
     if (!user) {
       return new Response(JSON.stringify({
         error: 'Unauthorized'
@@ -130,9 +124,9 @@ async function handleGetTiles(request) {
 /**
  * PUT /api/calendar/tiles/:tileId - Update a calendar tile
  */
-async function handleUpdateTile(request, tileId) {
+async function handleUpdateTile(request, tileId, supabase) {
   try {
-    const user = await getUserFromToken(request);
+    const user = await getUserFromToken(request, supabase);
     if (!user) {
       return new Response(JSON.stringify({
         error: 'Unauthorized'
@@ -231,9 +225,9 @@ async function handleUpdateTile(request, tileId) {
 /**
  * POST /api/calendar/upload - Upload media for a tile
  */
-async function handleUploadMedia(request) {
+async function handleUploadMedia(request, supabase) {
   try {
-    const user = await getUserFromToken(request);
+    const user = await getUserFromToken(request, supabase);
     if (!user) {
       return new Response(JSON.stringify({
         error: 'Unauthorized'
@@ -390,7 +384,22 @@ async function handleUploadMedia(request) {
 }
 
 export async function onRequest(context) {
-  const { request } = context;
+  const { request, env } = context;
+
+  // Initialize Supabase client from environment
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    return new Response(JSON.stringify({
+      error: 'Supabase configuration missing'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  const supabase = createClient(
+    env.SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY
+  );
 
   // Handle CORS
   const corsResponse = handleCORS(request);
@@ -401,16 +410,16 @@ export async function onRequest(context) {
 
   // Route requests
   if (request.method === 'GET' && path === '/tiles') {
-    return handleGetTiles(request);
+    return handleGetTiles(request, supabase);
   }
 
   if (request.method === 'PUT' && path.startsWith('/tiles/')) {
     const tileId = path.split('/tiles/')[1];
-    return handleUpdateTile(request, tileId);
+    return handleUpdateTile(request, tileId, supabase);
   }
 
   if (request.method === 'POST' && path === '/upload') {
-    return handleUploadMedia(request);
+    return handleUploadMedia(request, supabase);
   }
 
   return new Response(JSON.stringify({

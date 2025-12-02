@@ -1,21 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChildCalendar from './ChildCalendar';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
 import { Gift } from '../types/advent';
 
 const ChildCalendarView: React.FC = () => {
-  const { userType, isAuthenticated } = useAuth();
+  const { userType, isAuthenticated, child } = useAuth();
   const { tiles, loading, error, unlockTile } = useCalendarData();
   const [lastUnlockedGift, setLastUnlockedGift] = useState<Gift | null>(null);
+  const [childData, setChildData] = useState<any>(null);
+
+  // Load child data from localStorage if not in context
+  useEffect(() => {
+    if (!child) {
+      const storedChildSession = localStorage.getItem('child_session');
+      if (storedChildSession) {
+        try {
+          const parsed = JSON.parse(storedChildSession);
+          if (parsed.child) {
+            setChildData(parsed.child);
+          }
+        } catch (error) {
+          console.error('Error parsing child session:', error);
+        }
+      }
+    } else {
+      setChildData(child);
+    }
+  }, [child]);
 
   // Only allow children to access this view
-  if (!isAuthenticated || userType !== 'child') {
+  if (!isAuthenticated || (userType !== 'child' && !childData)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h1>
-          <p className="text-gray-600">This page is only accessible to children.</p>
+          <p className="text-gray-600 mb-4">This page is only accessible to children.</p>
+          <button
+            onClick={() => window.location.href = '/auth'}
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+          >
+            Go to Login
+          </button>
         </div>
       </div>
     );

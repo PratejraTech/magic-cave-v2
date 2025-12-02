@@ -1,8 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './lib/AuthContext';
 import ParentDashboard from './components/ParentDashboard';
 import ChildCalendarView from './components/ChildCalendarView';
+import AuthModal from './components/AuthModal';
+import ChildLoginModal from './components/ChildLoginModal';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: string[] }> = ({
@@ -37,22 +39,159 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: st
   return <>{children}</>;
 };
 
-// Auth Page Component (Legacy authentication for backward compatibility)
+// Auth Page Component
 const AuthPage: React.FC = () => {
+  const { isAuthenticated, userType, login, refreshProfile } = useAuth();
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
+  const [showChildLogin, setShowChildLogin] = React.useState(false);
+  const location = useLocation();
 
-  // For now, redirect to the legacy VillageScene for authentication
-  // TODO: Implement proper auth page
+  // Check if this is an OAuth callback
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      // Supabase handles OAuth callbacks automatically via detectSessionInUrl
+      // Just refresh the profile after a short delay to allow session to be established
+      if (location.search.includes('code=') || location.hash.includes('access_token=')) {
+        setTimeout(async () => {
+          await refreshProfile();
+        }, 1000);
+      }
+    };
+
+    handleOAuthCallback();
+  }, [location, refreshProfile]);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (userType === 'parent') {
+        window.location.href = '/parent/dashboard';
+      } else if (userType === 'child') {
+        window.location.href = '/child/calendar';
+      }
+    }
+  }, [isAuthenticated, userType]);
+
+  const handleParentAuthSuccess = async (user: any, child?: any) => {
+    // Get session from Supabase
+    const { authService } = await import('./lib/auth');
+    try {
+      const session = await authService.getCurrentSession();
+      
+      if (session) {
+        await login('parent', session, user, child);
+        window.location.href = '/parent/dashboard';
+      } else {
+        // Session might not be ready yet, wait and retry
+        setTimeout(async () => {
+          const retrySession = await authService.getCurrentSession();
+          if (retrySession) {
+            await login('parent', retrySession, user, child);
+            window.location.href = '/parent/dashboard';
+          }
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Error getting session:', error);
+    }
+  };
+
+  const handleChildLoginSuccess = async (child: any, calendar: any) => {
+    // Store child session in localStorage
+    localStorage.setItem('child_session', JSON.stringify({ child, calendar }));
+    await login('child', null as any, undefined, child);
+    window.location.href = '/child/calendar';
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-sky-100 to-amber-100">
+      <div className="text-center max-w-md w-full mx-4">
+        <div className="bg-white rounded-lg shadow-xl p-8 mb-4">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to Your Advent Calendar!</h1>
+          <p className="text-gray-600 mb-6">
+            Sign in as a parent to manage your calendar, or log in as a child to unlock your daily surprises.
+          </p>
+          
+          <div className="space-y-4">
+            <button
+              onClick={() => setShowAuthModal(true)}
+              className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors font-semibold text-lg"
+            >
+              Parent Sign In / Sign Up
+            </button>
+            
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">or</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowChildLogin(true)}
+              className="w-full bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-colors font-semibold text-lg"
+            >
+              Child Login 🎄
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleParentAuthSuccess}
+      />
+
+      <ChildLoginModal
+        isOpen={showChildLogin}
+        onClose={() => setShowChildLogin(false)}
+        onSuccess={handleChildLoginSuccess}
+      />
+    </div>
+  );
+};
+
+// OAuth Callback Handler
+const OAuthCallback: React.FC = () => {
+  const { refreshProfile, userType } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleCallback = async () => {
+      // Wait a moment for Supabase to process the callback
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await refreshProfile();
+      
+      // Wait a bit more for state to update, then redirect
+      setTimeout(() => {
+        if (userType === 'parent') {
+          window.location.href = '/parent/dashboard';
+        } else if (userType === 'child') {
+          window.location.href = '/child/calendar';
+        } else {
+          window.location.href = '/auth';
+        }
+      }, 500);
+    };
+
+    if (location.search.includes('code=') || location.hash.includes('access_token=')) {
+      handleCallback();
+    } else {
+      // No OAuth callback detected, redirect to auth
+      setTimeout(() => {
+        window.location.href = '/auth';
+      }, 1000);
+    }
+  }, [location, refreshProfile, userType]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Authentication</h1>
-        <p className="text-gray-600 mb-4">Please use the legacy authentication system.</p>
-        <button
-          onClick={() => window.location.href = '/'}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Go to Legacy Auth
-        </button>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+        <p className="text-gray-600">Completing sign in...</p>
       </div>
     </div>
   );
@@ -64,6 +203,7 @@ const AppRouter: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth/callback" element={<OAuthCallback />} />
         <Route
           path="/parent/dashboard"
           element={
