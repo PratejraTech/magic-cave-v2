@@ -4,6 +4,7 @@ import AdventCalendar from './AdventCalendar';
 import { getAdelaideDate } from '../../lib/date';
 import React from 'react';
 import { AdventDay } from '../../types/advent';
+import userEvent from '@testing-library/user-event';
 
 // Mock framer-motion to disable animations in tests
 vi.mock('framer-motion', () => {
@@ -19,6 +20,11 @@ vi.mock('framer-motion', () => {
     }),
   };
 });
+
+// Mock getAdelaideDate
+vi.mock('../../lib/date', () => ({
+  getAdelaideDate: vi.fn(),
+}));
 
 vi.mock('../../lib/date', () => ({
   getAdelaideDate: vi.fn(),
@@ -85,6 +91,7 @@ describe('AdventCalendar', () => {
   });
 
   it('opens the modal when the correct button is clicked', async () => {
+    const user = userEvent.setup();
     const mockDate = new Date('2024-12-05T12:00:00Z');
     (getAdelaideDate as any).mockReturnValue(mockDate);
 
@@ -92,7 +99,7 @@ describe('AdventCalendar', () => {
 
     const buttonsDay5 = screen.getAllByText('5');
     const buttonDay5 = buttonsDay5.find(btn => btn.tagName === 'BUTTON' && !(btn as HTMLButtonElement).disabled) || buttonsDay5[0];
-    fireEvent.click(buttonDay5);
+    await user.click(buttonDay5);
 
     // Fast-forward time to after the animation timeout
     vi.advanceTimersByTime(2100);

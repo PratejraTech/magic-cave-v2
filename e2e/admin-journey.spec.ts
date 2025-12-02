@@ -201,8 +201,6 @@ test.describe('Admin/Content Moderation Journey E2E Tests', () => {
       await expect(page.locator('.real-time-metrics')).toBeVisible();
 
       // Verify live updates (metrics change over time)
-      const initialUserCount = await page.textContent('.active-users-count');
-
       // Wait a moment for potential updates
       await page.waitForTimeout(5000);
 

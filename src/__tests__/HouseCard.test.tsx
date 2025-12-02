@@ -10,7 +10,7 @@ const mockConfettiBurst = vi.fn();
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, onClick, ...props }: any) => <div onClick={onClick} {...props}>{children}</div>,
+    div: ({ children, onClick, ...props }: { children?: React.ReactNode; onClick?: () => void; [key: string]: unknown }) => <div onClick={onClick} {...props}>{children}</div>,
   },
   useAnimation: () => ({
     start: vi.fn().mockResolvedValue(undefined),
@@ -42,7 +42,7 @@ vi.mock('../features/advent/utils/ConfettiSystem', () => ({
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, onClick, ...props }: any) => <div onClick={onClick} {...props}>{children}</div>,
+    div: ({ children, onClick, ...props }: { children?: React.ReactNode; onClick?: () => void; [key: string]: unknown }) => <div onClick={onClick} {...props}>{children}</div>,
   },
   useAnimation: () => ({
     start: vi.fn().mockResolvedValue(undefined),

@@ -7,6 +7,8 @@ import AuthModal from './components/AuthModal';
 import ChildLoginModal from './components/ChildLoginModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeIntegrationService } from './lib/themeIntegration';
+import { Parent, Child, Calendar } from './types/advent';
+import type { Session } from '@supabase/supabase-js';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: string[] }> = ({
@@ -80,21 +82,21 @@ const AuthPage: React.FC = () => {
     }
   }, [isAuthenticated, userType]);
 
-  const handleParentAuthSuccess = async (user: any, child?: any) => {
+  const handleParentAuthSuccess = async (user: Parent, child?: Child) => {
     // Get session from Supabase
     const { authService } = await import('./lib/auth');
     try {
       const session = await authService.getCurrentSession();
       
       if (session) {
-        await login('parent', session, user, child);
+        await login('parent', session, user as Parent, child);
         window.location.href = '/parent/dashboard';
       } else {
         // Session might not be ready yet, wait and retry
         setTimeout(async () => {
           const retrySession = await authService.getCurrentSession();
           if (retrySession) {
-            await login('parent', retrySession, user, child);
+            await login('parent', retrySession, user as Parent, child);
             window.location.href = '/parent/dashboard';
           }
         }, 1000);
@@ -104,10 +106,10 @@ const AuthPage: React.FC = () => {
     }
   };
 
-  const handleChildLoginSuccess = async (child: any, calendar: any) => {
+  const handleChildLoginSuccess = async (child: Child, calendar: Calendar) => {
     // Store child session in localStorage
     localStorage.setItem('child_session', JSON.stringify({ child, calendar }));
-    await login('child', null as any, undefined, child);
+    await login('child', null as unknown as Session, undefined, child);
     window.location.href = '/child/calendar';
   };
 

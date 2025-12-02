@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { VillageScene } from '../features/advent/components/VillageScene';
 import { createAdventDay } from './testUtils';
@@ -21,7 +22,7 @@ vi.mock('../features/advent/utils/SoundManager', () => ({
   },
 }));
 
-vi.mock('../features/advent/components/HouseCard', () => ({
+vi.mock('../../features/advent/components/HouseCard', () => ({
   HouseCard: ({ day, onOpen, canOpen }: { day: AdventDay; onOpen: (dayId: number) => void; canOpen?: boolean }) => {
     const handleClick = () => {
       // For testing purposes, always allow clicking
@@ -73,12 +74,13 @@ describe('VillageScene', () => {
     expect(mockLoadSound).toHaveBeenCalledWith('door-creak', expect.any(String));
   });
 
-  it('delegates clicks to onOpenDay', () => {
+  it('delegates clicks to onOpenDay', async () => {
+    const user = userEvent.setup();
     const onOpenDay = vi.fn();
     render(<VillageScene days={mockDays} onOpenDay={onOpenDay} />);
 
     const day1Buttons = screen.getAllByTestId('day-1');
-    fireEvent.click(day1Buttons[0]);
+    await user.click(day1Buttons[0]);
 
     expect(onOpenDay).toHaveBeenCalledWith(1);
   });

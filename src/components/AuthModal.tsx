@@ -3,6 +3,7 @@ import { authService, AuthUtils } from '../lib/auth';
 import TemplateSelector from './TemplateSelector';
 import { analytics } from '../lib/analytics';
 
+
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;

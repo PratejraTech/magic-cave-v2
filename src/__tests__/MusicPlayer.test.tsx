@@ -70,7 +70,7 @@ describe('MusicPlayer', () => {
 
     const pauseButton = screen.getByRole('button', { name: /pause music/i });
     await user.click(pauseButton);
-    expect(mockStopMusic).toHaveBeenCalled();
+    expect(mockPauseMusic).toHaveBeenCalled();
 
     await waitFor(() => {
       const playButton = screen.getByRole('button', { name: /play music/i });

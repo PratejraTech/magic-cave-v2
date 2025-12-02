@@ -19,6 +19,7 @@
     "generate:photos": "node scripts/generatePhotoPairs.mjs",
     "upload:photos": "node scripts/uploadPhotos.mjs",
     "generate:bodies": "VITE_CHAT_API_URL=https://toharper.dad node scripts/generatePhotoBodies.mjs",
+    "security:assessment": "node scripts/run-security-assessment.js",
     "refresh:bodies": "VITE_CHAT_API_URL=https://toharper.dad FORCE_REFRESH_BODIES=true node scripts/generatePhotoBodies.mjs",
     "cache:letter-chunks": "node scripts/cacheLetterChunks.mjs",
     "cache:letter-chunks:wrangler": "node scripts/cacheLetterChunksWrangler.mjs",

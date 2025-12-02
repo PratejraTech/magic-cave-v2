@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 test.describe('Error Recovery and Edge Cases E2E Tests', () => {
   test.setTimeout(90000); // 1.5 minutes for error scenarios
@@ -125,7 +125,7 @@ test.describe('Error Recovery and Edge Cases E2E Tests', () => {
       // Simulate logout from another session
       await page.evaluate(() => {
         // Mock API response indicating concurrent logout
-        (window as any).mockConcurrentLogout = true;
+        (window as unknown as Window & { mockConcurrentLogout: boolean }).mockConcurrentLogout = true;
       });
 
       // Try to perform action
@@ -193,7 +193,7 @@ test.describe('Error Recovery and Edge Cases E2E Tests', () => {
 
       // Simulate server having different data
       await page.evaluate(() => {
-        (window as any).mockDataConflict = {
+        (window as unknown as Window & { mockDataConflict: { local: { title: string }, server: { title: string, lastModified: string } } }).mockDataConflict = {
           local: { title: 'Local Edit' },
           server: { title: 'Server Edit', lastModified: '2024-12-01T10:00:00Z' }
         };
@@ -565,14 +565,14 @@ test.describe('Error Recovery and Edge Cases E2E Tests', () => {
   });
 });
 
-async function loginAsParent(page: any) {
+async function loginAsParent(page: Page) {
   // Use test route that bypasses authentication
   await page.goto('/test/parent/dashboard');
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(2000); // Wait for React to render
 }
 
-async function loginAsChild(page: any) {
+async function loginAsChild(page: Page) {
   // Use test route that bypasses authentication
   await page.goto('/test/child/calendar');
   await page.waitForLoadState('networkidle');

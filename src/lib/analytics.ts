@@ -68,7 +68,7 @@ class Analytics {
   }
 
   async logGiftUnlocked(tileId: string, day: number, giftType: GiftType, calendarId?: string): Promise<void> {
-    await this.logEvent('gift_unlocked', { tile_id: tileId, day, gift_type: giftType as any }, { calendarId });
+    await this.logEvent('gift_unlocked', { tile_id: tileId, day, gift_type: giftType }, { calendarId });
   }
 
   async logNoteSubmitted(tileId: string, day: number, noteLength: number, calendarId?: string): Promise<void> {
