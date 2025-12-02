@@ -25,6 +25,7 @@
 2025-12-02T02:03:55Z — 0.0.3 — FINISHED — Migration script implemented using Supabase migration tooling in supabase/migrations/
 2025-12-02T02:05:31Z — 0.0.4 — FINISHED — Created unit tests for CRUD operations on all new tables (parents, children, calendars, tiles, analytics)
 2025-12-02T02:06:14Z — 0.0.5 — FINISHED — Set up Supabase Storage configuration with secure bucket, access policies, and integration functions
+2025-12-02T02:06:24Z — 0.0.6 — FINISHED — Planned notification scheduling infrastructure with timezone utilities, database scheduler, and configuration
 
 Usage Guidelines for the Agent / Developer
 At the start of any work session for a task: write a NEXT_TO_WORK_ON entry with timestamp and task reference.
