@@ -51,9 +51,9 @@ async function getUserFromToken(request) {
 /**
  * POST /api/auth/signup - Parent sign up
  */
-async function handleParentSignup(request) {
-  try {
-    const { email, password, name, childProfile } = await request.json();
+  async function handleParentSignup(request) {
+    try {
+      const { email, password, name, childProfile, selectedTemplate } = await request.json();
 
     // Validate required fields
     if (!email || !password || !name || !childProfile) {
@@ -87,11 +87,38 @@ async function handleParentSignup(request) {
       });
     }
 
+    // Validate inputs
+    if (!selectedTemplate) {
+      return new Response(JSON.stringify({
+        error: 'Template selection is required'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Validate child profile
     const { name: childName, birthdate, gender, interests } = childProfile;
     if (!childName || !birthdate || !gender) {
       return new Response(JSON.stringify({
         error: 'Child profile missing required fields: name, birthdate, gender'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Map template ID to UUID
+    const templateMapping = {
+      'pastel-dreams': '550e8400-e29b-41d4-a716-446655440000',
+      'adventure-boy': '550e8400-e29b-41d4-a716-446655440001',
+      'rainbow-fantasy': '550e8400-e29b-41d4-a716-446655440002'
+    };
+
+    const templateUuid = templateMapping[selectedTemplate];
+    if (!templateUuid) {
+      return new Response(JSON.stringify({
+        error: 'Invalid template selection'
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -182,7 +209,8 @@ async function handleParentSignup(request) {
         name: AuthUtils.sanitizeInput(childName),
         birthdate,
         gender,
-        interests: interests || {}
+        interests: interests || {},
+        selected_template: templateUuid
       })
       .select()
       .single();

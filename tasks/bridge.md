@@ -28,6 +28,7 @@
 2025-12-02T02:06:24Z — 0.0.6 — FINISHED — Planned notification scheduling infrastructure with timezone utilities, database scheduler, and configuration
 2025-12-02T02:07:18Z — 1.0 — NEXT_TO_WORK_ON — Starting authentication and parent portal implementation
 2025-12-02T02:07:45Z — 1.0.2 — FINISHED — Implemented authentication backend with Supabase Auth, OAuth support, and API endpoints
+2025-12-02T02:08:42Z — 1.0.3 — FINISHED — Built frontend Parent Portal UI with AuthModal, ChildLoginModal, and TemplateSelector components
 
 Usage Guidelines for the Agent / Developer
 At the start of any work session for a task: write a NEXT_TO_WORK_ON entry with timestamp and task reference.
