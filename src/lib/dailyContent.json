@@ -1,0 +1,242 @@
+[
+  {
+    "day": 1,
+    "title": "Santa's Secret Cookie Recipe!",
+    "message": "Ho ho ho! Today you're getting Santa's super-secret chocolate chip cookie recipe. Mix with love and they'll taste like magic! Remember, the best ingredient is your smile. 🎄",
+    "imageUrl": "/assets/christmas/images/houses/cottage-day1.jpg",
+    "musicUrl": "/assets/christmas/audio/music/calm-carols.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/santa-cookie-recipe.mp3",
+    "confettiType": "snow",
+    "unlockEffect": "fireworks"
+  },
+  {
+    "day": 2,
+    "title": "Elf's Giggle Potion!",
+    "message": "Heeheehee! The elves mixed up a special giggle potion just for you. Take a sip and laugh until your tummy hurts! What's your silliest joke? Tell Santa tomorrow! 🧝",
+    "imageUrl": "/assets/christmas/images/houses/gingerbread-day2.jpg",
+    "musicUrl": "/assets/christmas/audio/music/calm-carols.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/elf-giggle-potion.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "snowstorm"
+  },
+  {
+    "day": 3,
+    "title": "Reindeer's Midnight Flight!",
+    "message": "Whoosh! Join Rudolph on a magical flight through the stars. You're faster than lightning and brighter than the moon! Next time you see a shooting star, make a wish for someone you love. 🌟",
+    "imageUrl": "/assets/christmas/images/houses/stable-day3.jpg",
+    "musicUrl": "/assets/christmas/audio/music/calm-carols.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/reindeer-flight.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "aurora"
+  },
+  {
+    "day": 4,
+    "title": "Snowman's Secret Dance!",
+    "message": "Frosty knows all the coolest dance moves! Put on your winter boots and dance like nobody's watching. What's your favorite dance? Show Santa! ❄️",
+    "imageUrl": "/assets/christmas/images/houses/igloo-day4.jpg",
+    "musicUrl": "/assets/christmas/audio/music/calm-carols.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/snowman-dance.mp3",
+    "confettiType": "snow",
+    "unlockEffect": "gingerbread"
+  },
+  {
+    "day": 5,
+    "title": "Penguin's Ice Cream Party!",
+    "message": "Waddle waddle! The penguins are having an ice cream party on the frozen lake. What flavor would you choose? Mint chocolate chip or something magical? 🐧",
+    "imageUrl": "/assets/christmas/images/houses/ice-palace-day5.jpg",
+    "musicUrl": "/assets/christmas/audio/music/upbeat-sleigh.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/penguin-party.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "fireworks"
+  },
+  {
+    "day": 6,
+    "title": "Candy Cane Forest Adventure!",
+    "message": "Welcome to the Candy Cane Forest! Each tree is a different flavor. Climb the peppermint tree and taste the rainbow! What's your favorite candy? 🍭",
+    "imageUrl": "/assets/christmas/images/houses/cottage-day6.jpg",
+    "musicUrl": "/assets/christmas/audio/music/upbeat-sleigh.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/candy-forest.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "snowstorm"
+  },
+  {
+    "day": 7,
+    "title": "Elf Workshop Magic!",
+    "message": "Tink tink! The elves are busy making toys. Want to help build a teddy bear? Or maybe a rocket ship? What toy would you invent? 🛠️",
+    "imageUrl": "/assets/christmas/images/houses/workshop-day7.jpg",
+    "musicUrl": "/assets/christmas/audio/music/upbeat-sleigh.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/elf-workshop.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "aurora"
+  },
+  {
+    "day": 8,
+    "title": "Reindeer Games Championship!",
+    "message": "Ready, set, go! Compete in the Reindeer Games! Race on ice skates, jump over candy canes, and win the golden carrot trophy! 🏆",
+    "imageUrl": "/assets/christmas/images/houses/stable-day8.jpg",
+    "musicUrl": "/assets/christmas/audio/music/upbeat-sleigh.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/reindeer-games.mp3",
+    "confettiType": "reindeer",
+    "unlockEffect": "fireworks"
+  },
+  {
+    "day": 9,
+    "title": "Snowflake Symphony!",
+    "message": "Listen closely! Each snowflake sings its own song as it falls. Close your eyes and hear the winter music. What does your snowflake sound like? 🎵",
+    "imageUrl": "/assets/christmas/images/houses/igloo-day9.jpg",
+    "musicUrl": "/assets/christmas/audio/music/upbeat-sleigh.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/snowflake-symphony.mp3",
+    "confettiType": "snow",
+    "unlockEffect": "gingerbread"
+  },
+  {
+    "day": 10,
+    "title": "Santa's Story Time!",
+    "message": "Gather 'round the fireplace! Santa has a special story just for you about brave little explorers and magical adventures. Ready for the tale? 📖",
+    "imageUrl": "/assets/christmas/images/houses/cottage-day10.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/santa-story.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "snowstorm"
+  },
+  {
+    "day": 11,
+    "title": "Gingerbread House Bakery!",
+    "message": "Ding! Fresh out of the oven! Help decorate the biggest gingerbread house ever. Icing, sprinkles, and candy everywhere! What's your design? 🏠",
+    "imageUrl": "/assets/christmas/images/houses/gingerbread-day11.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/gingerbread-bakery.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "aurora"
+  },
+  {
+    "day": 12,
+    "title": "North Pole Light Show!",
+    "message": "Oooooh! The northern lights are dancing just for you! Green, purple, and blue ribbons in the sky. Make a wish on the brightest one! ✨",
+    "imageUrl": "/assets/christmas/images/houses/ice-palace-day12.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/north-pole-lights.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "fireworks"
+  },
+  {
+    "day": 13,
+    "title": "Polar Bear Pajama Party!",
+    "message": "Yawn! Time for the Polar Bear Pajama Party! Fluffy pajamas, hot cocoa, and bedtime stories. What's your favorite stuffed animal? 🐻",
+    "imageUrl": "/assets/christmas/images/houses/igloo-day13.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/polar-bear-party.mp3",
+    "confettiType": "snow",
+    "unlockEffect": "gingerbread"
+  },
+  {
+    "day": 14,
+    "title": "Christmas Tree Topper Quest!",
+    "message": "Climb to the top! Find the perfect star for the Christmas tree. Twinkle twinkle, little star! What makes you shine bright? ⭐",
+    "imageUrl": "/assets/christmas/images/houses/cottage-day14.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/tree-topper.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "snowstorm"
+  },
+  {
+    "day": 15,
+    "title": "Sleigh Bell Orchestra!",
+    "message": "Jingle jingle! The sleigh bells are practicing their symphony. Each bell has its own special note. What's your favorite Christmas song? 🔔",
+    "imageUrl": "/assets/christmas/images/houses/stable-day15.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/sleigh-bells.mp3",
+    "confettiType": "reindeer",
+    "unlockEffect": "aurora"
+  },
+  {
+    "day": 16,
+    "title": "Hot Cocoa Recipe Secrets!",
+    "message": "Steam rising! Santa's special hot cocoa recipe revealed! Marshmallows, cinnamon, and a dash of magic. What's your perfect cozy drink? ☕",
+    "imageUrl": "/assets/christmas/images/houses/workshop-day16.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/hot-cocoa.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "fireworks"
+  },
+  {
+    "day": 17,
+    "title": "Snow Angel Academy!",
+    "message": "Lie down and make angels! The snow is perfect for creating your masterpiece. What shape is your snow angel? Do they have wings? 👼",
+    "imageUrl": "/assets/christmas/images/houses/igloo-day17.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/snow-angels.mp3",
+    "confettiType": "snow",
+    "unlockEffect": "gingerbread"
+  },
+  {
+    "day": 18,
+    "title": "Present Wrapping Workshop!",
+    "message": "Wrap wrap wrap! Learn to tie perfect bows and make presents beautiful. What color paper would you choose for Santa's gift? 🎀",
+    "imageUrl": "/assets/christmas/images/houses/gingerbread-day18.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/present-wrapping.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "snowstorm"
+  },
+  {
+    "day": 19,
+    "title": "Christmas Card Creator!",
+    "message": "Draw and design! Make the most beautiful Christmas card ever. Snowflakes, trees, and lots of love. Who will you send it to? 💌",
+    "imageUrl": "/assets/christmas/images/houses/cottage-day19.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/christmas-cards.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "aurora"
+  },
+  {
+    "day": 20,
+    "title": "Mistletoe Magic!",
+    "message": "Pucker up! The mistletoe has special powers today. Give someone a big hug or a kiss on the cheek. Who makes you happiest? 🌿",
+    "imageUrl": "/assets/christmas/images/houses/ice-palace-day20.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/mistletoe-magic.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "fireworks"
+  },
+  {
+    "day": 21,
+    "title": "Stocking Stuffing Secrets!",
+    "message": "What's in YOUR stocking? Candy canes, oranges, and surprises galore! What would you put in Santa's stocking? 🧦",
+    "imageUrl": "/assets/christmas/images/houses/workshop-day21.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/stocking-secrets.mp3",
+    "confettiType": "candy",
+    "unlockEffect": "gingerbread"
+  },
+  {
+    "day": 22,
+    "title": "Winter Wonderland Walk!",
+    "message": "Crunch crunch! Take a walk through the winter wonderland. See the frosty trees and sparkling snow. What's your favorite winter sight? ❄️",
+    "imageUrl": "/assets/christmas/images/houses/stable-day22.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/winter-walk.mp3",
+    "confettiType": "snow",
+    "unlockEffect": "snowstorm"
+  },
+  {
+    "day": 23,
+    "title": "Eve of Christmas Eve!",
+    "message": "Almost here! The magic is building. Can you feel the excitement in the air? What are you most excited for tomorrow? 🎅",
+    "imageUrl": "/assets/christmas/images/houses/cottage-day23.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/christmas-eve.mp3",
+    "confettiType": "stars",
+    "unlockEffect": "aurora"
+  },
+  {
+    "day": 24,
+    "title": "Christmas Morning Magic!",
+    "message": "Merry Christmas! The day has finally arrived! Open your presents, eat cookies, and celebrate with family. You are so loved! 🎄🎁",
+    "imageUrl": "/assets/christmas/images/houses/santa-workshop-day24.jpg",
+    "musicUrl": "/assets/christmas/audio/music/epic-orchestral.mp3",
+    "voiceUrl": "/assets/christmas/audio/voices/christmas-morning.mp3",
+    "confettiType": "reindeer",
+    "unlockEffect": "fireworks"
+  }
+]

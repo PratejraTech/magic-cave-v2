@@ -1,12 +1,16 @@
 import React from 'react';
+import { applyTemplateStyling, getTemplateIcon } from '../lib/templateStyling';
+import { DEFAULT_TEMPLATES } from '../types/advent';
 
 interface Template {
   id: string;
   name: string;
   description: string;
-  preview: {
+  metadata: {
     colors: { primary: string; secondary: string; accent: string };
-    icon: string;
+    fonts: { heading: string; body: string };
+    icons: string[];
+    layout: 'rounded_tiles' | 'square_tiles' | 'hexagon_tiles';
   };
 }
 
@@ -17,35 +21,50 @@ interface TemplateSelectorProps {
 
 const AVAILABLE_TEMPLATES: Template[] = [
   {
-    id: 'pastel-dreams',
+    id: DEFAULT_TEMPLATES.PASTEL_DREAMS,
     name: 'Pastel Dreams',
     description: 'Soft pastel colors with dreamy illustrations perfect for little dreamers',
-    preview: {
+    metadata: {
       colors: { primary: '#FFB3BA', secondary: '#BAFFC9', accent: '#BAE1FF' },
-      icon: '🦋'
+      fonts: { heading: 'Comic Sans MS', body: 'Arial' },
+      icons: ['butterfly', 'star', 'heart'],
+      layout: 'rounded_tiles'
     }
   },
   {
-    id: 'adventure-boy',
+    id: DEFAULT_TEMPLATES.ADVENTURE_BOY,
     name: 'Adventure Boy',
     description: 'Bold colors with adventure-themed graphics for brave explorers',
-    preview: {
+    metadata: {
       colors: { primary: '#FF6B35', secondary: '#F7931E', accent: '#FFD23F' },
-      icon: '🗺️'
+      fonts: { heading: 'Impact', body: 'Verdana' },
+      icons: ['mountain', 'compass', 'telescope'],
+      layout: 'square_tiles'
     }
   },
   {
-    id: 'rainbow-fantasy',
+    id: DEFAULT_TEMPLATES.RAINBOW_FANTASY,
     name: 'Rainbow Fantasy',
     description: 'Bright rainbow colors with magical elements and unicorns',
-    preview: {
+    metadata: {
       colors: { primary: '#FF0080', secondary: '#8000FF', accent: '#00FF80' },
-      icon: '🦄'
+      fonts: { heading: 'Fantasy', body: 'Georgia' },
+      icons: ['unicorn', 'rainbow', 'castle'],
+      layout: 'hexagon_tiles'
     }
   }
 ];
 
 const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, onSelectTemplate }) => {
+  const handleSelectTemplate = (templateId: string) => {
+    onSelectTemplate(templateId);
+    // Apply template styling immediately for preview
+    const template = AVAILABLE_TEMPLATES.find(t => t.id === templateId);
+    if (template) {
+      applyTemplateStyling(template.metadata);
+    }
+  };
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -55,7 +74,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
         {AVAILABLE_TEMPLATES.map((template) => (
           <div
             key={template.id}
-            onClick={() => onSelectTemplate(template.id)}
+            onClick={() => handleSelectTemplate(template.id)}
             className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
               selectedTemplate === template.id
                 ? 'border-blue-500 bg-blue-50'
@@ -67,22 +86,22 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
               <div className="flex space-x-1">
                 <div
                   className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
-                  style={{ backgroundColor: template.preview.colors.primary }}
+                  style={{ backgroundColor: template.metadata.colors.primary }}
                 />
                 <div
                   className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
-                  style={{ backgroundColor: template.preview.colors.secondary }}
+                  style={{ backgroundColor: template.metadata.colors.secondary }}
                 />
                 <div
                   className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
-                  style={{ backgroundColor: template.preview.colors.accent }}
+                  style={{ backgroundColor: template.metadata.colors.accent }}
                 />
               </div>
 
               {/* Template Info */}
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
-                  <span className="text-2xl">{template.preview.icon}</span>
+                  <span className="text-2xl">{getTemplateIcon(template.metadata.icons[0])}</span>
                   <h3 className="font-semibold text-gray-800">{template.name}</h3>
                   {selectedTemplate === template.id && (
                     <span className="text-blue-500">✓</span>
@@ -99,12 +118,12 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
                   key={i}
                   className="aspect-square rounded border-2 flex items-center justify-center text-xs font-bold"
                   style={{
-                    backgroundColor: i % 3 === 0 ? template.preview.colors.primary + '20' :
-                                   i % 3 === 1 ? template.preview.colors.secondary + '20' :
-                                   template.preview.colors.accent + '20',
-                    borderColor: i % 3 === 0 ? template.preview.colors.primary :
-                               i % 3 === 1 ? template.preview.colors.secondary :
-                               template.preview.colors.accent
+                    backgroundColor: i % 3 === 0 ? template.metadata.colors.primary + '20' :
+                                   i % 3 === 1 ? template.metadata.colors.secondary + '20' :
+                                   template.metadata.colors.accent + '20',
+                    borderColor: i % 3 === 0 ? template.metadata.colors.primary :
+                               i % 3 === 1 ? template.metadata.colors.secondary :
+                               template.metadata.colors.accent
                   }}
                 >
                   {i + 1}

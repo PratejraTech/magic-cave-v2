@@ -1,0 +1,26 @@
+name = "harper-datalake-analytics"
+main = "harper-datalake-analytics.mjs"
+compatibility_date = "2024-01-01"
+
+# R2 Bucket binding for Data Lake
+[[r2_buckets]]
+binding = "HARPER_DATALAKE"
+bucket_name = "harper-datalake"
+preview_bucket_name = "harper-datalake-preview"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "harper-advent-sessions"
+database_id = "be197512-9936-4572-8640-9d14901660ff"
+
+# KV Namespace binding
+[[kv_namespaces]]
+binding = "UNIQUE_HARPER_SESSIONS"
+id = "e976b4c988ba4ef0b34d14d9a2d5efde"
+preview_id = "e976b4c988ba4ef0b34d14d9a2d5efde"
+
+# Cron trigger - runs every 6 hours
+[triggers]
+crons = ["0 */6 * * *"]  # Every 6 hours at minute 0
+

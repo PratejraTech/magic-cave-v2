@@ -228,6 +228,60 @@ async function getUserFromToken(request) {
       });
     }
 
+    // Create calendar for the child
+    const { data: calendarData, error: calendarError } = await supabase
+      .from('calendars')
+      .insert({
+        child_uuid: childData.child_uuid,
+        parent_uuid: parentData.parent_uuid,
+        template_id: templateUuid
+      })
+      .select()
+      .single();
+
+    if (calendarError) {
+      console.error('Calendar creation error:', calendarError);
+      // Clean up on error
+      await supabase.from('children').delete().eq('child_uuid', childData.child_uuid);
+      await supabase.from('parents').delete().eq('parent_uuid', parentData.parent_uuid);
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      return new Response(JSON.stringify({
+        error: 'Failed to create calendar'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Create 25 calendar tiles
+    const tilesData = [];
+    for (let day = 1; day <= 25; day++) {
+      tilesData.push({
+        calendar_id: calendarData.calendar_id,
+        day: day
+      });
+    }
+
+    const { error: tilesError } = await supabase
+      .from('calendar_tiles')
+      .insert(tilesData);
+
+    if (tilesError) {
+      console.error('Tiles creation error:', tilesError);
+      // Clean up on error
+      await supabase.from('calendar_tiles').delete().eq('calendar_id', calendarData.calendar_id);
+      await supabase.from('calendars').delete().eq('calendar_id', calendarData.calendar_id);
+      await supabase.from('children').delete().eq('child_uuid', childData.child_uuid);
+      await supabase.from('parents').delete().eq('parent_uuid', parentData.parent_uuid);
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      return new Response(JSON.stringify({
+        error: 'Failed to create calendar tiles'
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     return new Response(JSON.stringify({
       success: true,
       user: {

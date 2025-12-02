@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Template CSS variables - will be set dynamically */
+    --template-primary: #FFB3BA;
+    --template-secondary: #BAFFC9;
+    --template-accent: #BAE1FF;
+    --template-heading-font: 'Comic Sans MS', cursive;
+    --template-body-font: Arial, sans-serif;
+  }
+
+  body {
+    font-family: var(--template-body-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent text size adjustment on iOS */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Improve touch targets on mobile */
+  button, a, input {
+    touch-action: manipulation;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(100px, -100px) rotate(15deg);
+  }
+  50% {
+    transform: translate(200px, -50px) rotate(-10deg);
+  }
+  75% {
+    transform: translate(300px, -150px) rotate(20deg);
+  }
+}
+
+@keyframes flutter {
+  0%, 100% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes magicPortal {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotateZ(0deg);
+    filter: blur(10px);
+  }
+  20% {
+    opacity: 0.6;
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.8), inset 0 0 20px rgba(0, 200, 255, 0.6);
+  }
+  40% {
+    box-shadow: 0 0 50px rgba(255, 100, 200, 0.8), inset 0 0 30px rgba(0, 200, 255, 0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.05) rotateZ(5deg);
+    box-shadow: 0 0 60px rgba(100, 200, 255, 0.8), inset 0 0 40px rgba(255, 150, 100, 0.6);
+  }
+  80% {
+    transform: scale(0.95) rotateZ(-3deg);
+    box-shadow: 0 0 40px rgba(255, 100, 200, 0.6), inset 0 0 30px rgba(255, 180, 0, 0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateZ(0deg);
+    box-shadow: 12px 12px 24px #1a1a2e, -12px -12px 24px #0f4c75;
+  }
+}
+
+@keyframes portalPulse {
+  0%, 100% {
+    box-shadow: inset 0 0 20px rgba(255, 200, 0, 0.3), inset 0 0 40px rgba(0, 200, 255, 0.2), 12px 12px 24px #1a1a2e, -12px -12px 24px #0f4c75;
+  }
+  50% {
+    box-shadow: inset 0 0 30px rgba(255, 200, 0, 0.5), inset 0 0 60px rgba(0, 200, 255, 0.4), 12px 12px 24px #1a1a2e, -12px -12px 24px #0f4c75;
+  }
+}
+
+@keyframes particleShower {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+.butterfly {
+  animation: float 20s infinite ease-in-out;
+}
+
+.butterfly-wings {
+  animation: flutter 0.5s infinite ease-in-out;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.clay-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clay-card:hover {
+  transform: translateY(-6px);
+}
+
+.portal-opening {
+  animation: magicPortal 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.portal-active {
+  animation: portalPulse 2s ease-in-out infinite;
+}
+
+.clay-button:active {
+  transform: scale(0.95);
+  box-shadow: inset 4px 4px 8px #1a1a2e, inset -4px -4px 8px #0f4c75 !important;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 100, 200, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 200, 255, 0.9);
+  }
+}
+
+.particle {
+  animation: particleShower 0.8s ease-out forwards;
+  position: fixed;
+  pointer-events: none;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); text-shadow: 0 0 4px #fff; }
+  50% { opacity: 0.7; transform: scale(1.05); text-shadow: 0 0 12px #fff, 0 0 20px #ffd700; }
+}

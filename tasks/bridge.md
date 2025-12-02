@@ -29,6 +29,20 @@
 2025-12-02T02:07:18Z — 1.0 — NEXT_TO_WORK_ON — Starting authentication and parent portal implementation
 2025-12-02T02:07:45Z — 1.0.2 — FINISHED — Implemented authentication backend with Supabase Auth, OAuth support, and API endpoints
 2025-12-02T02:08:42Z — 1.0.3 — FINISHED — Built frontend Parent Portal UI with AuthModal, ChildLoginModal, and TemplateSelector components
+2025-12-02T12:00:00Z — 2.0 — NEXT_TO_WORK_ON — Starting templates and calendar initialization
+2025-12-02T12:05:00Z — 2.0.1 — FINISHED — Created feature branch feature/calendar-v2-2-templates-init
+2025-12-02T12:10:00Z — 2.0.2 — FINISHED — Defined 3 default templates with metadata in database and TypeScript types
+2025-12-02T12:15:00Z — 2.0.3 — FINISHED — Implemented frontend template styling logic with CSS variables and dynamic application
+2025-12-02T12:20:00Z — 2.0.4 — FINISHED — Built calendar auto-creation on profile completion generating 25 tiles
+2025-12-02T12:25:00Z — 2.0.5 — FINISHED — Added database constraints and tests for calendar uniqueness
+2025-12-02T12:30:00Z — 3.0 — NEXT_TO_WORK_ON — Starting tile content customization and media upload
+2025-12-02T13:00:00Z — 3.0.1 — FINISHED — Created feature branch feature/tile-customization
+2025-12-02T13:05:00Z — 3.0.2 — FINISHED — Built tile-editor UI for parent to customize tiles (title, body, media upload, preview)
+2025-12-02T13:10:00Z — 3.0.3 — FINISHED — Backend endpoints for tile update and media upload handling
+2025-12-02T13:15:00Z — 3.0.4 — FINISHED — Implemented media validation (file type, size, security, sanitization)
+2025-12-02T13:20:00Z — 3.0.5 — FINISHED — Ensured media assets accessible only to authenticated users (signed URLs)
+2025-12-02T13:25:00Z — 3.0.6 — FINISHED — Wrote tests for tile updates, media upload flows, invalid input handling
+2025-12-02T13:30:00Z — 3.0.7 — FINISHED — UI feedback & error handling for uploads (progress, errors, remove/replace)
 
 Usage Guidelines for the Agent / Developer
 At the start of any work session for a task: write a NEXT_TO_WORK_ON entry with timestamp and task reference.

@@ -1,0 +1,377 @@
+[
+  {
+    "response_id": 1,
+    "response_type": "joy",
+    "text": "Hi Harper! Daddy is so happy to see you! Are you ready for some Christmas magic with me?"
+  },
+  {
+    "response_id": 2,
+    "response_type": "xmas",
+    "text": "Did you know our Christmas tree sparkles extra bright when you smile at it? I saw it happen!"
+  },
+  {
+    "response_id": 3,
+    "response_type": "Dad and Harper",
+    "text": "I love watching you explore and play, Harper. You make my whole day light up."
+  },
+  {
+    "response_id": 4,
+    "response_type": "calendar_quote",
+    "text": "The smallest snowflake can hold the biggest wish."
+  },
+  {
+    "response_id": 5,
+    "response_type": "joy",
+    "text": "Yay! I love when you come talk to me. You make everything feel fun and sparkly."
+  },
+  {
+    "response_id": 6,
+    "response_type": "xmas",
+    "text": "I heard Santa's elves love bows just like you do. I bet they'd love the ones you choose."
+  },
+  {
+    "response_id": 7,
+    "response_type": "Dad and Harper",
+    "text": "Your hugs are the warmest in the world, Harper. Warmer than cocoa! I treasure every one."
+  },
+  {
+    "response_id": 8,
+    "response_type": "calendar_quote",
+    "text": "Magic grows wherever a child believes."
+  },
+  {
+    "response_id": 9,
+    "response_type": "joy",
+    "text": "Heehee! You always make me laugh, sweet girl. You're so silly and wonderful."
+  },
+  {
+    "response_id": 10,
+    "response_type": "xmas",
+    "text": "If you listen with your imagination, you can hear jingle bells all the way from the North Pole."
+  },
+  {
+    "response_id": 11,
+    "response_type": "Dad and Harper",
+    "text": "I'm so proud of how kind you are, Harper. You have the brightest, gentlest heart."
+  },
+  {
+    "response_id": 12,
+    "response_type": "calendar_quote",
+    "text": "Every day can shine like Christmas when there is love."
+  },
+  {
+    "response_id": 13,
+    "response_type": "joy",
+    "text": "Woohoo! Look at you go! I love celebrating little victories with you."
+  },
+  {
+    "response_id": 14,
+    "response_type": "xmas",
+    "text": "The reindeer are practicing their flying. I told them you might wave tonight!"
+  },
+  {
+    "response_id": 15,
+    "response_type": "Dad and Harper",
+    "text": "My favourite part of the day is reading stories with you. I love our cosy moments."
+  },
+  {
+    "response_id": 16,
+    "response_type": "calendar_quote",
+    "text": "Tiny lights make the biggest memories."
+  },
+  {
+    "response_id": 17,
+    "response_type": "joy",
+    "text": "You make everything brighter, Harper. Even my smile gets bigger when you're here."
+  },
+  {
+    "response_id": 18,
+    "response_type": "xmas",
+    "text": "Santa has a special star list for super-smilers, and guess what—your name is on it!"
+  },
+  {
+    "response_id": 19,
+    "response_type": "Dad and Harper",
+    "text": "You amaze me every day, Harper. You're brave, gentle, and full of magic."
+  },
+  {
+    "response_id": 20,
+    "response_type": "joy",
+    "text": "I love you so much, Harper. I'm always here to share Christmas magic with you."
+  },
+  {
+    "response_id": 21,
+    "response_type": "xmas",
+    "text": "Every ornament on our tree has a story, and my favorite stories are the ones with you in them."
+  },
+  {
+    "response_id": 22,
+    "response_type": "xmas",
+    "text": "The stars tonight are extra twinkly because they know Christmas is coming, just like you do."
+  },
+  {
+    "response_id": 23,
+    "response_type": "xmas",
+    "text": "I love how you notice every little decoration. Your wonder makes everything more beautiful."
+  },
+  {
+    "response_id": 24,
+    "response_type": "xmas",
+    "text": "The gingerbread cookies taste sweeter when we bake them together. That's the magic of sharing."
+  },
+  {
+    "response_id": 25,
+    "response_type": "xmas",
+    "text": "When you sing Christmas songs, even the snowflakes dance. I love hearing your voice."
+  },
+  {
+    "response_id": 26,
+    "response_type": "xmas",
+    "text": "The stockings are hanging with care, and mine is happiest when yours is right next to it."
+  },
+  {
+    "response_id": 27,
+    "response_type": "xmas",
+    "text": "I saw a shooting star last night and wished for more cozy moments with you this Christmas."
+  },
+  {
+    "response_id": 28,
+    "response_type": "xmas",
+    "text": "The Christmas lights glow brighter when you're near them. You bring light wherever you go."
+  },
+  {
+    "response_id": 29,
+    "response_type": "xmas",
+    "text": "Every snowflake that falls is unique, just like you, my special Harper."
+  },
+  {
+    "response_id": 30,
+    "response_type": "xmas",
+    "text": "The carols sound sweeter when we sing them together. Your voice is my favorite Christmas song."
+  },
+  {
+    "response_id": 31,
+    "response_type": "xmas",
+    "text": "I love watching you count down the days. Your excitement makes December magical."
+  },
+  {
+    "response_id": 32,
+    "response_type": "xmas",
+    "text": "The mistletoe reminds me to give you extra kisses. You're my favorite Christmas gift."
+  },
+  {
+    "response_id": 33,
+    "response_type": "xmas",
+    "text": "When you help decorate, every ornament finds its perfect spot. You have an eye for beauty."
+  },
+  {
+    "response_id": 34,
+    "response_type": "xmas",
+    "text": "The fireplace feels warmer when you're here. Your presence makes everything cozy."
+  },
+  {
+    "response_id": 35,
+    "response_type": "xmas",
+    "text": "I love how you notice the tiniest details—like how the tree lights reflect in your eyes."
+  },
+  {
+    "response_id": 36,
+    "response_type": "xmas",
+    "text": "The advent calendar is special because each day brings us closer to celebrating together."
+  },
+  {
+    "response_id": 37,
+    "response_type": "xmas",
+    "text": "When you wear your Christmas pajamas, you look like a little elf full of wonder and joy."
+  },
+  {
+    "response_id": 38,
+    "response_type": "xmas",
+    "text": "The wreath on our door welcomes everyone, but it's happiest when you walk through."
+  },
+  {
+    "response_id": 39,
+    "response_type": "xmas",
+    "text": "I love reading Christmas stories with you. Your imagination makes every tale come alive."
+  },
+  {
+    "response_id": 40,
+    "response_type": "xmas",
+    "text": "The candy canes taste sweeter when we share them. Everything is better together."
+  },
+  {
+    "response_id": 41,
+    "response_type": "xmas",
+    "text": "When you look at the Christmas tree, I see wonder in your eyes. That wonder is pure magic."
+  },
+  {
+    "response_id": 42,
+    "response_type": "xmas",
+    "text": "The snow outside is beautiful, but you're the most beautiful thing I see this Christmas."
+  },
+  {
+    "response_id": 43,
+    "response_type": "xmas",
+    "text": "I love how you help wrap presents. Your little hands make every gift extra special."
+  },
+  {
+    "response_id": 44,
+    "response_type": "xmas",
+    "text": "The Christmas morning will be magical, but every morning with you is already magical."
+  },
+  {
+    "response_id": 45,
+    "response_type": "xmas",
+    "text": "When you dance to Christmas music, you bring joy to the whole room. Keep dancing, sweet pea."
+  },
+  {
+    "response_id": 46,
+    "response_type": "xmas",
+    "text": "The nutcracker stands guard, but you're the one who guards my heart with your love."
+  },
+  {
+    "response_id": 47,
+    "response_type": "xmas",
+    "text": "I love watching you discover Christmas traditions. Your curiosity makes everything new again."
+  },
+  {
+    "response_id": 48,
+    "response_type": "xmas",
+    "text": "The Christmas cards remind us of loved ones, and you remind me why love matters most."
+  },
+  {
+    "response_id": 49,
+    "response_type": "xmas",
+    "text": "When you help me hang the lights, you're hanging stars in my sky. Thank you, Harper."
+  },
+  {
+    "response_id": 50,
+    "response_type": "xmas",
+    "text": "The Christmas cookies have sprinkles, but you're the sparkle that makes everything shine."
+  },
+  {
+    "response_id": 51,
+    "response_type": "calendar_quote",
+    "text": "In the quiet of winter, love speaks the loudest."
+  },
+  {
+    "response_id": 52,
+    "response_type": "calendar_quote",
+    "text": "The best gifts don't come wrapped—they come in hugs and smiles."
+  },
+  {
+    "response_id": 53,
+    "response_type": "calendar_quote",
+    "text": "Christmas isn't a season, it's a feeling you carry in your heart."
+  },
+  {
+    "response_id": 54,
+    "response_type": "calendar_quote",
+    "text": "The magic of Christmas lives in the eyes of a child."
+  },
+  {
+    "response_id": 55,
+    "response_type": "calendar_quote",
+    "text": "Peace on earth begins with love at home."
+  },
+  {
+    "response_id": 56,
+    "response_type": "calendar_quote",
+    "text": "Every snowflake is a reminder that small things create something beautiful together."
+  },
+  {
+    "response_id": 57,
+    "response_type": "calendar_quote",
+    "text": "The warmth of Christmas comes from hearts, not just fireplaces."
+  },
+  {
+    "response_id": 58,
+    "response_type": "calendar_quote",
+    "text": "Believe in magic, and magic will believe in you."
+  },
+  {
+    "response_id": 59,
+    "response_type": "calendar_quote",
+    "text": "Christmas joy is measured in moments shared, not gifts received."
+  },
+  {
+    "response_id": 60,
+    "response_type": "calendar_quote",
+    "text": "The greatest gift is the present moment spent together."
+  },
+  {
+    "response_id": 61,
+    "response_type": "Dad and Harper",
+    "text": "Your laughter is my favorite sound, Harper. It's like Christmas bells ringing all year long."
+  },
+  {
+    "response_id": 62,
+    "response_type": "Dad and Harper",
+    "text": "I love how you notice the little things—like how the snow sparkles. You see magic everywhere."
+  },
+  {
+    "response_id": 63,
+    "response_type": "Dad and Harper",
+    "text": "When you're near, everything feels warmer and brighter. You're my little sunbeam."
+  },
+  {
+    "response_id": 64,
+    "response_type": "Dad and Harper",
+    "text": "I'm grateful for every moment we share, Harper. You make my world complete."
+  },
+  {
+    "response_id": 65,
+    "response_type": "Dad and Harper",
+    "text": "Your kindness shines brighter than any Christmas star. I'm so proud of the person you are."
+  },
+  {
+    "response_id": 66,
+    "response_type": "Dad and Harper",
+    "text": "I love watching you grow and learn. Every day with you is a gift I treasure."
+  },
+  {
+    "response_id": 67,
+    "response_type": "Dad and Harper",
+    "text": "When you hold my hand, I feel like the luckiest dad in the world. Thank you for being you."
+  },
+  {
+    "response_id": 68,
+    "response_type": "Dad and Harper",
+    "text": "Your imagination takes us on the best adventures. I love exploring the world with you."
+  },
+  {
+    "response_id": 69,
+    "response_type": "Dad and Harper",
+    "text": "I love how you care for others. Your gentle heart makes the world a better place."
+  },
+  {
+    "response_id": 70,
+    "response_type": "Dad and Harper",
+    "text": "Every day I learn something new from you, Harper. You teach me about wonder and joy."
+  },
+  {
+    "response_id": 71,
+    "response_type": "joy",
+    "text": "Your smile could light up the whole North Pole! I love seeing you happy."
+  },
+  {
+    "response_id": 72,
+    "response_type": "joy",
+    "text": "I love celebrating with you, Harper. Your excitement makes everything more fun."
+  },
+  {
+    "response_id": 73,
+    "response_type": "joy",
+    "text": "You bring so much joy to my life. Every day with you feels like a celebration."
+  },
+  {
+    "response_id": 74,
+    "response_type": "joy",
+    "text": "Your giggles are contagious! I can't help but smile when I hear you laugh."
+  },
+  {
+    "response_id": 75,
+    "response_type": "joy",
+    "text": "I love how you find wonder in everything. Your joy reminds me what matters most."
+  }
+]

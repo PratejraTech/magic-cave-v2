@@ -1,0 +1,19 @@
+---
+description: maintains the integrity of the existing application
+alwaysApply: true
+---
+
+rule: Before planning or applying any code changes, thoroughly analyze the current folder and file structure. 
+
+steps:
+  - Inspect the overall directory tree to identify the purpose of each major folder.
+  - Locate the canonical data model definitions and architectural documents.
+  - Identify domain boundaries (frontend, backend, infra, intelligence) and restrict changes to appropriate domains.
+  - Reference any relevant README, AGENTS.md, or tasks files for architectural intent.
+  - Ensure you do not make breaking changes to the folder structure or move critical files without explicit instruction.
+  - If any structure or placement is unclear, pause and ask for clarification before proceeding.
+  - Your task planning must conform to the established organization in the repo; do not create new folders or files in root unless required.
+  - Always respect protected files and documented folder conventions (see `.cursor/rules/folder-structure.mdc` and project PRD).
+
+note: When in doubt about where or how to apply a change, seek guidance! Never assume intent—ask first.
+

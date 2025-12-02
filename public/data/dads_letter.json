@@ -1,0 +1,345 @@
+[
+    {
+      "chunk": 1,
+      "topics": ["love", "letter", "reading"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Daddy says hello and smiles!",
+      "SYSTEM_PROMPT": "Speak softly, kindly, like a loving dad talking to his 3-year-old.",
+      "content": "Hello my sweet Harper. Daddy wrote this little letter just for you. One day you’ll read all Daddy’s words by yourself. Daddy loves watching you grow and learn new things."
+    },
+    {
+      "chunk": 2,
+      "topics": ["gifts", "special", "kindness"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask Harper what she loves in the world.",
+      "SYSTEM_PROMPT": "Use gentle, encouraging language.",
+      "content": "You have special gifts inside you, Harper. You help people, animals, trees, and friends just by being you. Daddy and Mummy learn from you every day. You make the world brighter."
+    },
+    {
+      "chunk": 3,
+      "topics": ["feelings", "sleep", "comfort"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask if she likes snuggles.",
+      "SYSTEM_PROMPT": "Emphasize safety and love.",
+      "content": "When Daddy watches you sleep, his heart feels full. You help Daddy feel brave and gentle at the same time. I love being close to you."
+    },
+    {
+      "chunk": 4,
+      "topics": ["patience", "mistakes", "love"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask Harper: 'Do we say sorry when we make a mess?'",
+      "SYSTEM_PROMPT": "Keep ideas simple.",
+      "content": "Daddy tries very hard to be patient. If Daddy ever makes a mistake, he will say sorry. Daddy will always love you, no matter what."
+    },
+    {
+      "chunk": 5,
+      "topics": ["learning", "curiosity", "friends"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask Harper: 'Do you like asking why?'",
+      "SYSTEM_PROMPT": "Make learning sound fun.",
+      "content": "Some people love learning, and some people like talking more than listening. You can choose friends who like exploring and asking questions just like you!"
+    },
+    {
+      "chunk": 6,
+      "topics": ["friendship", "kind people"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask about her favourite friend.",
+      "SYSTEM_PROMPT": "Highlight kindness.",
+      "content": "Daddy has friends from all over the big world. They are all different, but they all have one thing in common: they are kind. Kind friends are the best friends."
+    },
+    {
+      "chunk": 7,
+      "topics": ["friend types", "tier 1 friends", "trust"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Show a picture of two hugging animals.",
+      "SYSTEM_PROMPT": "Explain gently.",
+      "content": "Some friends feel very safe. Daddy calls them Tier 1 Friends. These are the friends who love you even when things get tricky."
+    },
+    {
+      "chunk": 8,
+      "topics": ["friend types", "tier 2", "boundaries"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Use nod-and-smile animation.",
+      "SYSTEM_PROMPT": "Keep neutral tone.",
+      "content": "Some friends are fun but take a lot of energy. Daddy calls them Tier 2 Friends. With them, you smile and nod and keep your heart safe."
+    },
+    {
+      "chunk": 9,
+      "topics": ["friend types", "tier 3", "self-protection"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask: 'Do we stay close to people who make us feel happy?'",
+      "SYSTEM_PROMPT": "Stay gentle; avoid fear.",
+      "content": "Some friends might not make you feel good. Daddy calls them Tier 3 Friends. It’s okay to not be close to everyone."
+    },
+    {
+      "chunk": 10,
+      "topics": ["kindness", "respect", "safety"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Do kindness gesture animation.",
+      "SYSTEM_PROMPT": "Always reassure.",
+      "content": "We try to be kind to everyone. But we don’t stay close to people who aren’t kind back. Daddy will always help keep your heart safe."
+    },
+    {
+      "chunk": 11,
+      "topics": ["feelings", "strength", "breathing"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Lead child in a small breathing exercise.",
+      "SYSTEM_PROMPT": "Soft calming tone.",
+      "content": "Sometimes you may feel alone or upset. That’s okay. Daddy feels that too sometimes. Taking a deep breath helps us feel strong again."
+    },
+    {
+      "chunk": 12,
+      "topics": ["curiosity", "questions", "science (simple)"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask: “Do you like spinning?”",
+      "SYSTEM_PROMPT": "Make science playful.",
+      "content": "You love asking questions, and that makes Daddy so proud. We can learn fun things like spinning bottles and water and watching them move!"
+    },
+    {
+      "chunk": 13,
+      "topics": ["inertia", "movement", "play science"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Keep the physics very simple.",
+      "interaction_hint": "Invite her to spin around safely.",
+      "content": "When we spin, things like to keep moving. Daddy once taught you the word 'inertia' just for fun. Learning big words can feel like a game!"
+    },
+    {
+      "chunk": 14,
+      "topics": ["perfection", "growth", "self-worth"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Reassure self-esteem.",
+      "interaction_hint": "Give a virtual sticker.",
+      "content": "You are perfect just as you are, even while learning new things. Life is fun because we get to grow a little every day."
+    },
+    {
+      "chunk": 15,
+      "topics": ["joy", "finding things out", "Feynman (simple)"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask: 'Do you like discovering surprises?'",
+      "SYSTEM_PROMPT": "Celebrate curiosity.",
+      "content": "There are grown-ups who love learning for fun. One of Daddy’s favorite people loved discovering how the world works. You can enjoy that too!"
+    },
+    {
+      "chunk": 16,
+      "topics": ["books", "symbols", "drawing"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Encourage creativity.",
+      "interaction_hint": "Invite her to color shapes.",
+      "content": "Mummy got you a special big book with lots of symbols. You can color them in anytime! They are like the secret language of the world."
+    },
+    {
+      "chunk": 17,
+      "topics": ["teaching", "levels", "patience"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Keep tone positive.",
+      "interaction_hint": "Ask: “Do you like showing Daddy things?”",
+      "content": "Daddy loves teaching and learning with you. Everyone learns differently, and that’s okay. We can learn together in your way."
+    },
+    {
+      "chunk": 18,
+      "topics": ["love", "sharing", "leadership (gentle)"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Show sharing animation.",
+      "SYSTEM_PROMPT": "Stay warm and affirming.",
+      "content": "You share so kindly with other little humans. You help lead others when they feel shy. That makes Daddy very proud."
+    },
+    {
+      "chunk": 19,
+      "topics": ["missing you", "separation (gentle)", "reassurance"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Avoid adult complexity; focus on reassurance.",
+      "interaction_hint": "Give heart bubble animation.",
+      "content": "Sometimes Daddy feels sad when he can’t be with you. But none of it is your fault. Daddy loves you every moment, even when we are apart."
+    },
+    {
+      "chunk": 20,
+      "topics": ["healing", "comfort", "future hugs"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Provide soothing tone.",
+      "interaction_hint": "Ask: “Do big hugs help you feel better?”",
+      "content": "One day Daddy will hold you close and help your heart feel safe. You are the most important part of Daddy’s world."
+    },
+    {
+      "chunk": 21,
+      "topics": ["birth", "connection", "story"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Use a gentle lullaby sound.",
+      "SYSTEM_PROMPT": "Share soft story imagery.",
+      "content": "When you were born, Daddy held your tiny hand. It was the most magical moment. Daddy felt love bigger than the whole sky."
+    },
+    {
+      "chunk": 22,
+      "topics": ["emotions", "crying", "connection"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "SYSTEM_PROMPT": "Normalize feelings.",
+      "interaction_hint": "Ask: “Do tears sometimes help you feel better?”",
+      "content": "Crying is okay. Daddy cried happy tears when he put you to sleep. Big feelings mean big love."
+    },
+    {
+      "chunk": 23,
+      "topics": ["spirituality (simple)", "hearts", "connection"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Show glowing-heart animation.",
+      "SYSTEM_PROMPT": "No heavy concepts; simple metaphors.",
+      "content": "Daddy is always inside your heart, and you are inside his. Our hearts shine brighter when we do loving things."
+    },
+    {
+      "chunk": 24,
+      "topics": ["being yourself", "confidence", "uniqueness"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask: “What makes you YOU?”",
+      "SYSTEM_PROMPT": "Build self-esteem.",
+      "content": "You don’t need to be like everyone else. You only need to be Harper. Loving yourself is the most special kind of magic."
+    },
+    {
+      "chunk": 25,
+      "topics": ["mistakes", "trying", "repair"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Use gentle reset animation.",
+      "SYSTEM_PROMPT": "Normalize mistakes.",
+      "content": "Everyone makes mistakes, even Daddy. What matters is saying sorry and trying again. We always get another chance."
+    },
+    {
+      "chunk": 26,
+      "topics": ["giftedness (gentle)", "potential", "play-learning"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Invite her to imagine butterflies.",
+      "SYSTEM_PROMPT": "Avoid pressure; only encouragement.",
+      "content": "You have a bright and curious mind. Your actions, even small ones, can make the world nicer. Learning through play is the best way."
+    },
+    {
+      "chunk": 27,
+      "topics": ["wonder", "nature", "magic"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Leaf or water sound.",
+      "SYSTEM_PROMPT": "Emphasize awe and nature.",
+      "content": "The trees, the air, and the water hold so much magic. The world loves you back, Harper. Daddy loves exploring it with you."
+    },
+    {
+      "chunk": 28,
+      "topics": ["adults", "respect", "safety"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Show safe grown-up icons.",
+      "SYSTEM_PROMPT": "Keep adults simple and safe.",
+      "content": "Some grown-ups act kind and help you feel safe. Daddy will always protect you and teach you who to trust."
+    },
+    {
+      "chunk": 29,
+      "topics": ["breath", "calm", "strength",
+        "life force"
+      ],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Guided slow breath.",
+      "SYSTEM_PROMPT": "Teach calmness.",
+      "content": "Your breath helps you feel strong and calm. When you sit still, you may feel a warm buzz—that’s your special energy."
+    },
+    {
+      "chunk": 30,
+      "topics": ["love big", "stars", "numbers"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Stars sparkle animation.",
+      "SYSTEM_PROMPT": "Use playful exaggeration.",
+      "content": "Daddy loves you more than all the stars, more than all the numbers in the world! That love never ends."
+    },
+    {
+      "chunk": 31,
+      "topics": ["mystery", "wonderland", "stories"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask: “Do you like silly stories?”",
+      "SYSTEM_PROMPT": "Keep whimsical.",
+      "content": "Daddy sometimes believes silly, impossible things before breakfast. Life can be like a wonderland full of surprises!"
+    },
+    {
+      "chunk": 32,
+      "topics": ["virtue", "rules", "values"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Use a 'kind choice' mini-game.",
+      "SYSTEM_PROMPT": "Focus on kindness, not rebellion.",
+      "content": "Being a good person matters more than following every rule. When you choose kindness, you are already winning."
+    },
+    {
+      "chunk": 33,
+      "topics": ["gratitude", "sharing", "helping others"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "Ask: “What can we share today?”",
+      "SYSTEM_PROMPT": "Encourage generosity.",
+      "content": "Giving to others, even tiny things, makes the world happier. Gratitude is like a warm light you can always carry."
+    },
+    {
+      "chunk": 34,
+      "topics": ["final love", "forever bond", "pride"],
+      "last_used": false,
+      "times_used": 0,
+      "reuse_day": 3,
+      "interaction_hint": "End with a glowing-heart animation.",
+      "SYSTEM_PROMPT": "Close with loving certainty.",
+      "content": "One thing never changes, not ever: Daddy loves you forever. I’m so proud of you, my sweet Harper."
+    }
+  ]
+  
