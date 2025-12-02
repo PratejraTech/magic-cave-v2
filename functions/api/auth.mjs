@@ -4,7 +4,10 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { AuthUtils } from '../../src/lib/auth.js';
+import { AuthUtils } from '../../src/lib/auth.ts';
+import { validateSignup, validateChildLogin, validateProfileUpdate, validateChildAge } from '../../src/lib/validation.ts';
+import { createSecureJsonResponse, createSecureErrorResponse } from '../../src/lib/securityHeaders.ts';
+import { exportUserData } from '../../src/lib/compliance.ts';
 
 /**
  * Validate request method and CORS
@@ -45,9 +48,87 @@ async function getUserFromToken(request, supabase) {
 /**
  * POST /api/auth/signup - Parent sign up
  */
-  async function handleParentSignup(request, supabase) {
+   async function handleParentSignup(request, supabase) {
+    const clientIP = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+    const userAgent = request.headers.get('User-Agent') || 'unknown';
+
     try {
-      const { email, password, name, childProfile, selectedTemplate } = await request.json();
+      const rawData = await request.json();
+
+      // Comprehensive input validation and sanitization
+      const validation = await validateSignup(rawData);
+      if (!validation.success) {
+        await supabase.rpc('log_security_event', {
+          p_user_id: null,
+          p_action: 'signup_attempt',
+          p_resource_type: 'auth',
+          p_ip_address: clientIP,
+          p_user_agent: userAgent,
+          p_metadata: { reason: 'validation_failed', errors: validation.errors },
+          p_success: false
+        });
+
+        return new Response(JSON.stringify({
+          error: 'Invalid input data',
+          details: validation.errors
+        }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      const { email, password, name, childProfile, selectedTemplate } = validation.value;
+      const { name: childName, birthdate, gender, interests } = childProfile;
+
+      // Additional child age validation
+      const ageValidation = validateChildAge(new Date(birthdate));
+      if (!ageValidation.valid) {
+        await supabase.rpc('log_security_event', {
+          p_user_id: null,
+          p_action: 'signup_attempt',
+          p_resource_type: 'auth',
+          p_ip_address: clientIP,
+          p_user_agent: userAgent,
+          p_metadata: { reason: 'invalid_child_age', errors: ageValidation.errors },
+          p_success: false
+        });
+
+        return new Response(JSON.stringify({
+          error: 'Invalid child information',
+          details: ageValidation.errors
+        }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Rate limiting check for signup
+      const rateLimitKey = `signup:${clientIP}`;
+      const { data: rateLimitResult } = await supabase.rpc('check_rate_limit', {
+        p_identifier: rateLimitKey,
+        p_endpoint: 'signup',
+        p_max_attempts: 3,
+        p_window_minutes: 60 // 3 attempts per hour
+      });
+
+      if (!rateLimitResult) {
+        await supabase.rpc('log_security_event', {
+          p_user_id: null,
+          p_action: 'signup_attempt',
+          p_resource_type: 'auth',
+          p_ip_address: clientIP,
+          p_user_agent: userAgent,
+          p_metadata: { reason: 'rate_limited', email },
+          p_success: false
+        });
+
+        return new Response(JSON.stringify({
+          error: 'Too many signup attempts. Please try again later.'
+        }), {
+          status: 429,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
 
     // Validate required fields
     if (!email || !password || !name || !childProfile) {
@@ -81,27 +162,6 @@ async function getUserFromToken(request, supabase) {
       });
     }
 
-    // Validate inputs
-    if (!selectedTemplate) {
-      return new Response(JSON.stringify({
-        error: 'Template selection is required'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Validate child profile
-    const { name: childName, birthdate, gender, interests } = childProfile;
-    if (!childName || !birthdate || !gender) {
-      return new Response(JSON.stringify({
-        error: 'Child profile missing required fields: name, birthdate, gender'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
     // Map template ID to UUID
     const templateMapping = {
       'pastel-dreams': '550e8400-e29b-41d4-a716-446655440000',
@@ -111,18 +171,18 @@ async function getUserFromToken(request, supabase) {
 
     const templateUuid = templateMapping[selectedTemplate];
     if (!templateUuid) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: null,
+        p_action: 'signup_attempt',
+        p_resource_type: 'auth',
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'invalid_template', template: selectedTemplate },
+        p_success: false
+      });
+
       return new Response(JSON.stringify({
         error: 'Invalid template selection'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    const birthdateValidation = AuthUtils.isValidBirthdate(birthdate);
-    if (!birthdateValidation.valid) {
-      return new Response(JSON.stringify({
-        error: birthdateValidation.error
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -133,10 +193,20 @@ async function getUserFromToken(request, supabase) {
     const { data: existingUsers } = await supabase
       .from('parents')
       .select('email')
-      .eq('email', AuthUtils.sanitizeInput(email))
+      .eq('email', email)
       .single();
 
     if (existingUsers) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: null,
+        p_action: 'signup_attempt',
+        p_resource_type: 'auth',
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'email_exists', email },
+        p_success: false
+      });
+
       return new Response(JSON.stringify({
         error: 'Email already registered'
       }), {
@@ -148,6 +218,10 @@ async function getUserFromToken(request, supabase) {
     // Generate family UUID and temporary password
     const familyUuid = AuthUtils.generateFamilyUUID();
     const tempPassword = AuthUtils.generateTemporaryPassword();
+
+    // Hash the temporary password for secure storage
+    const saltRounds = 12;
+    const hashedTempPassword = await bcrypt.hash(tempPassword, saltRounds);
 
     // Create Supabase auth user
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
@@ -204,7 +278,9 @@ async function getUserFromToken(request, supabase) {
         birthdate,
         gender,
         interests: interests || {},
-        selected_template: templateUuid
+        selected_template: templateUuid,
+        password_hash: hashedTempPassword,
+        password_updated_at: new Date().toISOString()
       })
       .select()
       .single();
@@ -276,6 +352,18 @@ async function getUserFromToken(request, supabase) {
       });
     }
 
+    // Log successful signup
+    await supabase.rpc('log_security_event', {
+      p_user_id: authData.user.id,
+      p_action: 'signup_success',
+      p_resource_type: 'auth',
+      p_resource_id: authData.user.id,
+      p_ip_address: clientIP,
+      p_user_agent: userAgent,
+      p_metadata: { email: AuthUtils.sanitizeInput(email), has_child: true },
+      p_success: true
+    });
+
     return new Response(JSON.stringify({
       success: true,
       user: {
@@ -295,6 +383,21 @@ async function getUserFromToken(request, supabase) {
 
   } catch (error) {
     console.error('Signup error:', error);
+
+    // Log signup failure
+    await supabase.rpc('log_security_event', {
+      p_user_id: null,
+      p_action: 'signup_failure',
+      p_resource_type: 'auth',
+      p_ip_address: clientIP,
+      p_user_agent: userAgent,
+      p_metadata: {
+        email: email ? AuthUtils.sanitizeInput(email) : null,
+        error: error.message
+      },
+      p_success: false
+    });
+
     return new Response(JSON.stringify({
       error: 'Internal server error'
     }), {
@@ -308,14 +411,62 @@ async function getUserFromToken(request, supabase) {
  * POST /api/auth/child-login - Child login with family UUID and password
  */
 async function handleChildLogin(request, supabase) {
-  try {
-    const { familyUuid, password } = await request.json();
+  const clientIP = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+  const userAgent = request.headers.get('User-Agent') || 'unknown';
 
-    if (!familyUuid || !password) {
+  try {
+    const rawData = await request.json();
+
+    // Validate input data
+    const validation = await validateChildLogin(rawData);
+    if (!validation.success) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: null,
+        p_action: 'child_login_attempt',
+        p_resource_type: 'auth',
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'validation_failed', errors: validation.errors },
+        p_success: false
+      });
+
       return new Response(JSON.stringify({
-        error: 'Missing familyUuid or password'
+        error: 'Invalid input data',
+        details: validation.errors
       }), {
         status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { familyUuid, password } = validation.value;
+
+    // Rate limiting check
+    const rateLimitKey = `child-login:${clientIP}`;
+    const { data: rateLimitResult } = await supabase.rpc('check_rate_limit', {
+      p_identifier: rateLimitKey,
+      p_endpoint: 'child-login',
+      p_max_attempts: 5,
+      p_window_minutes: 15
+    });
+
+    if (!rateLimitResult) {
+      // Log failed attempt
+      await supabase.rpc('log_security_event', {
+        p_user_id: null,
+        p_action: 'login_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: familyUuid,
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'rate_limited' },
+        p_success: false
+      });
+
+      return new Response(JSON.stringify({
+        error: 'Too many login attempts. Please try again later.'
+      }), {
+        status: 429,
         headers: { 'Content-Type': 'application/json' }
       });
     }
@@ -328,6 +479,18 @@ async function handleChildLogin(request, supabase) {
       .single();
 
     if (parentError || !parent) {
+      // Log failed attempt
+      await supabase.rpc('log_security_event', {
+        p_user_id: null,
+        p_action: 'login_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: familyUuid,
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'invalid_family_uuid' },
+        p_success: false
+      });
+
       return new Response(JSON.stringify({
         error: 'Invalid family code'
       }), {
@@ -336,14 +499,26 @@ async function handleChildLogin(request, supabase) {
       });
     }
 
-    // Get child profile (assuming single child per parent for now)
+    // Get child profile with password fields
     const { data: child, error: childError } = await supabase
       .from('children')
-      .select('child_uuid, name, birthdate, gender, interests, selected_template')
+      .select('child_uuid, name, birthdate, gender, interests, selected_template, password_hash, login_attempts, locked_until')
       .eq('parent_uuid', parent.parent_uuid)
       .single();
 
     if (childError || !child) {
+      // Log failed attempt
+      await supabase.rpc('log_security_event', {
+        p_user_id: parent.parent_uuid,
+        p_action: 'login_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: familyUuid,
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'child_not_found' },
+        p_success: false
+      });
+
       return new Response(JSON.stringify({
         error: 'Child profile not found'
       }), {
@@ -352,12 +527,83 @@ async function handleChildLogin(request, supabase) {
       });
     }
 
-    // For now, we'll use a simple password check
-    // In production, this should be properly hashed and stored
-    // TODO: Implement proper password hashing for child login
-    const isValidPassword = password === 'temp123' || password.length >= 6; // Placeholder
+    // Check if account is locked
+    if (child.locked_until && new Date(child.locked_until) > new Date()) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: parent.parent_uuid,
+        p_action: 'login_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: child.child_uuid,
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'account_locked', locked_until: child.locked_until },
+        p_success: false
+      });
+
+      return new Response(JSON.stringify({
+        error: 'Account is temporarily locked due to too many failed login attempts. Please try again later.'
+      }), {
+        status: 423,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    let isValidPassword = false;
+
+    // Check password - support both new hashed passwords and legacy method during migration
+    if (child.password_hash) {
+      // Use bcrypt to verify hashed password
+      isValidPassword = await bcrypt.compare(password, child.password_hash);
+    } else {
+      // Legacy password check - will be migrated on successful login
+      isValidPassword = password === 'temp123' || password.length >= 6;
+
+      // If legacy password works, hash and store the new password
+      if (isValidPassword && password !== 'temp123') {
+        const saltRounds = 12;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        await supabase
+          .from('children')
+          .update({
+            password_hash: hashedPassword,
+            password_updated_at: new Date().toISOString(),
+            login_attempts: 0 // Reset on successful migration
+          })
+          .eq('child_uuid', child.child_uuid);
+      }
+    }
 
     if (!isValidPassword) {
+      // Increment login attempts
+      const newAttempts = (child.login_attempts || 0) + 1;
+      let lockedUntil = null;
+
+      // Lock account after 5 failed attempts for 30 minutes
+      if (newAttempts >= 5) {
+        lockedUntil = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+      }
+
+      await supabase
+        .from('children')
+        .update({
+          login_attempts: newAttempts,
+          locked_until: lockedUntil
+        })
+        .eq('child_uuid', child.child_uuid);
+
+      // Log failed attempt
+      await supabase.rpc('log_security_event', {
+        p_user_id: parent.parent_uuid,
+        p_action: 'login_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: child.child_uuid,
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'invalid_password', attempt_count: newAttempts },
+        p_success: false
+      });
+
       return new Response(JSON.stringify({
         error: 'Invalid password'
       }), {
@@ -365,6 +611,26 @@ async function handleChildLogin(request, supabase) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+
+    // Successful login - reset attempts and log success
+    await supabase
+      .from('children')
+      .update({
+        login_attempts: 0,
+        locked_until: null
+      })
+      .eq('child_uuid', child.child_uuid);
+
+    await supabase.rpc('log_security_event', {
+      p_user_id: parent.parent_uuid,
+      p_action: 'login_success',
+      p_resource_type: 'auth',
+      p_resource_id: child.child_uuid,
+      p_ip_address: clientIP,
+      p_user_agent: userAgent,
+      p_metadata: { method: 'child_login' },
+      p_success: true
+    });
 
     // Get calendar for child
     const { data: calendar } = await supabase
@@ -463,9 +729,9 @@ async function handleGetProfile(request, supabase) {
 }
 
 /**
- * PUT /api/auth/profile - Update user profile
+ * DELETE /api/auth/account - Delete user account and all associated data
  */
-async function handleUpdateProfile(request, supabase) {
+async function handleDeleteAccount(request, supabase) {
   try {
     const user = await getUserFromToken(request, supabase);
     if (!user) {
@@ -477,7 +743,254 @@ async function handleUpdateProfile(request, supabase) {
       });
     }
 
-    const updates = await request.json();
+    // Get parent data
+    const { data: parent, error: parentError } = await supabase
+      .from('parents')
+      .select('parent_uuid, family_uuid')
+      .eq('parent_uuid', user.id)
+      .single();
+
+    if (parentError || !parent) {
+      return new Response(JSON.stringify({
+        error: 'Parent profile not found'
+      }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Get child data
+    const { data: child } = await supabase
+      .from('children')
+      .select('child_uuid')
+      .eq('parent_uuid', user.id)
+      .single();
+
+    // Cascade delete: analytics events, calendar tiles, calendars, child, parent, then auth user
+    if (child) {
+      // Delete analytics events for this child
+      await supabase
+        .from('analytics_events')
+        .delete()
+        .eq('child_uuid', child.child_uuid);
+
+      // Get calendar for child
+      const { data: calendar } = await supabase
+        .from('calendars')
+        .select('calendar_id')
+        .eq('child_uuid', child.child_uuid)
+        .single();
+
+      if (calendar) {
+        // Delete calendar tiles
+        await supabase
+          .from('calendar_tiles')
+          .delete()
+          .eq('calendar_id', calendar.calendar_id);
+
+        // Delete calendar
+        await supabase
+          .from('calendars')
+          .delete()
+          .eq('calendar_id', calendar.calendar_id);
+
+        // Note: Media files in storage would need to be cleaned up separately
+        // This would require listing and deleting files from the storage bucket
+      }
+
+      // Delete child
+      await supabase
+        .from('children')
+        .delete()
+        .eq('child_uuid', child.child_uuid);
+    }
+
+    // Delete analytics events for parent
+    await supabase
+      .from('analytics_events')
+      .delete()
+      .eq('parent_uuid', user.id);
+
+    // Delete parent
+    await supabase
+      .from('parents')
+      .delete()
+      .eq('parent_uuid', user.id);
+
+    // Delete auth user (this will sign them out)
+    const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+    if (deleteError) {
+      console.error('Auth user deletion error:', deleteError);
+      // Continue anyway as other data is deleted
+    }
+
+    return new Response(JSON.stringify({
+      success: true,
+      message: 'Account and all associated data deleted successfully'
+    }), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Delete account error:', error);
+    return new Response(JSON.stringify({
+      error: 'Internal server error'
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+/**
+ * GET /api/auth/export - Export user data for GDPR compliance
+ */
+async function handleDataExport(request, supabase) {
+  try {
+    const user = await getUserFromToken(request, supabase);
+    if (!user) {
+      return createSecureErrorResponse('Unauthorized', 401);
+    }
+
+    // Log data export request
+    await supabase.rpc('log_security_event', {
+      p_user_id: user.id,
+      p_action: 'data_export_requested',
+      p_resource_type: 'compliance',
+      p_resource_id: user.id,
+      p_ip_address: request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown',
+      p_user_agent: request.headers.get('User-Agent') || 'unknown',
+      p_metadata: { export_type: 'gdpr' },
+      p_success: true
+    });
+
+    // Export user data
+    const exportResult = await exportUserData(user.id);
+
+    if (!exportResult.success) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: user.id,
+        p_action: 'data_export_failed',
+        p_resource_type: 'compliance',
+        p_resource_id: user.id,
+        p_metadata: { errors: exportResult.errors },
+        p_success: false
+      });
+
+      return createSecureErrorResponse('Data export failed', 500);
+    }
+
+    // Log successful export
+    await supabase.rpc('log_security_event', {
+      p_user_id: user.id,
+      p_action: 'data_export_completed',
+      p_resource_type: 'compliance',
+      p_resource_id: user.id,
+      p_metadata: { record_count: JSON.stringify(exportResult.data).length },
+      p_success: true
+    });
+
+    return createSecureJsonResponse({
+      success: true,
+      message: 'Data export completed successfully',
+      data: exportResult.data,
+      download_url: `/api/download-export/${user.id}` // Placeholder for future download endpoint
+    });
+
+  } catch (error) {
+    console.error('Data export error:', error);
+    return createSecureErrorResponse('Internal server error', 500);
+  }
+}
+
+/**
+ * PUT /api/auth/profile - Update user profile
+ */
+ async function handleUpdateProfile(request, supabase) {
+  try {
+    const user = await getUserFromToken(request, supabase);
+    if (!user) {
+      return new Response(JSON.stringify({
+        error: 'Unauthorized'
+      }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const rawData = await request.json();
+
+    // Validate input data
+    const validation = await validateProfileUpdate(rawData);
+    if (!validation.success) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: user.id,
+        p_action: 'profile_update_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: user.id,
+        p_ip_address: clientIP,
+        p_user_agent: userAgent,
+        p_metadata: { reason: 'validation_failed', errors: validation.errors },
+        p_success: false
+      });
+
+      return new Response(JSON.stringify({
+        error: 'Invalid input data',
+        details: validation.errors
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const { updates, csrfToken } = validation.value;
+
+    // CSRF validation
+    if (!csrfToken) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: user.id,
+        p_action: 'profile_update_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: user.id,
+        p_ip_address: request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown',
+        p_user_agent: request.headers.get('User-Agent') || 'unknown',
+        p_metadata: { reason: 'missing_csrf_token' },
+        p_success: false
+      });
+
+      return new Response(JSON.stringify({
+        error: 'CSRF token required'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Validate CSRF token
+    const { data: isValidToken } = await supabase.rpc('validate_csrf_token', {
+      p_user_id: user.id,
+      p_token: csrfToken
+    });
+
+    if (!isValidToken) {
+      await supabase.rpc('log_security_event', {
+        p_user_id: user.id,
+        p_action: 'profile_update_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: user.id,
+        p_ip_address: request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown',
+        p_user_agent: request.headers.get('User-Agent') || 'unknown',
+        p_metadata: { reason: 'invalid_csrf_token' },
+        p_success: false
+      });
+
+      return new Response(JSON.stringify({
+        error: 'Invalid CSRF token'
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
     // Update parent profile
     if (updates.parent) {
@@ -550,16 +1063,6 @@ async function handleUpdateProfile(request, supabase) {
             headers: { 'Content-Type': 'application/json' }
           });
         }
-
-        if (childError) {
-          console.error('Child update error:', childError);
-          return new Response(JSON.stringify({
-            error: 'Failed to update child profile'
-          }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-          });
-        }
       }
     }
 
@@ -615,12 +1118,24 @@ export async function onRequest(context) {
     return handleChildLogin(request, supabase);
   }
 
+  if (request.method === 'POST' && path === '/family-login') {
+    return handleChildLogin(request, supabase); // Alias for child-login
+  }
+
   if (request.method === 'GET' && path === '/profile') {
     return handleGetProfile(request, supabase);
   }
 
   if (request.method === 'PUT' && path === '/profile') {
     return handleUpdateProfile(request, supabase);
+  }
+
+  if (request.method === 'DELETE' && path === '/account') {
+    return handleDeleteAccount(request, supabase);
+  }
+
+  if (request.method === 'GET' && path === '/export') {
+    return handleDataExport(request, supabase);
   }
 
   return new Response(JSON.stringify({

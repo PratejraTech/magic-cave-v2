@@ -16,8 +16,6 @@ const LegacyAuthModal: React.FC<LegacyAuthModalProps> = ({ isOpen, onClose, onSu
   const [error, setError] = useState<string | null>(null);
 
   const ACCESS_PHRASE = 'grace janin';
-  const GUEST_PHRASE = 'guestmoir';
-  const MOIR_GUEST_PHRASE = 'moirguest';
   const HARPER_MUM_PHRASE = 'harpermum';
 
   const SESSION_AUTH_ENDPOINT = '/api/session-auth';
@@ -39,7 +37,6 @@ const LegacyAuthModal: React.FC<LegacyAuthModalProps> = ({ isOpen, onClose, onSu
     }
 
     const codeLower = codeAttempt.trim().toLowerCase();
-    const isGuestCode = codeLower === GUEST_PHRASE || codeLower === MOIR_GUEST_PHRASE;
     const isHarperMum = codeLower === HARPER_MUM_PHRASE;
 
     // Validate birthdate if needed

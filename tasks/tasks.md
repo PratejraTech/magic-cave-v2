@@ -16,7 +16,8 @@ Here is a detailed **tasks file draft** — `tasks-calendar-2.0.md` — breaking
 - [ ] 5.0 Daily Notifications (New Tile Alerts)  
 - [ ] 6.0 Export Calendar as PDF  
 - [ ] 7.0 Analytics Instrumentation (MVP)  
-- [ ] 8.0 QA, Privacy & Launch Preparation  
+ - [ ] 8.0 QA, Privacy & Launch Preparation
+ - [ ] 9.0 LLM Integration for Personalized Content
 
 ---
 
@@ -198,11 +199,30 @@ Here is a detailed **tasks file draft** — `tasks-calendar-2.0.md` — breaking
 - [ ] 8.0.6 Documentation: update README, privacy policy / data-handling docs, parental consent notice, user instructions (parent & child), feature flag description (if used), versioning policy, changelog template
 - [ ] 8.0.7 Beta release plan: define rollout strategy (e.g. small group of users), feedback collection mechanism, bug-reporting flow, rollback plan if necessary  
 
-**Success Criteria for 8.0:**  
-- All security/privacy checks passed; data deletion works completely  
-- UI/UX works smoothly across devices; no major accessibility or usability issues  
-- Performance acceptable under realistic load; no crashes or major lag  
-- Documentation complete and clear; release plan defined  
+**Success Criteria for 8.0:**
+- All security/privacy checks passed; data deletion works completely
+- UI/UX works smoothly across devices; no major accessibility or usability issues
+- Performance acceptable under realistic load; no crashes or major lag
+- Documentation complete and clear; release plan defined
+
+---
+
+### 9.0 LLM Integration for Personalized Content
+- [ ] 9.0.1 Create branch: `feature/llm-integration-setup`
+- [ ] 9.0.2 Set up LLM service integration (OpenAI/Anthropic) with secure API key management and rate limiting
+- [ ] 9.0.3 Implement personalized tile content generation: use child's interests, age, and family context to generate custom advent messages
+- [ ] 9.0.4 Build AI-powered chat enhancement: integrate LLM responses into existing ChatWithDaddy feature for more engaging conversations
+- [ ] 9.0.5 Add content moderation and safety filters for all AI-generated content
+- [ ] 9.0.6 Implement caching layer for LLM responses to reduce API costs and improve performance
+- [ ] 9.0.7 Create parent controls for AI features: enable/disable AI content generation, content guidelines, and usage monitoring
+- [ ] 9.0.8 Write comprehensive tests for LLM integration, including mock responses, error handling, and content safety validation
+
+**Success Criteria for 9.0:**
+- AI-generated content is personalized, age-appropriate, and family-friendly
+- Chat interactions are enhanced with contextual AI responses
+- All AI features include proper safety filters and parent controls
+- Performance is optimized with caching and rate limiting
+- Tests verify AI integration reliability and safety
 
 ---
 

@@ -11,6 +11,14 @@ interface Template {
     fonts: { heading: string; body: string };
     icons: string[];
     layout: 'rounded_tiles' | 'square_tiles' | 'hexagon_tiles';
+    gradients?: {
+      tileBackground?: string;
+      tileHover?: string;
+    };
+    animations?: {
+      tileHover?: string;
+      tileClick?: string;
+    };
   };
 }
 
@@ -61,7 +69,7 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
     // Apply template styling immediately for preview
     const template = AVAILABLE_TEMPLATES.find(t => t.id === templateId);
     if (template) {
-      applyTemplateStyling(template.metadata);
+      applyTemplateStyling(template.metadata, template.id);
     }
   };
 
@@ -116,14 +124,22 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
               {Array.from({ length: 25 }, (_, i) => (
                 <div
                   key={i}
-                  className="aspect-square rounded border-2 flex items-center justify-center text-xs font-bold"
+                  className={`aspect-square rounded border-2 flex items-center justify-center text-xs font-bold transition-all ${
+                    template.metadata.layout === 'square_tiles' ? 'rounded-none' :
+                    template.metadata.layout === 'hexagon_tiles' ? 'rounded-none' : 'rounded'
+                  }`}
                   style={{
-                    backgroundColor: i % 3 === 0 ? template.metadata.colors.primary + '20' :
-                                   i % 3 === 1 ? template.metadata.colors.secondary + '20' :
-                                   template.metadata.colors.accent + '20',
+                    background: template.metadata.gradients?.tileBackground || (
+                      i % 3 === 0 ? template.metadata.colors.primary + '20' :
+                      i % 3 === 1 ? template.metadata.colors.secondary + '20' :
+                      template.metadata.colors.accent + '20'
+                    ),
                     borderColor: i % 3 === 0 ? template.metadata.colors.primary :
-                               i % 3 === 1 ? template.metadata.colors.secondary :
-                               template.metadata.colors.accent
+                                i % 3 === 1 ? template.metadata.colors.secondary :
+                                template.metadata.colors.accent,
+                    clipPath: template.metadata.layout === 'hexagon_tiles'
+                      ? 'polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%)'
+                      : undefined
                   }}
                 >
                   {i + 1}

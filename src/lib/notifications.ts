@@ -1,3 +1,5 @@
+import { supabase } from './supabaseClient';
+
 // Notification system configuration and utilities
 export const NOTIFICATION_CONFIG = {
   // Default notification time (24-hour format)
@@ -99,25 +101,100 @@ export interface ScheduledNotification {
   status: 'pending' | 'sent' | 'cancelled';
 }
 
-// Placeholder implementations for different scheduling backends
+// Database-backed notification scheduler
 export class DatabaseScheduler implements NotificationScheduler {
   async schedule(calendarId: string, day: number, timezone: string): Promise<void> {
-    // Store notification schedule in database
-    console.log(`Scheduling notification for calendar ${calendarId}, day ${day} in timezone ${timezone}`);
-    // Implementation would insert into notification_schedules table
+    try {
+      // Calculate scheduled time (midnight in user's timezone for the specific day)
+      const scheduledTime = this.calculateScheduledTime(day, timezone);
+
+      // Insert or update notification schedule
+      const { error } = await supabase
+        .from('notification_schedules')
+        .upsert({
+          calendar_id: calendarId,
+          day: day,
+          scheduled_time: scheduledTime.toISOString(),
+          timezone: timezone,
+          notification_type: 'tile_available',
+          status: 'pending',
+          delivery_methods: ['push', 'email']
+        }, {
+          onConflict: 'calendar_id,day,notification_type'
+        });
+
+      if (error) {
+        console.error('Failed to schedule notification:', error);
+        throw error;
+      }
+
+      console.log(`Scheduled notification for calendar ${calendarId}, day ${day} at ${scheduledTime.toISOString()}`);
+    } catch (error) {
+      console.error('DatabaseScheduler.schedule error:', error);
+      throw error;
+    }
   }
 
   async cancel(calendarId: string, day: number): Promise<void> {
-    // Remove notification schedule from database
-    console.log(`Cancelling notification for calendar ${calendarId}, day ${day}`);
-    // Implementation would update/delete from notification_schedules table
+    try {
+      const { error } = await supabase
+        .from('notification_schedules')
+        .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+        .eq('calendar_id', calendarId)
+        .eq('day', day)
+        .eq('notification_type', 'tile_available');
+
+      if (error) {
+        console.error('Failed to cancel notification:', error);
+        throw error;
+      }
+
+      console.log(`Cancelled notification for calendar ${calendarId}, day ${day}`);
+    } catch (error) {
+      console.error('DatabaseScheduler.cancel error:', error);
+      throw error;
+    }
   }
 
   async getScheduledNotifications(): Promise<ScheduledNotification[]> {
-    // Query pending notifications from database
-    console.log('Retrieving scheduled notifications');
-    // Implementation would query notification_schedules table
-    return [];
+    try {
+      const { data, error } = await supabase
+        .from('notification_schedules')
+        .select('*')
+        .eq('status', 'pending')
+        .lte('scheduled_time', new Date().toISOString())
+        .order('scheduled_time', { ascending: true });
+
+      if (error) {
+        console.error('Failed to get scheduled notifications:', error);
+        throw error;
+      }
+
+      return (data || []).map(item => ({
+        id: item.schedule_id,
+        calendarId: item.calendar_id,
+        day: item.day,
+        scheduledTime: new Date(item.scheduled_time),
+        timezone: item.timezone,
+        status: item.status as 'pending' | 'sent' | 'cancelled'
+      }));
+    } catch (error) {
+      console.error('DatabaseScheduler.getScheduledNotifications error:', error);
+      throw error;
+    }
+  }
+
+  private calculateScheduledTime(day: number, timezone: string): Date {
+    // For day 1: today at midnight in timezone
+    // For day 2: tomorrow at midnight, etc.
+    const baseDate = new Date();
+    baseDate.setDate(baseDate.getDate() + (day - 1));
+    baseDate.setHours(0, 0, 0, 0);
+
+    // TODO: Use timezone parameter for proper scheduling
+    // For now, schedule in UTC - database handles timezone queries
+    console.log(`Scheduling for timezone: ${timezone}`);
+    return baseDate;
   }
 }
 
@@ -145,6 +222,66 @@ export class CronScheduler implements NotificationScheduler {
 export interface NotificationDeliveryService {
   sendPushNotification(userId: string, title: string, body: string, data?: any): Promise<boolean>;
   sendEmail(email: string, subject: string, htmlBody: string): Promise<boolean>;
+}
+
+export class FirebaseNotificationService implements NotificationDeliveryService {
+  async sendPushNotification(userId: string, title: string, body: string, data?: any): Promise<boolean> {
+    try {
+      // Get user's FCM token from database
+      const { data: tokenData, error } = await supabase
+        .from('user_push_tokens')
+        .select('fcm_token')
+        .eq('user_id', userId)
+        .single();
+
+      if (error || !tokenData?.fcm_token) {
+        console.warn(`No FCM token found for user ${userId}`);
+        return false;
+      }
+
+      // Send to FCM
+      const fcmResponse = await fetch(`https://fcm.googleapis.com/v1/projects/${NOTIFICATION_CONFIG.PUSH_SERVICE_PROJECT_ID}/messages:send`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${NOTIFICATION_CONFIG.PUSH_SERVICE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: {
+            token: tokenData.fcm_token,
+            notification: {
+              title,
+              body,
+            },
+            data: data || {},
+          },
+        }),
+      });
+
+      if (!fcmResponse.ok) {
+        console.error('FCM send failed:', await fcmResponse.text());
+        return false;
+      }
+
+      console.log(`Push notification sent to ${userId}`);
+      return true;
+    } catch (error) {
+      console.error('Firebase push notification error:', error);
+      return false;
+    }
+  }
+
+  async sendEmail(email: string, subject: string, htmlBody: string): Promise<boolean> {
+    try {
+      // Use a service like SendGrid, Mailgun, etc.
+      // For now, placeholder implementation
+      console.log(`[EMAIL SERVICE] Would send email to ${email}: ${subject} - Body: ${htmlBody.substring(0, 100)}...`);
+      return true;
+    } catch (error) {
+      console.error('Email send error:', error);
+      return false;
+    }
+  }
 }
 
 export class MockNotificationService implements NotificationDeliveryService {
@@ -200,10 +337,18 @@ export class NotificationService {
 
   constructor(
     scheduler: NotificationScheduler = new DatabaseScheduler(),
-    deliveryService: NotificationDeliveryService = new MockNotificationService()
+    deliveryService?: NotificationDeliveryService
   ) {
     this.scheduler = scheduler;
-    this.deliveryService = deliveryService;
+
+    // Use real services if configured, otherwise mock
+    if (deliveryService) {
+      this.deliveryService = deliveryService;
+    } else if (NOTIFICATION_CONFIG.PUSH_SERVICE_API_KEY && NOTIFICATION_CONFIG.PUSH_SERVICE_PROJECT_ID) {
+      this.deliveryService = new FirebaseNotificationService();
+    } else {
+      this.deliveryService = new MockNotificationService();
+    }
   }
 
   /**
@@ -252,8 +397,8 @@ export class NotificationService {
   }
 
   /**
-   * Send notification for gift unlock
-   */
+    * Send notification for gift unlock
+    */
   async sendGiftUnlockedNotification(
     parentEmail: string,
     parentId: string,
@@ -275,6 +420,66 @@ export class NotificationService {
     if (deliveryMethods.includes('email')) {
       const htmlBody = template.email.template(childName, day);
       await this.deliveryService.sendEmail(parentEmail, template.email.subject, htmlBody);
+    }
+  }
+
+  /**
+   * Process pending notifications (call this periodically)
+   */
+  async processPendingNotifications(): Promise<void> {
+    try {
+      const pendingNotifications = await this.scheduler.getScheduledNotifications();
+
+      for (const notification of pendingNotifications) {
+        try {
+          // Get calendar and parent info
+          const { data: calendar, error: calendarError } = await supabase
+            .from('calendars')
+            .select(`
+              parent_uuid,
+              parents!calendars_parent_uuid_fkey(email),
+              children!calendars_child_uuid_fkey(name)
+            `)
+            .eq('calendar_id', notification.calendarId)
+            .single();
+
+          if (calendarError || !calendar) {
+            console.error(`Calendar not found for notification ${notification.id}`);
+            continue;
+          }
+
+          const parentId = calendar.parent_uuid;
+          const parentEmail = (calendar.parents as any)?.email;
+          const childName = (calendar.children as any)?.name;
+
+          // Send the notification
+          await this.sendTileAvailableNotification(
+            parentEmail,
+            parentId,
+            childName,
+            notification.day,
+            ['push', 'email'] // TODO: Get from notification.delivery_methods
+          );
+
+          // Mark as sent
+          await supabase.rpc('update_notification_status', {
+            p_schedule_id: notification.id,
+            p_status: 'sent'
+          });
+
+        } catch (error) {
+          console.error(`Failed to send notification ${notification.id}:`, error);
+
+          // Mark as failed
+          await supabase.rpc('update_notification_status', {
+            p_schedule_id: notification.id,
+            p_status: 'failed',
+            p_error_message: (error as Error).message
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error processing pending notifications:', error);
     }
   }
 }

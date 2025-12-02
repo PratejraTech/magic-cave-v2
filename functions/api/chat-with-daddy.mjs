@@ -1,10 +1,13 @@
 import { SYSTEM_PROMPT } from './systemPrompt.js';
+import { getSystemPromptTemplate, renderSystemPrompt } from './systemPromptTemplates.js';
+import { moderateContent, logModerationResult } from './contentModeration.js';
+import { generateCacheKey, getCachedResponse, setCachedResponse, logLLMUsage } from './llmCache.js';
 
 // Assistant prompt for reading letter chunks progressively from DADS_LETTER KV Namespace
 // Uses low-token format: base prompt with [CHUNK_STYLE] placeholder for chunk SYSTEM_PROMPT
 // Works for both Harper and Guest sessions, progressively revealing and enriching chunks
 const ASSISTANT_PROMPT =
-  "You are Harper's Dad reading a letter to your 3-year-old daughter like a storyteller. You are a gentle, loving father. Your voice carries Dad energy—steady, warm, protective, and full of wonder. The letter is stored in chunks in DADS_LETTER KV Namespace, and you are progressively revealing and enriching each chunk to build a complete narrative. Each chunk should build upon previous ones, creating anticipation and connection. For both Harper and Guest sessions, reveal content gradually, making it engaging and age-appropriate. Express love and adoration while maintaining the original content. Style: [CHUNK_STYLE]\n\nCRITICAL RESPONSE FORMAT:\n- Always respond with EXACTLY 2 short, inspiring, and loving sentences\n- Then include ONE children-based quote from the provided quotes\n- Format: [Sentence 1]. [Sentence 2]. \"[Quote text]\"\n- Keep sentences very short, simple, and age-friendly for a 3-year-old\n- Each response must be unique—never repeat phrases or patterns\n- Speak directly from Daddy to Harper—clear, warm, and personal\n\nCRITICAL RULES FOR PROGRESSIVE REVELATION:\n- NEVER start with greetings like 'Hello, my sweet Harper' or 'Hello sweetheart' - jump directly into the letter content\n- Each chunk should feel like a natural continuation of the story, building upon previous chunks\n- Progressively reveal and enrich the content—don't repeat what was already said\n- Use the specific chunk content to craft a unique opening that connects to previous chunks\n- Never use the same greeting or opening phrase twice\n- Vary your rhythm, tone, and structure based on the chunk's emotional content and position in the narrative\n- If the chunk mentions specific memories or events, reference them directly and connect them to the ongoing story\n- Let the chunk's unique words and phrases inspire your opening sentence\n- Build anticipation—each chunk should feel like the next page of a storybook\n- Always end with a children-based quote that complements your 2 sentences\n- Channel Dad energy: gentle, caring, loving, protective, warm, steady—like a father reading his daughter a story";
+  "You are {childName}'s {parentTitle} reading a letter to your child like a storyteller. You are a gentle, loving {parentType}. Your voice carries {parentEnergy}—steady, warm, protective, and full of wonder. The letter is stored in chunks in DADS_LETTER KV Namespace, and you are progressively revealing and enriching each chunk to build a complete narrative. Each chunk should build upon previous ones, creating anticipation and connection. For both Harper and Guest sessions, reveal content gradually, making it engaging and age-appropriate. Express love and adoration while maintaining the original content. Style: [CHUNK_STYLE]\n\nCRITICAL RESPONSE FORMAT:\n- Always respond with EXACTLY 2 short, inspiring, and loving sentences\n- Then include ONE children-based quote from the provided quotes\n- Format: [Sentence 1]. [Sentence 2]. \"[Quote text]\"\n- Keep sentences very short, simple, and age-friendly for a 3-year-old\n- Each response must be unique—never repeat phrases or patterns\n- Speak directly from Daddy to Harper—clear, warm, and personal\n\nCRITICAL RULES FOR PROGRESSIVE REVELATION:\n- NEVER start with greetings like 'Hello, my sweet Harper' or 'Hello sweetheart' - jump directly into the letter content\n- Each chunk should feel like a natural continuation of the story, building upon previous chunks\n- Progressively reveal and enrich the content—don't repeat what was already said\n- Use the specific chunk content to craft a unique opening that connects to previous chunks\n- Never use the same greeting or opening phrase twice\n- Vary your rhythm, tone, and structure based on the chunk's emotional content and position in the narrative\n- If the chunk mentions specific memories or events, reference them directly and connect them to the ongoing story\n- Let the chunk's unique words and phrases inspire your opening sentence\n- Build anticipation—each chunk should feel like the next page of a storybook\n- Always end with a children-based quote that complements your 2 sentences\n- Channel Dad energy: gentle, caring, loving, protective, warm, steady—like a father reading his daughter a story";
 
 /**
  * Load conversation memory from KV storage
@@ -300,6 +303,9 @@ export async function onRequest(context) {
     max_tokens,
     useCustomSystemPrompt,
     systemPrompt: providedSystemPrompt,
+    parentType = 'dad',
+    childName = 'child',
+    childAge = 3,
   } = body;
 
   // Validate messages array
@@ -420,8 +426,23 @@ export async function onRequest(context) {
   
   if (isLetterMode) {
     // Letter reading mode: use ASSISTANT_PROMPT with chunk SYSTEM_PROMPT
-    const basePrompt = providedSystemPrompt || ASSISTANT_PROMPT;
-    
+    let basePrompt = providedSystemPrompt;
+    if (!basePrompt) {
+      // Render ASSISTANT_PROMPT with parent-specific variables
+      const template = getSystemPromptTemplate(parentType);
+      const parentTitle = template.name;
+      const parentEnergy = parentType === 'mum' ? 'Mum energy—nurturing, warm, comforting' :
+                          parentType === 'grandpa' ? 'Grandpa energy—wise, storytelling' :
+                          parentType === 'grandma' ? 'Grandma energy—caring, baking' :
+                          'Dad energy—steady, warm, protective';
+      basePrompt = ASSISTANT_PROMPT
+        .replace(/{childName}/g, childName)
+        .replace(/{parentTitle}/g, parentTitle)
+        .replace(/{parentType}/g, parentType)
+        .replace(/{parentEnergy}/g, parentEnergy)
+        .replace(/{childAge}/g, childAge.toString());
+    }
+
     // Extract chunk-specific SYSTEM_PROMPT from user message if present
     const userMessages = messages.filter((msg) => msg.role === 'user');
     let chunkStyle = '';
@@ -432,28 +453,28 @@ export async function onRequest(context) {
         chunkStyle = systemPromptMatch[1].trim();
       }
     }
-    
+
     // Replace [CHUNK_STYLE] placeholder with chunk SYSTEM_PROMPT (low-token format)
-    let letterSystemPrompt = basePrompt.replace('[CHUNK_STYLE]', chunkStyle || 'Speak softly and kindly, like a loving dad talking to his 3-year-old.');
-    
+    let letterSystemPrompt = basePrompt.replace('[CHUNK_STYLE]', chunkStyle || 'Speak softly and kindly, like a loving parent talking to their child.');
+
     // Add children-based quotes to letter mode as well
-    const childrenBasedQuotes = quotes.filter((quote) => 
-      quote.response_type === 'joy' || 
-      quote.response_type === 'Dad and Harper' || 
+    const childrenBasedQuotes = quotes.filter((quote) =>
+      quote.response_type === 'joy' ||
+      quote.response_type === 'Dad and Harper' ||
       quote.response_type === 'calendar_quote'
     );
-    
+
     if (childrenBasedQuotes.length > 0) {
       const quoteText = childrenBasedQuotes.map((quote) => `- (${quote.response_type}) ${quote.text}`).join('\n');
       letterSystemPrompt = `${letterSystemPrompt}\n\nChildren-based quotes to include (always end your response with one of these):\n${quoteText}`;
     }
-    
+
     // Add children quotes as loving inspiration
     if (childrenQuotes && childrenQuotes.length > 0) {
       const childrenQuoteText = childrenQuotes.map((cq) => `- "${cq.quote}"`).join('\n');
       letterSystemPrompt = `${letterSystemPrompt}\n\nLoving inspiration quotes (use these as inspiration for your tone and message, but always end with a children-based quote from above):\n${childrenQuoteText}`;
     }
-    
+
     systemPrompt = letterSystemPrompt;
   } else if (isBodyGeneration && requestSystemMessage) {
     // For body generation, use the system prompt from the request
@@ -461,17 +482,20 @@ export async function onRequest(context) {
     // The system prompt instructs to output JSON with body field
     systemPrompt = requestSystemMessage.content;
   } else {
-    // For regular chat, use the default chat system prompt
+    // For regular chat, use the configurable system prompt template
     // Filter quotes to children-based types: "joy", "Dad and Harper", "calendar_quote" (exclude "xmas" for Australia)
-    const childrenBasedQuotes = quotes.filter((quote) => 
-      quote.response_type === 'joy' || 
-      quote.response_type === 'Dad and Harper' || 
+    const childrenBasedQuotes = quotes.filter((quote) =>
+      quote.response_type === 'joy' ||
+      quote.response_type === 'Dad and Harper' ||
       quote.response_type === 'calendar_quote'
     );
-    
+
     let quoteText = childrenBasedQuotes.map((quote) => `- (${quote.response_type}) ${quote.text}`).join('\n');
-    const basePrompt = env.CHAT_SYSTEM_PROMPT || SYSTEM_PROMPT;
-    
+
+    // Get the appropriate system prompt template based on parent type
+    const template = getSystemPromptTemplate(parentType);
+    const basePrompt = renderSystemPrompt(template, childName, childAge);
+
     // Add children quotes as loving inspiration
     if (childrenQuotes && childrenQuotes.length > 0) {
       const childrenQuoteText = childrenQuotes.map((cq) => `- "${cq.quote}"`).join('\n');
@@ -481,7 +505,7 @@ export async function onRequest(context) {
         quoteText = `Loving inspiration quotes (use these as inspiration for your tone and message):\n${childrenQuoteText}`;
       }
     }
-    
+
     systemPrompt = quoteText
       ? `${basePrompt}\n\nChildren-based quotes to include (always end your response with one of these):\n${quoteText}`
       : basePrompt;
@@ -504,7 +528,7 @@ export async function onRequest(context) {
   const model = isBodyGeneration ? 'gpt-5' : 'gpt-5-mini';
   
   const payload = {
-    model, 
+    model,
     messages: [
       { role: 'system', content: systemPrompt },
       ...contextMessages,
@@ -516,18 +540,63 @@ export async function onRequest(context) {
     ...(max_tokens !== undefined && { max_tokens }),
   };
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify(payload),
-  });
+  // Check cache for existing response (only for non-streaming, non-letter mode)
+  let cachedResponse = null;
+  let cacheKey = null;
+  if (!shouldStream && !isLetterMode) {
+    cacheKey = generateCacheKey(payload.messages, model);
+    cachedResponse = await getCachedResponse(env, cacheKey);
+  }
+
+  let response;
+  let tokensUsed = null;
+  let responseTime = null;
+  const startTime = Date.now();
+
+  if (cachedResponse) {
+    // Use cached response
+    console.log('Using cached LLM response');
+    response = {
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: cachedResponse.response } }],
+        usage: { total_tokens: cachedResponse.tokensUsed || 0 }
+      })
+    };
+    tokensUsed = cachedResponse.tokensUsed;
+    responseTime = 0; // Cached response is instant
+  } else {
+    // Make API call
+    response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    responseTime = Date.now() - startTime;
+  }
 
   if (!response.ok) {
     const text = await response.text();
-    return new Response(text, { 
+
+    // Log failed LLM usage
+    if (!cachedResponse) {
+      await logLLMUsage(env, {
+        parent_uuid: null, // We don't have parent UUID in this context
+        child_uuid: null,
+        model,
+        operation_type: isLetterMode ? 'chat' : (isBodyGeneration ? 'content_generation' : 'chat'),
+        tokens_prompt: 0,
+        tokens_completion: 0,
+        response_time_ms: responseTime,
+        success: false,
+        error_message: text,
+      });
+    }
+
+    return new Response(text, {
       status: response.status,
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -562,18 +631,55 @@ export async function onRequest(context) {
               if (line.startsWith('data: ')) {
                 const data = line.slice(6).trim();
                 if (data === '[DONE]') {
-                  // Stream complete - clean and send final message
-                  fullReply = cleanReply(fullReply);
-                  
-                  // Update memory with final reply
-                  if (env.HARPER_ADVENT) {
-                    const newMessages = [
-                      ...conversationMessages,
-                      { role: 'assistant', content: fullReply },
-                    ];
-                    const updatedMemory = updateMemory(memory, newMessages);
-                    await saveMemoryToKV(env.HARPER_ADVENT, sessionId, updatedMemory);
-                  }
+                   // Stream complete - clean and send final message
+                   fullReply = cleanReply(fullReply);
+
+                   // Apply content moderation
+                   const contentType = isLetterMode ? 'chat_message' : (isBodyGeneration ? 'tile_body' : 'chat_message');
+                   const moderationResult = moderateContent(fullReply, contentType);
+
+                   // Log moderation result
+                   if (moderationResult.approved === false) {
+                     console.warn('Content moderation flagged streaming response:', moderationResult.reason);
+                     await logModerationResult(env, {
+                       ...moderationResult,
+                       contentType,
+                     }, null); // We don't have parent UUID in this context
+                   }
+
+                   // Use moderated content if available, otherwise use original
+                   const finalReply = moderationResult.moderatedContent || fullReply;
+
+                   // Cache successful response (only for non-letter mode)
+                   if (!cachedResponse && !isLetterMode && tokensUsed) {
+                     if (cacheKey) {
+                       await setCachedResponse(env, cacheKey, finalReply, tokensUsed);
+                     }
+                   }
+
+                   // Log successful LLM usage
+                   if (!cachedResponse) {
+                     await logLLMUsage(env, {
+                       parent_uuid: null, // We don't have parent UUID in this context
+                       child_uuid: null,
+                       model,
+                       operation_type: isLetterMode ? 'chat' : (isBodyGeneration ? 'content_generation' : 'chat'),
+                       tokens_prompt: 0, // We don't have token breakdown for streaming
+                       tokens_completion: tokensUsed || 0,
+                       response_time_ms: responseTime,
+                       success: true,
+                     });
+                   }
+
+                   // Update memory with final reply
+                   if (env.HARPER_ADVENT) {
+                     const newMessages = [
+                       ...conversationMessages,
+                       { role: 'assistant', content: finalReply },
+                     ];
+                     const updatedMemory = updateMemory(memory, newMessages);
+                     await saveMemoryToKV(env.HARPER_ADVENT, sessionId, updatedMemory);
+                   }
                   
                   // Update chunk progress if in letter mode
                   let updatedProgress = null;
@@ -585,7 +691,7 @@ export async function onRequest(context) {
                     }
                   }
                   
-                  controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ done: true, reply: fullReply, chunkProgress: updatedProgress || (chunkProgress ? { lastChunk: chunkProgress.lastChunk, totalChunks: totalChunks } : null) })}\n\n`));
+                   controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ done: true, reply: finalReply, chunkProgress: updatedProgress || (chunkProgress ? { lastChunk: chunkProgress.lastChunk, totalChunks: totalChunks } : null) })}\n\n`));
                   controller.close();
                   return;
                 }
@@ -607,15 +713,15 @@ export async function onRequest(context) {
                   if (finishReason) {
                     fullReply = cleanReply(fullReply);
                     
-                    // Update memory with final reply
-                    if (env.HARPER_ADVENT) {
-                      const newMessages = [
-                        ...conversationMessages,
-                        { role: 'assistant', content: fullReply },
-                      ];
-                      const updatedMemory = updateMemory(memory, newMessages);
-                      await saveMemoryToKV(env.HARPER_ADVENT, sessionId, updatedMemory);
-                    }
+                     // Update memory with final reply
+                     if (env.HARPER_ADVENT) {
+                       const newMessages = [
+                         ...conversationMessages,
+                         { role: 'assistant', content: finalReply },
+                       ];
+                       const updatedMemory = updateMemory(memory, newMessages);
+                       await saveMemoryToKV(env.HARPER_ADVENT, sessionId, updatedMemory);
+                     }
                     
                     // Update chunk progress if in letter mode
                     if (isLetterMode && env.DADS_LETTER && finalLetterChunks.length > 0 && letterChunks.length > 0) {
@@ -708,17 +814,55 @@ export async function onRequest(context) {
   const data = await response.json();
   let reply = data.choices?.[0]?.message?.content ?? '';
   reply = cleanReply(reply);
-  
+
+  // Apply content moderation
+  const contentType = isLetterMode ? 'chat_message' : (isBodyGeneration ? 'tile_body' : 'chat_message');
+  const moderationResult = moderateContent(reply, contentType);
+
+  // Log moderation result
+  if (moderationResult.approved === false) {
+    console.warn('Content moderation flagged response:', moderationResult.reason);
+    await logModerationResult(env, {
+      ...moderationResult,
+      contentType,
+    }, null); // We don't have parent UUID in this context
+  }
+
+  // Use moderated content if available, otherwise use original
+  const finalReply = moderationResult.moderatedContent || reply;
+
+  // Cache successful response (only for non-letter mode)
+  if (!cachedResponse && !isLetterMode && data.usage) {
+    tokensUsed = data.usage.total_tokens;
+    if (cacheKey) {
+      await setCachedResponse(env, cacheKey, finalReply, tokensUsed);
+    }
+  }
+
+  // Log successful LLM usage
+  if (!cachedResponse && data.usage) {
+    await logLLMUsage(env, {
+      parent_uuid: null, // We don't have parent UUID in this context
+      child_uuid: null,
+      model,
+      operation_type: isLetterMode ? 'chat' : (isBodyGeneration ? 'content_generation' : 'chat'),
+      tokens_prompt: data.usage.prompt_tokens || 0,
+      tokens_completion: data.usage.completion_tokens || 0,
+      response_time_ms: responseTime,
+      success: true,
+    });
+  }
+
   // Update memory with new conversation
   if (env.HARPER_ADVENT) {
     const newMessages = [
       ...conversationMessages,
-      { role: 'assistant', content: reply },
+      { role: 'assistant', content: finalReply },
     ];
     const updatedMemory = updateMemory(memory, newMessages);
     await saveMemoryToKV(env.HARPER_ADVENT, sessionId, updatedMemory);
   }
-  
+
   // Update chunk progress if in letter mode (for non-streaming body generation, this won't apply)
   let updatedProgress = null;
   if (isLetterMode && env.DADS_LETTER && finalLetterChunks.length > 0 && letterChunks.length > 0) {
@@ -728,9 +872,9 @@ export async function onRequest(context) {
       updatedProgress = { lastChunk: readChunk, totalChunks: totalChunks };
     }
   }
-  
-  return new Response(JSON.stringify({ reply, chunkProgress: updatedProgress || (chunkProgress ? { lastChunk: chunkProgress.lastChunk, totalChunks: totalChunks } : null) }), {
-    headers: { 
+
+  return new Response(JSON.stringify({ reply: finalReply, chunkProgress: updatedProgress || (chunkProgress ? { lastChunk: chunkProgress.lastChunk, totalChunks: totalChunks } : null) }), {
+    headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     },

@@ -1,6 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { CalendarTile, Gift } from '../types/advent';
+import { CalendarTile, Gift, TemplateMetadata } from '../types/advent';
 import { useAuth } from './AuthContext';
+import { applyTemplateStyling } from './templateStyling';
+import { analytics } from './analytics';
+
+// Cache data structure
+interface CalendarCache {
+  tiles: CalendarTile[];
+  template?: TemplateMetadata | null;
+  templateId?: string | null;
+  timestamp: number;
+}
 
 export interface UseCalendarDataReturn {
   tiles: CalendarTile[];
@@ -10,18 +20,62 @@ export interface UseCalendarDataReturn {
   updateTile: (tileId: string, updates: Partial<CalendarTile>) => Promise<void>;
   uploadMedia: (tileId: string, file: File) => Promise<string>;
   unlockTile: (tileId: string, note?: string) => Promise<Gift>;
+  template: TemplateMetadata | null;
 }
 
 export const useCalendarData = (): UseCalendarDataReturn => {
-  const { sessionToken, isAuthenticated } = useAuth();
+  const { session, isAuthenticated } = useAuth();
   const [tiles, setTiles] = useState<CalendarTile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateMetadata | null>(null);
 
-  const API_BASE = import.meta.env.VITE_CHAT_API_URL || import.meta.env.CHAT_API_URL || (import.meta.env.PROD ? '' : 'https://toharper.dad');
+  // Cache key for offline support
+  const CACHE_KEY = 'calendar_tiles_cache';
+  const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+  const API_BASE = (import.meta as any).env?.VITE_CHAT_API_URL || (import.meta as any).env?.CHAT_API_URL || ((import.meta as any).env?.PROD ? '' : 'https://toharper.dad');
 
   const fetchTiles = useCallback(async () => {
-    if (!isAuthenticated || !sessionToken) {
+    if (!isAuthenticated || !session?.access_token) {
+      // Try to load from cache for offline support
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        try {
+          const parsed: CalendarCache = JSON.parse(cached);
+
+          // Check cache expiry
+          if (parsed.timestamp && (Date.now() - parsed.timestamp) > CACHE_EXPIRY) {
+            console.log('Cache expired, clearing');
+            localStorage.removeItem(CACHE_KEY);
+            return;
+          }
+
+          // Validate cached data structure
+          if (parsed && typeof parsed === 'object' && 'tiles' in parsed) {
+            const tiles = Array.isArray(parsed.tiles) ? parsed.tiles : [];
+            setTiles(tiles);
+
+            // Validate and apply cached template
+            if (parsed.template && typeof parsed.template === 'object') {
+              // Basic validation of template structure
+              if (parsed.template.colors && parsed.template.fonts && Array.isArray(parsed.template.icons)) {
+                setTemplate(parsed.template);
+                applyTemplateStyling(parsed.template, parsed.templateId || undefined);
+              } else {
+                console.warn('Cached template data is malformed, skipping template application');
+              }
+            }
+          } else {
+            console.warn('Cached data structure is invalid, clearing cache');
+            localStorage.removeItem(CACHE_KEY);
+          }
+        } catch (e) {
+          console.error('Error parsing cached tiles:', e);
+          // Clear corrupted cache
+          localStorage.removeItem(CACHE_KEY);
+        }
+      }
       setLoading(false);
       return;
     }
@@ -33,33 +87,100 @@ export const useCalendarData = (): UseCalendarDataReturn => {
       const response = await fetch(`${API_BASE}/api/calendar/tiles`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${sessionToken}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch tiles: ${response.statusText}`);
+        // Try to load from cache if network fails
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            setTiles(parsed.tiles || []);
+            setError('Using cached data - network unavailable');
+          } catch (e) {
+            throw new Error(`Failed to fetch tiles: ${response.statusText}`);
+          }
+        } else {
+          throw new Error(`Failed to fetch tiles: ${response.statusText}`);
+        }
+        return;
       }
 
       const data = await response.json();
       setTiles(data.tiles || []);
+
+      // Fetch and apply template if calendar info is available
+      if (data.calendar?.template_id) {
+        try {
+          const templateResponse = await fetch(`${API_BASE}/api/templates/${data.calendar.template_id}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (templateResponse.ok) {
+            const templateData = await templateResponse.json();
+            if (templateData.template?.metadata) {
+              setTemplate(templateData.template.metadata);
+              applyTemplateStyling(templateData.template.metadata, data.calendar.template_id);
+            }
+          }
+        } catch (templateErr) {
+          console.warn('Failed to fetch template:', templateErr);
+          // Continue without template - use defaults
+        }
+      }
+
+      // Cache the data for offline support
+      const cacheData: CalendarCache = {
+        tiles: data.tiles || [],
+        template: data.calendar?.template_id ? template : undefined,
+        templateId: data.calendar?.template_id || undefined,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
     } catch (err) {
       console.error('Error fetching tiles:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch tiles');
+
+      // Try to load from cache as fallback
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          setTiles(parsed.tiles || []);
+          setError('Using cached data - network error');
+        } catch (cacheErr) {
+          setError(err instanceof Error ? err.message : 'Failed to fetch tiles');
+        }
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to fetch tiles');
+      }
     } finally {
       setLoading(false);
     }
-  }, [sessionToken, isAuthenticated, API_BASE]);
+  }, [session?.access_token, isAuthenticated, API_BASE, CACHE_KEY]);
 
   const updateTile = useCallback(async (tileId: string, updates: Partial<CalendarTile>) => {
-    if (!sessionToken) throw new Error('Not authenticated');
+    if (!session?.access_token) throw new Error('Not authenticated');
+
+    // Optimistic update
+    const previousTiles = tiles;
+    setTiles(prevTiles =>
+      prevTiles.map(tile =>
+        tile.tile_id === tileId ? { ...tile, ...updates, updated_at: new Date().toISOString() } : tile
+      )
+    );
 
     try {
       const response = await fetch(`${API_BASE}/api/calendar/tiles/${tileId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${sessionToken}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updates),
@@ -67,23 +188,26 @@ export const useCalendarData = (): UseCalendarDataReturn => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        // Revert optimistic update on failure
+        setTiles(previousTiles);
         throw new Error(errorData.error || 'Failed to update tile');
       }
 
-      // Update local state
-      setTiles(prevTiles =>
-        prevTiles.map(tile =>
-          tile.tile_id === tileId ? { ...tile, ...updates, updated_at: new Date().toISOString() } : tile
-        )
+      // Update cache
+      const updatedTiles = tiles.map(tile =>
+        tile.tile_id === tileId ? { ...tile, ...updates, updated_at: new Date().toISOString() } : tile
       );
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ tiles: updatedTiles, timestamp: Date.now() }));
     } catch (err) {
       console.error('Error updating tile:', err);
+      // Revert optimistic update
+      setTiles(previousTiles);
       throw err;
     }
-  }, [sessionToken, API_BASE]);
+  }, [session?.access_token, API_BASE, tiles, CACHE_KEY]);
 
   const uploadMedia = useCallback(async (tileId: string, file: File): Promise<string> => {
-    if (!sessionToken) throw new Error('Not authenticated');
+    if (!session?.access_token) throw new Error('Not authenticated');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -93,7 +217,7 @@ export const useCalendarData = (): UseCalendarDataReturn => {
       const response = await fetch(`${API_BASE}/api/calendar/upload`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${sessionToken}`,
+          'Authorization': `Bearer ${session.access_token}`,
         },
         body: formData,
       });
@@ -104,15 +228,19 @@ export const useCalendarData = (): UseCalendarDataReturn => {
       }
 
       const data = await response.json();
+
+      // Log media upload event
+      analytics.logMediaUpload(file.type, file.size, tileId);
+
       return data.media_url;
     } catch (err) {
       console.error('Error uploading media:', err);
       throw err;
     }
-  }, [sessionToken, API_BASE]);
+  }, [session?.access_token, API_BASE]);
 
   const unlockTile = useCallback(async (tileId: string, note?: string): Promise<Gift> => {
-    if (!sessionToken) throw new Error('Not authenticated');
+    if (!session?.access_token) throw new Error('Not authenticated');
 
     // For now, simulate unlocking - in a real implementation, this would call an API endpoint
     // Since the API doesn't have an unlock endpoint yet, we'll update the tile locally
@@ -131,12 +259,18 @@ export const useCalendarData = (): UseCalendarDataReturn => {
         opened_at: new Date().toISOString(),
       });
 
+      // Log analytics events
+      analytics.logGiftUnlocked(tileId, tile.day, tile.gift.type);
+      if (note) {
+        analytics.logNoteSubmitted(tileId, tile.day, note.length);
+      }
+
       return tile.gift;
     } catch (err) {
       console.error('Error unlocking tile:', err);
       throw err;
     }
-  }, [sessionToken, tiles, updateTile]);
+  }, [session?.access_token, tiles, updateTile]);
 
   useEffect(() => {
     fetchTiles();
@@ -150,5 +284,6 @@ export const useCalendarData = (): UseCalendarDataReturn => {
     updateTile,
     uploadMedia,
     unlockTile,
+    template,
   };
 };

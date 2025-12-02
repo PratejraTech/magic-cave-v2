@@ -1,17 +1,20 @@
-name: Run Tests
+name: E2E Tests & Quality Gates
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -22,148 +25,69 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with JSON output
-        id: test
-        continue-on-error: true
-        run: |
-          mkdir -p .github/reports
-          npm run test:ci || true
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run TypeScript check
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm run test:ci
+
+      - name: Run E2E tests
+        run: npx playwright test --project=${{ matrix.browser }}
         env:
-          CI: true
+          BASE_URL: http://localhost:5173
 
-      - name: Generate failure report
-        if: always()
-        continue-on-error: true
-        run: |
-          node .github/scripts/generate-failure-report.mjs
-
-      - name: Check test results and determine criticality
-        id: check_results
-        if: always()
-        continue-on-error: true
-        run: |
-          CRITICAL_FAILURE=0
-          
-          # Check if test results file exists
-          if [ ! -f .github/reports/test-results.json ]; then
-            echo "⚠️  CRITICAL: Test results file not found - tests may not have run correctly"
-            echo "critical_failure=1" >> $GITHUB_OUTPUT
-            echo "failure_reason=no_test_results" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          # Parse test results
-          FAILED_COUNT=$(node -e "const fs=require('fs'); try { const data=JSON.parse(fs.readFileSync('.github/reports/test-results.json','utf8')); console.log(data.numFailedTests || data.failedTests || 0); } catch(e) { console.log(0); }")
-          TOTAL_COUNT=$(node -e "const fs=require('fs'); try { const data=JSON.parse(fs.readFileSync('.github/reports/test-results.json','utf8')); console.log(data.numTotalTests || data.totalTests || 0); } catch(e) { console.log(0); }")
-          PASSED_COUNT=$(node -e "const fs=require('fs'); try { const data=JSON.parse(fs.readFileSync('.github/reports/test-results.json','utf8')); console.log(data.numPassedTests || data.passedTests || 0); } catch(e) { console.log(0); }")
-          
-          echo "failed_count=$FAILED_COUNT" >> $GITHUB_OUTPUT
-          echo "total_count=$TOTAL_COUNT" >> $GITHUB_OUTPUT
-          echo "passed_count=$PASSED_COUNT" >> $GITHUB_OUTPUT
-          
-          # Determine if failure is critical
-          # Critical if:
-          # 1. More than 50% of tests failed
-          # 2. No tests passed at all (all tests failed)
-          # 3. Critical test files failed (chat service, core functionality)
-          if [ "$TOTAL_COUNT" -gt 0 ]; then
-            FAILURE_RATE=$(node -e "console.log((($FAILED_COUNT / $TOTAL_COUNT) * 100).toFixed(2))")
-            echo "failure_rate=$FAILURE_RATE" >> $GITHUB_OUTPUT
-            
-            # Check for critical test file failures
-            CRITICAL_FILES_FAILED=$(node -e "
-              const fs=require('fs');
-              try {
-                const data=JSON.parse(fs.readFileSync('.github/reports/test-results.json','utf8'));
-                const testFiles = data.testFiles || [];
-                const criticalPatterns = ['chatService', 'chatService.test', 'ChatWithDaddy'];
-                let criticalFailed = false;
-                for (const file of testFiles) {
-                  const fileName = file.file || file.name || '';
-                  if (criticalPatterns.some(pattern => fileName.includes(pattern))) {
-                    const failed = (file.tests || []).some(t => t.status === 'failed' || t.status === 'fail');
-                    if (failed) {
-                      criticalFailed = true;
-                      break;
-                    }
-                  }
-                }
-                console.log(criticalFailed ? '1' : '0');
-              } catch(e) {
-                console.log('0');
-              }
-            ")
-            
-            if [ "$CRITICAL_FILES_FAILED" = "1" ]; then
-              echo "⚠️  CRITICAL: Critical test files failed (chat service)"
-              echo "critical_failure=1" >> $GITHUB_OUTPUT
-              echo "failure_reason=critical_tests_failed" >> $GITHUB_OUTPUT
-            elif [ "$FAILED_COUNT" -eq "$TOTAL_COUNT" ] && [ "$TOTAL_COUNT" -gt 0 ]; then
-              echo "⚠️  CRITICAL: All tests failed"
-              echo "critical_failure=1" >> $GITHUB_OUTPUT
-              echo "failure_reason=all_tests_failed" >> $GITHUB_OUTPUT
-            elif [ "$(node -e "console.log(($FAILURE_RATE > 50) ? '1' : '0')")" = "1" ]; then
-              echo "⚠️  CRITICAL: More than 50% of tests failed ($FAILURE_RATE%)"
-              echo "critical_failure=1" >> $GITHUB_OUTPUT
-              echo "failure_reason=high_failure_rate" >> $GITHUB_OUTPUT
-            elif [ "$FAILED_COUNT" -gt 0 ]; then
-              echo "ℹ️  Non-critical test failures detected: $FAILED_COUNT failed, $PASSED_COUNT passed"
-              echo "critical_failure=0" >> $GITHUB_OUTPUT
-              echo "failure_reason=non_critical_failures" >> $GITHUB_OUTPUT
-            else
-              echo "✅ All tests passed!"
-              echo "critical_failure=0" >> $GITHUB_OUTPUT
-              echo "failure_reason=none" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "⚠️  WARNING: No test results found"
-            echo "critical_failure=0" >> $GITHUB_OUTPUT
-            echo "failure_reason=no_tests_run" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Upload test report
-        if: always()
+      - name: Upload test results
         uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: |
-            .github/reports/test-results.json
-            .github/reports/fail-*.json
-          retention-days: 30
-          if-no-files-found: ignore
-
-      - name: Display test summary
         if: always()
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 30
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: http://localhost:4173
+          configPath: .lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  quality-gate:
+    runs-on: ubuntu-latest
+    needs: [test, lighthouse]
+    if: always()
+
+    steps:
+      - name: Check test results
         run: |
-          echo "## Test Results Summary" >> $GITHUB_STEP_SUMMARY
-          if [ -f .github/reports/test-results.json ]; then
-            node -e "
-              const fs=require('fs');
-              try {
-                const data=JSON.parse(fs.readFileSync('.github/reports/test-results.json','utf8'));
-                const failed = data.numFailedTests || data.failedTests || 0;
-                const passed = data.numPassedTests || data.passedTests || 0;
-                const total = data.numTotalTests || data.totalTests || 0;
-                console.log(\`- **Total Tests:** \${total}\`);
-                console.log(\`- **Passed:** \${passed} ✅\`);
-                console.log(\`- **Failed:** \${failed} ❌\`);
-                console.log(\`- **Critical Failure:** \${{ steps.check_results.outputs.critical_failure === '1' ? 'YES ⚠️' : 'NO ✅' }}\`);
-              } catch(e) {
-                console.log('- **Error:** Could not parse test results');
-              }
-            " >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Status:** Test results file not found" >> $GITHUB_STEP_SUMMARY
+          if [ ${{ needs.test.result }} != 'success' ]; then
+            echo "❌ Tests failed"
+            exit 1
           fi
 
-      - name: Fail workflow only on critical failures
-        if: steps.check_results.outputs.critical_failure == '1'
-        run: |
-          echo "🚨 CRITICAL TEST FAILURES DETECTED - Deployment blocked"
-          echo "Failure reason: ${{ steps.check_results.outputs.failure_reason }}"
-          echo "Failed tests: ${{ steps.check_results.outputs.failed_count }}"
-          if [ -f .github/reports/test-results.json ]; then
-            echo "Test results:"
-            node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('.github/reports/test-results.json','utf8')); console.log(JSON.stringify(data, null, 2))" || true
+          if [ ${{ needs.lighthouse.result }} != 'success' ]; then
+            echo "❌ Lighthouse checks failed"
+            exit 1
           fi
-          exit 1
+
+          echo "✅ All quality gates passed"

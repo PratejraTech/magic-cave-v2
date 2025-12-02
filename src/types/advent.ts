@@ -80,6 +80,14 @@ export interface TemplateMetadata {
   };
   icons: string[];
   layout: 'rounded_tiles' | 'square_tiles' | 'hexagon_tiles';
+  gradients?: {
+    tileBackground?: string;
+    tileHover?: string;
+  };
+  animations?: {
+    tileHover?: string;
+    tileClick?: string;
+  };
 }
 
 export interface Calendar {
@@ -128,6 +136,95 @@ export interface CalendarTile {
   version: number;
   created_at: string;
   updated_at: string;
+}
+
+// Analytics event types
+export type AnalyticsEventType =
+  | 'login'
+  | 'signup'
+  | 'tile_opened'
+  | 'gift_unlocked'
+  | 'note_submitted'
+  | 'media_upload'
+  | 'template_change'
+  | 'pdf_export'
+  | 'notification_sent'
+  | 'notification_clicked';
+
+// Analytics event metadata interfaces
+export interface LoginEventMetadata {
+  user_type: 'parent' | 'child';
+  auth_provider?: 'google' | 'facebook' | 'email_magic_link';
+}
+
+export interface SignupEventMetadata {
+  user_type: 'parent';
+  auth_provider: 'google' | 'facebook' | 'email_magic_link';
+}
+
+export interface TileOpenedEventMetadata {
+  tile_id: string;
+  day: number;
+}
+
+export interface GiftUnlockedEventMetadata {
+  tile_id: string;
+  day: number;
+  gift_type: GiftType;
+}
+
+export interface NoteSubmittedEventMetadata {
+  tile_id: string;
+  day: number;
+  note_length: number;
+}
+
+export interface MediaUploadEventMetadata {
+  tile_id?: string;
+  file_type: string;
+  file_size: number;
+}
+
+export interface TemplateChangeEventMetadata {
+  old_template_id?: string;
+  new_template_id: string;
+}
+
+export interface PdfExportEventMetadata {
+  calendar_id: string;
+  tile_count: number;
+}
+
+export interface NotificationSentEventMetadata {
+  notification_type: string;
+  scheduled_for: string;
+}
+
+export interface NotificationClickedEventMetadata {
+  notification_type: string;
+}
+
+// Union type for all event metadata
+export type AnalyticsEventMetadata =
+  | LoginEventMetadata
+  | SignupEventMetadata
+  | TileOpenedEventMetadata
+  | GiftUnlockedEventMetadata
+  | NoteSubmittedEventMetadata
+  | MediaUploadEventMetadata
+  | TemplateChangeEventMetadata
+  | PdfExportEventMetadata
+  | NotificationSentEventMetadata
+  | NotificationClickedEventMetadata;
+
+export interface AnalyticsEvent {
+  event_id: string;
+  calendar_id?: string;
+  parent_uuid?: string;
+  child_uuid?: string;
+  event_type: AnalyticsEventType;
+  metadata: AnalyticsEventMetadata;
+  created_at: string;
 }
 
 // Default template IDs (matching database)

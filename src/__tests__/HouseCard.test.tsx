@@ -8,20 +8,45 @@ const mockDuckMusic = vi.fn();
 const mockPlay = vi.fn();
 const mockConfettiBurst = vi.fn();
 
-vi.mock('../features/advent/utils/SoundManager', () => ({
-  SoundManager: {
-    getInstance: () => ({
-      init: mockInit,
-      duckMusic: mockDuckMusic,
-      play: mockPlay,
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, onClick, ...props }: any) => <div onClick={onClick} {...props}>{children}</div>,
+  },
+  useAnimation: () => ({
+    start: vi.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+vi.mock('gsap', () => ({
+  gsap: {
+    timeline: () => ({
+      to: vi.fn().mockReturnThis(),
+      call: vi.fn().mockImplementation((callback: () => void) => {
+        callback?.();
+        return {
+          to: vi.fn().mockReturnThis(),
+          call: vi.fn().mockReturnThis(),
+        };
+      }),
     }),
   },
 }));
+
+
 
 vi.mock('../features/advent/utils/ConfettiSystem', () => ({
   ConfettiSystem: {
     burst: mockConfettiBurst,
   },
+}));
+
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, onClick, ...props }: any) => <div onClick={onClick} {...props}>{children}</div>,
+  },
+  useAnimation: () => ({
+    start: vi.fn().mockResolvedValue(undefined),
+  }),
 }));
 
 vi.mock('gsap', () => ({
@@ -65,7 +90,8 @@ describe('HouseCard', () => {
     const props = { ...defaultProps(), canOpen: false };
     render(<HouseCard {...props} />);
 
-    fireEvent.click(screen.getByTestId('day-1'));
+    const dayElements = screen.getAllByTestId('day-1');
+    fireEvent.click(dayElements[0]);
 
     expect(props.onOpen).not.toHaveBeenCalled();
   });
@@ -74,7 +100,8 @@ describe('HouseCard', () => {
     const props = defaultProps();
     render(<HouseCard {...props} />);
 
-    fireEvent.click(screen.getByTestId('day-1'));
+    const dayElements = screen.getAllByTestId('day-1');
+    fireEvent.click(dayElements[0]);
 
     await waitFor(() => {
       expect(props.onOpen).toHaveBeenCalledWith(1);

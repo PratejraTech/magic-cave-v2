@@ -8,7 +8,6 @@ import {
 
 describe('ChatService - LLM Connection', () => {
   const originalFetch = global.fetch;
-  const originalEnv = import.meta.env;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -77,6 +76,9 @@ describe('ChatService - LLM Connection', () => {
         ok: true,
         status: 200,
         statusText: 'OK',
+        headers: {
+          get: vi.fn().mockReturnValue('application/json'),
+        },
         json: async () => mockResponse,
         text: async () => JSON.stringify(mockResponse),
       });
@@ -127,6 +129,9 @@ describe('ChatService - LLM Connection', () => {
         ok: true,
         status: 200,
         statusText: 'OK',
+        headers: {
+          get: vi.fn().mockReturnValue('application/json'),
+        },
         json: async () => mockResponse,
         text: async () => JSON.stringify(mockResponse),
       });

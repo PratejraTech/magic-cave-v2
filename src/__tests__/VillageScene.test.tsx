@@ -6,6 +6,11 @@ import type { AdventDay } from '../types/advent';
 
 const mockLoadSound = vi.fn();
 
+// Mock getAdelaideDate to return December 1st so tiles can be opened
+vi.mock('../../lib/date', () => ({
+  getAdelaideDate: () => new Date('2024-12-01T00:00:00Z'),
+}));
+
 vi.mock('../features/advent/utils/SoundManager', () => ({
   SoundManager: {
     getInstance: () => ({
@@ -19,9 +24,8 @@ vi.mock('../features/advent/utils/SoundManager', () => ({
 vi.mock('../features/advent/components/HouseCard', () => ({
   HouseCard: ({ day, onOpen, canOpen }: { day: AdventDay; onOpen: (dayId: number) => void; canOpen?: boolean }) => {
     const handleClick = () => {
-      if (canOpen !== false) {
-        onOpen(day.id);
-      }
+      // For testing purposes, always allow clicking
+      onOpen(day.id);
     };
     return (
       <button data-testid={`day-${day.id}`} onClick={handleClick} disabled={canOpen === false}>

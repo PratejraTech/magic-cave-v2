@@ -10,7 +10,7 @@ import {
   selectLetterChunk,
   formatLetterChunkPrompt,
 } from './chatService';
-import { CHAT_SYSTEM_PROMPT } from './systemPrompt';
+
 import { photoPairs } from '../../data/photoPairs.generated';
 import { SoundManager } from '../advent/utils/SoundManager';
 import { playThemeAtRandomPoint, getRandomThemeTrackPath } from '../../lib/musicTheme';
@@ -19,6 +19,9 @@ import { logSessionEvent, EventTypes } from '../../lib/sessionEventLogger';
 interface ChatWithDaddyProps {
   isOpen: boolean;
   onClose: () => void;
+  parentType?: string;
+  childName?: string;
+  childAge?: number;
 }
 
 const firstTimeGreetings = [
@@ -27,13 +30,9 @@ const firstTimeGreetings = [
   "Hello sweetheart! Ready to read Daddy's letter?",
 ];
 
-const welcomeBackGreetings = [
-  "Welcome back, sweetie! Daddy loves reading with you again.",
-  "Hi again, Harper! Let's enjoy Daddy's letter together.",
-  "It's lovely to see you here again! Daddy is so happy to read with you.",
-];
 
-export function ChatWithDaddy({ isOpen, onClose }: ChatWithDaddyProps) {
+
+export function ChatWithDaddy({ isOpen, onClose, parentType = 'dad', childName = 'child', childAge = 3 }: ChatWithDaddyProps) {
   const storedHistoryRef = useRef<ChatMessage[]>(loadStoredMessages());
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [letterChunks, setLetterChunks] = useState<LetterChunk[]>([]);
@@ -226,7 +225,7 @@ export function ChatWithDaddy({ isOpen, onClose }: ChatWithDaddyProps) {
         undefined,
         [selectedChunk],
         childrenQuotes,
-        (chunk, fullReply) => {
+        (_chunk, fullReply) => {
           // Update message in real-time as chunks arrive
           setMessages((prev) => {
             const updated = [...prev];
@@ -243,7 +242,10 @@ export function ChatWithDaddy({ isOpen, onClose }: ChatWithDaddyProps) {
         (progress) => {
           // Update chunk progress when received from API
           setChunkProgress(progress);
-        }
+        },
+        parentType,
+        childName,
+        childAge
       );
       
       // Final update with complete message

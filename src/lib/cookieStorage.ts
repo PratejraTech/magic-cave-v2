@@ -6,7 +6,7 @@
 
 // Get app version from package.json (injected at build time via Vite)
 // Falls back to '1.0.0' if not available (should not happen in production)
-const APP_VERSION = (import.meta.env.VITE_APP_VERSION as string) || '1.0.0';
+const APP_VERSION = ((import.meta.env as any).VITE_APP_VERSION as string) || '1.0.0';
 
 const COOKIE_PREFIX = 'harper-advent-';
 const SESSION_COOKIE = `${COOKIE_PREFIX}session`;
@@ -21,8 +21,7 @@ const SESSION_TOKEN_COOKIE = `${COOKIE_PREFIX}session-token`;
 const SESSION_ID_COOKIE = `${COOKIE_PREFIX}session-id`;
 const SESSION_DURATION_DAYS = 30;
 
-// Harper's birthdate: September 8, 2022
-const HARPER_BIRTHDATE = new Date(2022, 8, 8); // Month is 0-indexed, so 8 = September
+
 
 /**
  * Versioned cookie data structure
@@ -358,7 +357,6 @@ export function getMaxOpenableTiles(getAdelaideDateFn: () => Date): number {
   const adelaideDate = getAdelaideDateFn();
   
   const currentMonth = adelaideDate.getMonth(); // 0-11, 11 = December
-  const currentYear = adelaideDate.getFullYear();
   const currentDay = adelaideDate.getDate(); // 1-31
   
   // If not December, return 0 (no tiles can be opened)

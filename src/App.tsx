@@ -5,6 +5,8 @@ import ParentDashboard from './components/ParentDashboard';
 import ChildCalendarView from './components/ChildCalendarView';
 import AuthModal from './components/AuthModal';
 import ChildLoginModal from './components/ChildLoginModal';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ThemeIntegrationService } from './lib/themeIntegration';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: string[] }> = ({
@@ -45,6 +47,12 @@ const AuthPage: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const [showChildLogin, setShowChildLogin] = React.useState(false);
   const location = useLocation();
+
+  // Theme integration
+  React.useEffect(() => {
+    const theme = ThemeIntegrationService.getSeasonalTheme();
+    ThemeIntegrationService.applyThemeToPage(theme);
+  }, []);
 
   // Check if this is an OAuth callback
   useEffect(() => {
@@ -104,22 +112,53 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-100 via-sky-100 to-amber-100">
-      <div className="text-center max-w-md w-full mx-4">
-        <div className="bg-white rounded-lg shadow-xl p-8 mb-4">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome to Your Advent Calendar!</h1>
-          <p className="text-gray-600 mb-6">
-            Sign in as a parent to manage your calendar, or log in as a child to unlock your daily surprises.
-          </p>
-          
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
+         style={{
+           background: 'var(--theme-background)',
+           fontFamily: 'var(--theme-font)'
+         }}>
+
+      {/* Animated background elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 left-10 w-20 h-20 rounded-full"
+             style={{ backgroundColor: 'var(--theme-primary)' }}></div>
+        <div className="absolute bottom-20 right-20 w-32 h-32 rounded-full"
+             style={{ backgroundColor: 'var(--theme-secondary)' }}></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full"
+             style={{ backgroundColor: 'var(--theme-accent)' }}></div>
+      </div>
+
+      <div className="text-center max-w-md w-full mx-4 relative z-10">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8 mb-4 border"
+             style={{ borderColor: 'var(--theme-primary)' }}>
+
+          {/* Themed header */}
+          <div className="mb-6">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                 style={{ backgroundColor: 'var(--theme-primary)' }}>
+              <span className="text-2xl">🎄</span>
+            </div>
+            <h1 className="text-3xl font-bold mb-2"
+                style={{ color: 'var(--theme-primary)' }}>
+              Welcome to Your Advent Calendar!
+            </h1>
+            <p className="text-gray-600">
+              Sign in as a parent to manage your calendar, or log in as a child to unlock your daily surprises.
+            </p>
+          </div>
+
           <div className="space-y-4">
             <button
               onClick={() => setShowAuthModal(true)}
-              className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors font-semibold text-lg"
+              className="w-full py-3 px-6 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+              style={{
+                backgroundColor: 'var(--theme-primary)',
+                color: 'white'
+              }}
             >
               Parent Sign In / Sign Up
             </button>
-            
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
@@ -128,14 +167,27 @@ const AuthPage: React.FC = () => {
                 <span className="px-2 bg-white text-gray-500">or</span>
               </div>
             </div>
-            
+
             <button
               onClick={() => setShowChildLogin(true)}
-              className="w-full bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-colors font-semibold text-lg"
+              className="w-full py-3 px-6 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg border-2"
+              style={{
+                borderColor: 'var(--theme-secondary)',
+                color: 'var(--theme-secondary)',
+                backgroundColor: 'white'
+              }}
             >
               Child Login 🎄
             </button>
           </div>
+        </div>
+
+        {/* Seasonal message */}
+        <div className="text-center text-sm text-gray-500 mt-4">
+          {new Date().getMonth() === 11 && new Date().getDate() <= 25
+            ? "🎄 May your Advent season be filled with joy and wonder! 🎄"
+            : "❄️ Creating magical moments, one day at a time ❄️"
+          }
         </div>
       </div>
 
@@ -204,22 +256,30 @@ const AppRouter: React.FC = () => {
       <Routes>
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />
-        <Route
-          path="/parent/dashboard"
-          element={
-            <ProtectedRoute allowedUserTypes={['parent']}>
-              <ParentDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/child/calendar"
-          element={
-            <ProtectedRoute allowedUserTypes={['child']}>
-              <ChildCalendarView />
-            </ProtectedRoute>
-          }
-        />
+         <Route
+           path="/parent/dashboard"
+           element={
+             <ProtectedRoute allowedUserTypes={['parent']}>
+               <ParentDashboard />
+             </ProtectedRoute>
+           }
+         />
+         <Route
+           path="/test/parent/dashboard"
+           element={<ParentDashboard testMode={true} />}
+         />
+         <Route
+           path="/child/calendar"
+           element={
+             <ProtectedRoute allowedUserTypes={['child']}>
+               <ChildCalendarView />
+             </ProtectedRoute>
+           }
+         />
+         <Route
+           path="/test/child/calendar"
+           element={<ChildCalendarView testMode={true} />}
+         />
         <Route path="/" element={<Navigate to="/auth" replace />} />
         <Route path="*" element={<Navigate to="/auth" replace />} />
       </Routes>
@@ -230,9 +290,11 @@ const AppRouter: React.FC = () => {
 // Main App Component
 function App() {
   return (
-    <AuthProvider>
-      <AppRouter />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

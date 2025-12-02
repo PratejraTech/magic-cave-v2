@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import App from '../App';
-import { createMockSoundManager, clearMockSoundManager, DEFAULT_VIDEO_OPTIONS, DEFAULT_SURPRISE_OPTIONS } from './testUtils';
+import { createMockSoundManager, clearMockSoundManager, DEFAULT_VIDEO_OPTIONS } from './testUtils';
 
 const mockSoundManager = createMockSoundManager();
 

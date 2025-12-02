@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Parent, Child } from '../types/advent';
 import { authService } from './auth';
 import type { User, Session } from '@supabase/supabase-js';
+import { getMessaging, getToken } from 'firebase/messaging';
+import { supabase } from './supabaseClient';
+import { SessionManager } from './sessionManager';
+import { CSRFProtection } from './csrf';
 
 export type UserType = 'parent' | 'child' | 'guest' | null;
 
@@ -41,6 +45,64 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  /**
+   * Register push notification token for the current user
+   */
+  const registerPushToken = async (userId: string) => {
+    try {
+      // Check if Firebase messaging is available
+      if (!('serviceWorker' in navigator) || !(window as any).firebaseMessaging) {
+        console.log('Firebase messaging not available');
+        return;
+      }
+
+      const messaging = getMessaging();
+
+      // Request notification permission
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        console.log('Notification permission denied');
+        return;
+      }
+
+      // Register service worker
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Service worker registered:', registration);
+
+      // Get FCM token
+      const token = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+        serviceWorkerRegistration: registration,
+      });
+
+      if (token) {
+        console.log('FCM token obtained:', token);
+
+        // Store token in database
+        const { error } = await supabase
+          .from('user_push_tokens')
+          .upsert({
+            user_id: userId,
+            fcm_token: token,
+            platform: 'web',
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'user_id,platform'
+          });
+
+        if (error) {
+          console.error('Failed to store FCM token:', error);
+        } else {
+          console.log('FCM token stored successfully');
+        }
+      } else {
+        console.log('No FCM token received');
+      }
+    } catch (error) {
+      console.error('Error registering push token:', error);
+    }
+  };
 
   /**
    * Fetch parent and child profiles from API
@@ -92,6 +154,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (parentData) {
             setParent(parentData);
             setUserType('parent');
+            // Register push token for parent notifications
+            if (currentUser?.id) {
+              registerPushToken(currentUser.id);
+            }
           } else if (childData) {
             setChild(childData);
             setUserType('child');
@@ -126,14 +192,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth state changes
     const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        setSession(session);
+        // Validate session before accepting it
         const currentUser = await authService.getCurrentUser().catch(() => null);
         if (currentUser) {
+          const isValidSession = await SessionManager.validateSession(session);
+          if (!isValidSession) {
+            // Invalid session, sign out
+            await authService.signOut();
+            return;
+          }
+
+          setSession(session);
           setUser(currentUser);
           const { parent: parentData, child: childData } = await fetchProfile(session.access_token);
           if (parentData) {
             setParent(parentData);
             setUserType('parent');
+            // Register push token for parent notifications
+            if (currentUser?.id) {
+              registerPushToken(currentUser.id);
+            }
           } else if (childData) {
             setChild(childData);
             setUserType('child');
@@ -147,7 +225,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUserType(null);
         localStorage.removeItem('child_session');
       } else if (event === 'TOKEN_REFRESHED' && session) {
-        setSession(session);
+        // Validate refreshed session
+        const currentUser = await authService.getCurrentUser().catch(() => null);
+        if (currentUser) {
+          const isValidSession = await SessionManager.validateSession(session);
+          if (isValidSession) {
+            setSession(session);
+          } else {
+            // Invalid refreshed session, sign out
+            await authService.signOut();
+          }
+        }
       }
     });
 
@@ -167,6 +255,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const currentUser = await authService.getCurrentUser().catch(() => null);
     if (currentUser) {
       setUser(currentUser);
+
+      // Create session record for enhanced session management
+      if (newUserType === 'parent') {
+        await SessionManager.createSession(
+          currentUser.id,
+          newSession,
+          undefined, // IP address (will be set by server)
+          navigator.userAgent
+        );
+
+        // Generate CSRF token for form protection
+        await CSRFProtection.generateToken(currentUser.id);
+      }
     }
     if (newParent) setParent(newParent);
     if (newChild) {
@@ -178,15 +279,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
+      if (session && user) {
+        // Terminate all sessions for this user
+        await SessionManager.terminateAllSessions(user.id);
+      }
+
       if (session) {
         await authService.signOut();
       }
+
       setUserType(null);
       setParent(null);
       setChild(null);
       setUser(null);
       setSession(null);
       localStorage.removeItem('child_session');
+      CSRFProtection.clearToken();
     } catch (error) {
       console.error('Error signing out:', error);
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authService, AuthUtils } from '../lib/auth';
 import TemplateSelector from './TemplateSelector';
+import { analytics } from '../lib/analytics';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -62,6 +63,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
     try {
       setLoading(true);
       setError(null);
+
+      // Log login event
+      analytics.logLogin('parent', provider);
+
       await authService.signInWithOAuth(provider);
       // OAuth will redirect, so we don't need to handle success here
     } catch (err) {
@@ -82,6 +87,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
       setLoading(true);
       setError(null);
       const { user } = await authService.signInWithEmail(loginEmail, loginPassword);
+
+      // Log login event
+      analytics.logLogin('parent', 'email_magic_link');
+
       onSuccess(user);
       onClose();
     } catch (err) {
@@ -145,6 +154,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
       // Success - the API should have created the user in Supabase Auth
       // Now sign them in
       const { user } = await authService.signInWithEmail(registerEmail, registerPassword);
+
+      // Log signup event
+      analytics.logSignup('email_magic_link');
+
       onSuccess(user, data.child);
       onClose();
 

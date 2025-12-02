@@ -46,7 +46,7 @@ export interface ChunkProgress {
 const CHAT_STORAGE_KEY = 'chat-with-daddy';
 const SESSION_STORAGE_KEY = 'chat-with-daddy-session-id';
 
-const env = import.meta.env as Record<string, string | boolean | undefined>;
+const env = import.meta.env as unknown as Record<string, string | boolean | undefined>;
 // In production, use relative URL (empty string). In dev, use localhost if VITE_CHAT_API_URL not set
 const API_BASE =
   env.VITE_CHAT_API_URL?.toString() ||
@@ -189,21 +189,31 @@ export const requestDaddyResponse = async (
   letterChunks?: LetterChunk[],
   childrenQuotes?: ChildrenQuote[],
   onChunk?: (chunk: string, fullReply: string) => void,
-  onProgress?: (progress: { lastChunk: number; totalChunks: number }) => void
+  onProgress?: (progress: { lastChunk: number; totalChunks: number }) => void,
+  parentType?: string,
+  childName?: string,
+  childAge?: number
 ): Promise<string> => {
   const endpoint = CHAT_ENDPOINT;
   const payload: {
     messages: ChatMessage[];
     quotes?: DaddyQuote[];
     letterChunks?: LetterChunk[];
+    childrenQuotes?: ChildrenQuote[];
     sessionId: string;
     useCustomSystemPrompt?: boolean;
     systemPrompt?: string;
     stream?: boolean;
+    parentType?: string;
+    childName?: string;
+    childAge?: number;
   } = {
     messages,
     sessionId: sessionOverride ?? getSessionId(),
     stream: onChunk !== undefined, // Enable streaming if callback provided
+    parentType: parentType || 'dad',
+    childName: childName || 'child',
+    childAge: childAge || 3,
   };
 
   // Include letterChunks if provided (letter reading mode)
@@ -478,7 +488,7 @@ export const formatLetterChunkPrompt = (chunk: LetterChunk): string => {
  */
 export const selectLetterChunk = (
   letterChunks: LetterChunk[],
-  userInput: string,
+  _userInput: string,
   previousChunks: number[] = [],
   expectedNextChunk?: number
 ): LetterChunk | null => {

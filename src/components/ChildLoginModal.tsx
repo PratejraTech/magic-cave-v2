@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { analytics } from '../lib/analytics';
 
 interface ChildLoginModalProps {
   isOpen: boolean;
@@ -40,6 +41,9 @@ const ChildLoginModal: React.FC<ChildLoginModalProps> = ({ isOpen, onClose, onSu
       if (!response.ok) {
         throw new Error(data.error || 'Login failed');
       }
+
+      // Log child login event
+      analytics.logLogin('child');
 
       onSuccess(data.child, data.calendar);
       onClose();

@@ -123,19 +123,43 @@ INSERT INTO templates (template_id, name, description, metadata) VALUES
     "colors": {"primary": "#FFB3BA", "secondary": "#BAFFC9", "accent": "#BAE1FF"},
     "fonts": {"heading": "Comic Sans MS", "body": "Arial"},
     "icons": ["butterfly", "star", "heart"],
-    "layout": "rounded_tiles"
+    "layout": "rounded_tiles",
+    "gradients": {
+      "tileBackground": "linear-gradient(135deg, #FFB3BA 0%, #BAFFC9 100%)",
+      "tileHover": "linear-gradient(135deg, #BAFFC9 0%, #BAE1FF 100%)"
+    },
+    "animations": {
+      "tileHover": "transform scale-105 transition-all duration-300",
+      "tileClick": "animate-pulse"
+    }
   }'),
   ('550e8400-e29b-41d4-a716-446655440001', 'Adventure Boy', 'Bold colors with adventure-themed graphics', '{
     "colors": {"primary": "#FF6B35", "secondary": "#F7931E", "accent": "#FFD23F"},
     "fonts": {"heading": "Impact", "body": "Verdana"},
     "icons": ["mountain", "compass", "telescope"],
-    "layout": "square_tiles"
+    "layout": "square_tiles",
+    "gradients": {
+      "tileBackground": "linear-gradient(135deg, #FF6B35 0%, #F7931E 100%)",
+      "tileHover": "linear-gradient(135deg, #F7931E 0%, #FFD23F 100%)"
+    },
+    "animations": {
+      "tileHover": "transform scale-110 shadow-lg transition-all duration-200",
+      "tileClick": "animate-bounce"
+    }
   }'),
   ('550e8400-e29b-41d4-a716-446655440002', 'Rainbow Fantasy', 'Bright rainbow colors with magical elements', '{
     "colors": {"primary": "#FF0080", "secondary": "#8000FF", "accent": "#00FF80"},
     "fonts": {"heading": "Fantasy", "body": "Georgia"},
     "icons": ["unicorn", "rainbow", "castle"],
-    "layout": "hexagon_tiles"
+    "layout": "hexagon_tiles",
+    "gradients": {
+      "tileBackground": "linear-gradient(135deg, #FF0080 0%, #8000FF 50%, #00FF80 100%)",
+      "tileHover": "linear-gradient(135deg, #8000FF 0%, #00FF80 50%, #FF0080 100%)"
+    },
+    "animations": {
+      "tileHover": "transform scale-105 rotate-1 transition-all duration-500",
+      "tileClick": "animate-spin"
+    }
   }')
 ON CONFLICT (template_id) DO NOTHING;
 
