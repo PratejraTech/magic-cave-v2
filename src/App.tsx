@@ -7,7 +7,7 @@ import AuthModal from './components/AuthModal';
 import ChildLoginModal from './components/ChildLoginModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeIntegrationService } from './lib/themeIntegration';
-import { Parent, Child, Calendar } from './types/advent';
+import { Parent, Child, Calendar } from './types/calendar';
 import type { Session } from '@supabase/supabase-js';
 
 // Protected Route Component

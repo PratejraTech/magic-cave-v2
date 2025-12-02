@@ -1,7 +1,7 @@
-export type ConfettiType = 'snow' | 'stars' | 'candy' | 'reindeer';
-export type UnlockEffect = 'fireworks' | 'snowstorm' | 'aurora' | 'gingerbread';
+export type ConfettiType = 'snow' | 'stars' | 'hearts' | 'celebration';
+export type UnlockEffect = 'fireworks' | 'confetti' | 'sparkles' | 'balloons';
 
-export interface AdventDay {
+export interface CalendarDay {
   id: number;
   title: string;
   subtitle?: string | null;
@@ -18,13 +18,13 @@ export interface AdventDay {
   photoMarkdownTitle?: string | null;
 }
 
-export interface AdventMemory {
+export interface CalendarEntry {
   id: number;
   title: string;
   message: string;
   confettiType?: ConfettiType;
   unlockEffect?: UnlockEffect;
-  palette: 'sunrise' | 'twilight' | 'forest' | 'starlight';
+  palette: 'sunrise' | 'twilight' | 'forest' | 'ocean';
   subtitle?: string | null;
   musicUrl?: string;
   voiceUrl?: string;
@@ -230,6 +230,6 @@ export interface AnalyticsEvent {
 // Default template IDs (matching database)
 export const DEFAULT_TEMPLATES = {
   PASTEL_DREAMS: '550e8400-e29b-41d4-a716-446655440000',
-  ADVENTURE_BOY: '550e8400-e29b-41d4-a716-446655440001',
-  RAINBOW_FANTASY: '550e8400-e29b-41d4-a716-446655440002',
+  ADVENTURE_THEME: '550e8400-e29b-41d4-a716-446655440001',
+  CELEBRATION_THEME: '550e8400-e29b-41d4-a716-446655440002',
 } as const;

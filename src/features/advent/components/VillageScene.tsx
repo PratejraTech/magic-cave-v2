@@ -68,11 +68,11 @@ export function VillageScene({ days, onOpenDay, isGuest = false }: VillageSceneP
             </p>
             <div className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 rounded-[20px] sm:rounded-[30px] border border-white/20 bg-white/5 backdrop-blur-sm shadow-[0_20px_45px_rgba(0,255,255,0.15)]">
               <h1 className="text-2xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-fuchsia-400 to-amber-200 drop-shadow-[0_0_25px_rgba(255,0,200,0.45)] px-2">
-                Harper&apos;s Xmas Village
+                Family Calendar
               </h1>
             </div>
             <p className="text-cyan-200 font-medium mt-2 text-xs sm:text-sm md:text-base px-4">
-              Unlock a flutter of memories each day with neon butterflies, heartbeats, and sparkles.
+              Discover daily surprises and create lasting memories together.
             </p>
           </div>
           {collectedButterflies.length > 0 && (

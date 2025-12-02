@@ -1,23 +1,26 @@
 harper-advent-calendar
-======================
+# Family Calendar Creator v2.0
+===============================
 
-## Photo & Memory Data
+A customizable calendar creation tool for families to build interactive calendars with daily surprises, photos, and memories.
 
-- Place all high-res advent photos inside `public/photos` using the convention `day-01.jpg`, `day-02.jpg`, … `day-25.jpg`. At runtime these are served from `/photos/day-XX.jpg`.
-- Daily text memories live in `src/data/adventMemories.ts`. A helper export, `memoryTexts`, exposes the simplified structure `{ day: number, message: string }` so each calendar number maps directly to its text snippet.
-- If you need to override photos per device, you can still drop compressed images into `localStorage` (keys `advent-photo-<day>`). The `/photos` assets act as the shared baseline while local storage handles per-device customisations.
-- `photoManifest` (also exported from `src/data/adventMemories.ts`) maps each day to its canonical file path (e.g. `{ 1: '/photos/day-01.jpg' }`). When the calendar doors open we reference this manifest so the correct image displays immediately, even before any device-specific override is saved.
-- **Testing/Preview Mode**: To unlock all tiles for testing (regardless of date), set the environment variable `VITE_FORCE_UNLOCK=true`:
+## Calendar Content Setup
+
+- Place calendar photos inside `public/photos` using the convention `day-01.jpg`, `day-02.jpg`, etc. At runtime these are served from `/photos/day-XX.jpg`.
+- Daily content lives in `src/data/calendarContent.ts`. A helper export exposes the simplified structure `{ day: number, message: string }` so each calendar number maps directly to its content.
+- If you need to override photos per device, you can drop compressed images into `localStorage` (keys `calendar-photo-<day>`). The `/photos` assets act as the shared baseline while local storage handles per-device customizations.
+- `photoManifest` maps each day to its canonical file path (e.g. `{ 1: '/photos/day-01.jpg' }`). When calendar entries open we reference this manifest so the correct image displays immediately.
+- **Testing/Preview Mode**: To unlock all entries for testing (regardless of date), set the environment variable `VITE_FORCE_UNLOCK=true`:
   - **Local Development**: Create a `.env` or `.env.local` file with `VITE_FORCE_UNLOCK=true` and restart the dev server
-  - **Production/Cloudflare Pages**: Add `VITE_FORCE_UNLOCK` as an environment variable in Cloudflare Pages settings with value `true`, then redeploy
-  - This flag allows all tiles to be opened regardless of the current date, useful for QA and testing year-round
-  - **Note**: In development mode (`npm run dev`), tiles are automatically unlocked unless explicitly disabled
+  - **Production**: Add `VITE_FORCE_UNLOCK` as an environment variable with value `true`, then redeploy
+  - This flag allows all entries to be opened regardless of the current date, useful for QA and testing
+  - **Note**: In development mode (`npm run dev`), entries are automatically unlocked unless explicitly disabled
 
 ## Music Uploads
 
-- Drop your MP3 into `public/music/Ben Bohmer, Nils Hoffmann & Malou - Breathing.mp3`. The `MusicPlayer` component points to this exact file (served as `/music/Ben Bohmer, Nils Hoffmann & Malou - Breathing.mp3`) and will begin looping it (from a random timestamp) as soon as the app boots, so the floating control renders in the pause state.
-- The `SoundManager` ducks the music when doors are opened (e.g., door creaks, confetti bursts) and then restores volume automatically, so the track keeps flowing right after the interaction.
-- If you want to rotate multiple songs, update `THEME_TRACK_PATH` inside `src/components/MusicPlayer.tsx` to point at the appropriate asset.
+- Add background music files to `public/music/`. The `MusicPlayer` component can play theme music that enhances the calendar experience.
+- The `SoundManager` handles audio playback and effects when calendar entries are opened.
+- Configure music themes in `src/lib/musicTheme.ts` for different calendar styles.
 
 ## Chat With Daddy API
 
