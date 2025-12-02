@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { VillageScene } from '../features/advent/components/VillageScene';
-import { createAdventDay } from './testUtils';
-import type { AdventDay } from '../types/advent';
+import { createCalendarDay } from './testUtils';
+import type { CalendarDay } from '../types/calendar';
 
 const mockLoadSound = vi.fn();
 
@@ -23,7 +23,7 @@ vi.mock('../features/advent/utils/SoundManager', () => ({
 }));
 
 vi.mock('../../features/advent/components/HouseCard', () => ({
-  HouseCard: ({ day, onOpen, canOpen }: { day: AdventDay; onOpen: (dayId: number) => void; canOpen?: boolean }) => {
+  HouseCard: ({ day, onOpen, canOpen }: { day: CalendarDay; onOpen: (dayId: number) => void; canOpen?: boolean }) => {
     const handleClick = () => {
       // For testing purposes, always allow clicking
       onOpen(day.id);
@@ -57,8 +57,8 @@ vi.mock('../features/advent/components/ButterflyPath', () => ({
 }));
 
 const mockDays = [
-  createAdventDay({ id: 1 }),
-  createAdventDay({ id: 2, is_opened: true, opened_at: '2023-12-02T00:00:00Z' }),
+  createCalendarDay({ id: 1 }),
+  createCalendarDay({ id: 2, is_opened: true, opened_at: '2023-12-02T00:00:00Z' }),
 ];
 
 describe('VillageScene', () => {

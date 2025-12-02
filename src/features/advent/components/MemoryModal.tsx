@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import type { MouseEvent, TouchEvent } from 'react';
-import type { AdventDay } from '../../../types/advent';
+import type { CalendarDay } from '../../../types/advent';
 
 interface MemoryModalProps {
   isOpen: boolean;
-  day: AdventDay | null;
+  day: CalendarDay | null;
   onNext?: () => void;
   onClose?: () => void;
   isBeforeDecember?: boolean; // Kept for backward compatibility but no longer used

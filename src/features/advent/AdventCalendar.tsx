@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import { getAdelaideDate } from '../../lib/date';
 import { Butterfly } from '../../components/Butterfly';
 import Modal from '../../components/Modal';
-import { AdventDay } from '../../types/advent';
+import { CalendarDay } from '../../types/advent';
 
 interface AdventCalendarProps {
-  days: AdventDay[];
+  days: CalendarDay[];
   onOpenDay: (dayId: number) => void;
 }
 
 const AdventCalendar: React.FC<AdventCalendarProps> = ({ days, onOpenDay }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMemory, setSelectedMemory] = useState<AdventDay | null>(null);
+  const [selectedMemory, setSelectedMemory] = useState<CalendarDay | null>(null);
 
   const currentDate = getAdelaideDate();
   const currentDay = currentDate.getDate();
   const currentMonth = currentDate.getMonth();
 
-  const handleButtonClick = (day: AdventDay) => {
+  const handleButtonClick = (day: CalendarDay) => {
     onOpenDay(day.id);
     setIsAnimating(true);
     setSelectedMemory(day);

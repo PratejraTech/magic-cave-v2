@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import AdventCalendar from './AdventCalendar';
 import { getAdelaideDate } from '../../lib/date';
 import React from 'react';
-import { AdventDay } from '../../types/advent';
+import { CalendarDay } from '../../types/advent';
 import userEvent from '@testing-library/user-event';
 
 // Mock framer-motion to disable animations in tests
@@ -40,7 +40,7 @@ vi.mock('../../components/Butterfly', () => ({
   },
 }));
 
-const createMockDays = (): AdventDay[] =>
+const createMockDays = (): CalendarDay[] =>
   Array.from({ length: 25 }, (_, index) => ({
     id: index + 1,
     message: `Message ${index + 1}`,

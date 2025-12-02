@@ -1,9 +1,9 @@
-import type { AdventDay } from '../types/advent';
+import type { CalendarDay } from '../types/calendar';
 import { vi } from 'vitest';
 
-export type AdventDayFixture = AdventDay & { day?: number };
+export type CalendarDayFixture = CalendarDay & { day?: number };
 
-export const createAdventDay = (overrides: Partial<AdventDayFixture> = {}): AdventDayFixture => ({
+export const createCalendarDay = (overrides: Partial<CalendarDayFixture> = {}): CalendarDayFixture => ({
   id: overrides.id ?? 1,
   message: overrides.message ?? 'Test message',
   photo_url: overrides.photo_url ?? '/test.jpg',

@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
-import { AdventDay } from '../types/advent';
+import { CalendarDay } from '../types/calendar';
 import { getAdelaideDate } from '../lib/date';
 
 interface DayCardProps {
-  day: AdventDay;
+  day: CalendarDay;
   onOpen: (dayId: number) => void;
   isDecember: boolean;
 }

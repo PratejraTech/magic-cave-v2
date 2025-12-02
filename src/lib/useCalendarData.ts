@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { CalendarTile, Gift, TemplateMetadata } from '../types/advent';
+import { CalendarTile, Gift, TemplateMetadata } from '../types/calendar';
 import { useAuth } from './AuthContext';
 import { applyTemplateStyling } from './templateStyling';
 import { analytics } from './analytics';

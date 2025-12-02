@@ -1,4 +1,4 @@
-import { AnalyticsEventType, AnalyticsEventMetadata, GiftType } from '../types/advent';
+import { AnalyticsEventType, AnalyticsEventMetadata, GiftType } from '../types/calendar';
 
 /**
  * Analytics utility for logging user events

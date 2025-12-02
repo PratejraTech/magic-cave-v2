@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { gsap } from 'gsap';
-import { AdventDay } from '../../../types/advent';
+import { CalendarDay } from '../../../types/advent';
 import { ConfettiSystem } from '../utils/ConfettiSystem';
 import { SoundManager } from '../utils/SoundManager';
 import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
 interface HouseCardProps {
-  day: AdventDay;
+  day: CalendarDay;
   onOpen: (dayId: number) => void;
   canOpen: boolean;
   isBeforeDecember?: boolean;

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { applyTemplateStyling, resetTemplateStyling, getTemplateIcon } from '../lib/templateStyling';
-import { TemplateMetadata } from '../types/advent';
+import { TemplateMetadata } from '../types/calendar';
 
 describe('Template Styling', () => {
   const mockTemplate: TemplateMetadata = {

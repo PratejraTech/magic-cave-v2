@@ -1,4 +1,4 @@
-import { Template, TemplateMetadata } from '../types/advent';
+import { Template, TemplateMetadata } from '../types/calendar';
 
 // Mock template data - in production this would come from an API or database
 const MOCK_TEMPLATES: Record<string, Template> = {

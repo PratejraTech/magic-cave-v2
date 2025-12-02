@@ -1,4 +1,4 @@
-import { TemplateMetadata } from '../types/advent';
+import { TemplateMetadata } from '../types/calendar';
 import { preloadTemplateFonts, preloadGoogleFonts } from './fontLoader';
 
 /**

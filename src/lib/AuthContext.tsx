@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Parent, Child } from '../types/advent';
+import { Parent, Child } from '../types/calendar';
 import { authService } from './auth';
 import type { User, Session } from '@supabase/supabase-js';
 import { getMessaging, getToken } from 'firebase/messaging';

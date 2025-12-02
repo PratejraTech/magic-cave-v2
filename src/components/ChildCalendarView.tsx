@@ -3,7 +3,7 @@ import ChildCalendar from './ChildCalendar';
 import TemplateErrorBoundary from './TemplateErrorBoundary';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
-import { Gift, CalendarTile, GiftType, TemplateMetadata } from '../types/advent';
+import { Gift, CalendarTile, GiftType, TemplateMetadata } from '../types/calendar';
 import { applyTemplateStyling } from '../lib/templateStyling';
 
 interface ChildCalendarViewProps {

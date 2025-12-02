@@ -1,4 +1,4 @@
-import type { AdventMemory } from '../types/advent';
+import type { CalendarEntry } from '../types/calendar';
 import { getPhotoPath } from '../lib/localImageStore';
 import { photoPairs } from './photoPairs.generated';
 
@@ -26,9 +26,9 @@ const messageSeeds: Array<(day: number) => string> = [
     `Hop between floating heart-shaped clouds on day ${day} to find a jar of sparkles that transforms into wings whenever you laugh.`,
 ];
 
-const paletteCycle: AdventMemory['palette'][] = ['sunrise', 'twilight', 'forest', 'starlight'];
-const confettiCycle: NonNullable<AdventMemory['confettiType']>[] = ['snow', 'stars', 'candy', 'reindeer'];
-const unlockCycle: NonNullable<AdventMemory['unlockEffect']>[] = ['fireworks', 'snowstorm', 'aurora', 'gingerbread'];
+const paletteCycle: CalendarEntry['palette'][] = ['sunrise', 'twilight', 'forest', 'ocean'];
+const confettiCycle: NonNullable<CalendarEntry['confettiType']>[] = ['snow', 'stars', 'hearts', 'celebration'];
+const unlockCycle: NonNullable<CalendarEntry['unlockEffect']>[] = ['fireworks', 'confetti', 'sparkles', 'balloons'];
 const musicTracks = [
   '/assets/christmas/audio/music/calm-carols.mp3',
   '/assets/christmas/audio/music/upbeat-sleigh.mp3',
@@ -53,7 +53,7 @@ const resolvePairEntry = (day: number) => {
   return photoPairs[day % photoPairs.length];
 };
 
-export const adventMemories: AdventMemory[] = dayNumbers.map((day, index) => {
+export const adventMemories: CalendarEntry[] = dayNumbers.map((day, index) => {
   const pairEntry = resolvePairEntry(day);
   const fallbackMessage = messageSeeds[index % messageSeeds.length](day);
 

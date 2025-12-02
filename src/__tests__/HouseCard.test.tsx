@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { HouseCard } from '../features/advent/components/HouseCard';
-import { createAdventDay } from './testUtils';
+import { createCalendarDay } from './testUtils';
 
 const mockInit = vi.fn();
 const mockDuckMusic = vi.fn();
@@ -65,7 +65,7 @@ vi.mock('gsap', () => ({
 }));
 
 const defaultProps = () => ({
-  day: createAdventDay(),
+  day: createCalendarDay(),
   onOpen: vi.fn(),
   canOpen: true,
 });

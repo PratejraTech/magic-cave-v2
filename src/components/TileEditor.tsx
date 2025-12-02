@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarTile, Gift, GiftType } from '../types/advent';
+import { CalendarTile, Gift, GiftType } from '../types/calendar';
 
 interface TileEditorProps {
   tiles: CalendarTile[];

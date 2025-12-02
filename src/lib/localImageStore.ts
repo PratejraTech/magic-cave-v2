@@ -1,4 +1,4 @@
-import type { AdventMemory } from '../types/advent';
+import type { CalendarEntry } from '../types/calendar';
 
 const STORAGE_PREFIX = 'advent-photo-';
 
@@ -8,7 +8,7 @@ export const PHOTO_STORAGE_PATH = '/photos';
 const formatDay = (dayId: number) => dayId.toString().padStart(2, '0');
 export const getPhotoPath = (dayId: number) => `${PHOTO_STORAGE_PATH}/day-${formatDay(dayId)}.jpg`;
 
-const paletteImages: Record<AdventMemory['palette'], string> = {
+const paletteImages: Record<CalendarEntry['palette'], string> = {
   sunrise: svgUri(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff9a9e"/><stop offset="100%" stop-color="#fad0c4"/></linearGradient></defs><rect width="200" height="200" fill="url(#g)" rx="30"/><path d="M100 160c60-40 80-70 80-100a40 40 0 0 0-80-10 40 40 0 0 0-80 10c0 30 20 60 80 100z" fill="#fff2f5" opacity="0.9"/></svg>`
   ),
@@ -25,7 +25,7 @@ const paletteImages: Record<AdventMemory['palette'], string> = {
 
 const getStorageKey = (dayId: number) => `${STORAGE_PREFIX}${dayId}`;
 
-export function seedImageStore(memories: AdventMemory[]) {
+export function seedImageStore(memories: CalendarEntry[]) {
   if (typeof window === 'undefined') return;
 
   memories.forEach((memory) => {
@@ -35,7 +35,7 @@ export function seedImageStore(memories: AdventMemory[]) {
   });
 }
 
-export function getImageForDay(dayId: number, palette: AdventMemory['palette']) {
+export function getImageForDay(dayId: number, palette: CalendarEntry['palette']) {
   const fallback = paletteImages[palette];
 
   if (typeof window === 'undefined') return fallback;

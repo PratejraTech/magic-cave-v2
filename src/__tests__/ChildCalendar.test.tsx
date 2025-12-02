@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import ChildCalendar from '../components/ChildCalendar';
-import { CalendarTile, GiftType } from '../types/advent';
+import { CalendarTile, GiftType } from '../types/calendar';
 
 const mockTiles: CalendarTile[] = [
   {

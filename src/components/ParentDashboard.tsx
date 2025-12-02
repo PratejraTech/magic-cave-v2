@@ -4,10 +4,10 @@ import TemplateSelector from './TemplateSelector';
 import TemplateErrorBoundary from './TemplateErrorBoundary';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
-import { CalendarTile } from '../types/advent';
+import { CalendarTile } from '../types/calendar';
 import { analytics } from '../lib/analytics';
 import { applyTemplateStyling } from '../lib/templateStyling';
-import { DEFAULT_TEMPLATES } from '../types/advent';
+import { DEFAULT_TEMPLATES } from '../types/calendar';
 
 // Import system prompt templates
 const SYSTEM_PROMPT_TEMPLATES = [
@@ -46,7 +46,7 @@ const AVAILABLE_TEMPLATES = [
     }
   },
   {
-    id: DEFAULT_TEMPLATES.ADVENTURE_BOY,
+    id: DEFAULT_TEMPLATES.ADVENTURE_THEME,
     name: 'Adventure Boy',
     description: 'Bold colors with adventure-themed graphics for brave explorers',
     metadata: {
@@ -57,7 +57,7 @@ const AVAILABLE_TEMPLATES = [
     }
   },
   {
-    id: DEFAULT_TEMPLATES.RAINBOW_FANTASY,
+    id: DEFAULT_TEMPLATES.CELEBRATION_THEME,
     name: 'Rainbow Fantasy',
     description: 'Bright rainbow colors with magical elements and unicorns',
     metadata: {

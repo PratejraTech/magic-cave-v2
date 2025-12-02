@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
-import type { AdventDay } from '../../../types/advent';
+import type { CalendarDay } from '../../../types/advent';
 
 interface PastMemoryCarouselProps {
-  memories: AdventDay[];
+  memories: CalendarDay[];
   rotationMs?: number;
   currentOpenDayId?: number | null;
 }
@@ -12,7 +12,7 @@ const DISPLAY_DURATION_MS = 3000; // Show for 3 seconds
 const CACHE_KEY = 'past-memory-carousel-cache';
 
 interface CachedMemory {
-  memory: AdventDay;
+  memory: CalendarDay;
   displayedAt: number;
   position: { top: string; left: string };
 }
@@ -35,7 +35,7 @@ const getCachedMemories = (): CachedMemory[] => {
 };
 
 // Save memory to cache
-const cacheMemory = (memory: AdventDay, position: { top: string; left: string }) => {
+const cacheMemory = (memory: CalendarDay, position: { top: string; left: string }) => {
   if (typeof window === 'undefined') return;
   try {
     const cached = getCachedMemories();

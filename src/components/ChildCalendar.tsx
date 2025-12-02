@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarTile, Gift } from '../types/advent';
+import { CalendarTile, Gift } from '../types/calendar';
 import { analytics } from '../lib/analytics';
 
 interface ChildCalendarProps {

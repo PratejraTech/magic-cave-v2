@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AdventDay } from '../../../types/advent';
+import { CalendarDay } from '../../../types/advent';
 import { HouseCard } from './HouseCard';
 import { Snowfall } from './Snowfall';
 import { NorthernLights } from './NorthernLights';
@@ -10,7 +10,7 @@ import { getAdelaideDate } from '../../../lib/date';
 import { EnchantedBackground } from './EnchantedBackground';
 
 interface VillageSceneProps {
-  days: AdventDay[];
+  days: CalendarDay[];
   onOpenDay: (dayId: number) => void;
   isGuest?: boolean;
 }
