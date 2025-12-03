@@ -10,6 +10,25 @@ import { createSecureJsonResponse, createSecureErrorResponse } from '../../src/l
 import { exportUserData } from '../../src/lib/compliance.ts';
 
 /**
+ * Hash password using Web Crypto API (Cloudflare compatible)
+ */
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + 'advent-calendar-salt-2024');
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Verify password using Web Crypto API
+ */
+async function verifyPassword(password, hash) {
+  const hashedInput = await hashPassword(password);
+  return hashedInput === hash;
+}
+
+/**
  * Validate request method and CORS
  */
 function handleCORS(request) {
@@ -220,8 +239,7 @@ async function getUserFromToken(request, supabase) {
     const tempPassword = AuthUtils.generateTemporaryPassword();
 
     // Hash the temporary password for secure storage
-    const saltRounds = 12;
-    const hashedTempPassword = await bcrypt.hash(tempPassword, saltRounds);
+    const hashedTempPassword = await hashPassword(tempPassword);
 
     // Create Supabase auth user
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
@@ -552,16 +570,15 @@ async function handleChildLogin(request, supabase) {
 
     // Check password - support both new hashed passwords and legacy method during migration
     if (child.password_hash) {
-      // Use bcrypt to verify hashed password
-      isValidPassword = await bcrypt.compare(password, child.password_hash);
+      // Use Web Crypto API to verify hashed password
+      isValidPassword = await verifyPassword(password, child.password_hash);
     } else {
       // Legacy password check - will be migrated on successful login
       isValidPassword = password === 'temp123' || password.length >= 6;
 
       // If legacy password works, hash and store the new password
       if (isValidPassword && password !== 'temp123') {
-        const saltRounds = 12;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const hashedPassword = await hashPassword(password);
 
         await supabase
           .from('children')

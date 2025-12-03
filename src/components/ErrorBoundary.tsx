@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
               Oops! Something went wrong
             </h1>
             <p className="text-slate-600 mb-6">
-              Harper's calendar encountered an unexpected error. Don't worry, Daddy will fix it soon!
+              Something went wrong with your Christmas calendar. Our team is working to fix it!
             </p>
             <button
               onClick={() => {

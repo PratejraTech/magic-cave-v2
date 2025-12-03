@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { gsap } from 'gsap';
-import { CalendarDay } from '../../../types/advent';
+import { CalendarDay } from '../../../types/calendar';
 import { ConfettiSystem } from '../utils/ConfettiSystem';
 import { SoundManager } from '../utils/SoundManager';
 import { toZonedTime, fromZonedTime } from 'date-fns-tz';
@@ -111,8 +111,14 @@ export function HouseCard({ day, onOpen, canOpen, isBeforeDecember = false, shou
       .call(() => {
         try {
           soundManager.play('magical-ding');
+          const confettiTypeMap: Record<string, 'snow' | 'stars' | 'candy' | 'reindeer'> = {
+            snow: 'snow',
+            stars: 'stars',
+            hearts: 'candy',
+            celebration: 'stars'
+          };
           ConfettiSystem.burst({
-            type: day.confettiType || 'snow',
+            type: confettiTypeMap[day.confettiType || 'snow'] || 'snow',
             count: 100,
             origin: { x: 0.5, y: 0.3 }
           });

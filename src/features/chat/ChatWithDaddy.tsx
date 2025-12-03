@@ -25,9 +25,9 @@ interface ChatWithDaddyProps {
 }
 
 const firstTimeGreetings = [
-  "Daddy wrote you a special letter. Let's read it together!",
-  'Hi Harper! Daddy has a letter just for you.',
-  "Hello sweetheart! Ready to read Daddy's letter?",
+  "Hi there! Ready to read your special letter?",
+  "Hello! Let's discover what's in your letter today!",
+  "Hi friend! Your letter is waiting to be read!",
 ];
 
 

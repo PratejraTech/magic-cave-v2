@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import type { MouseEvent, TouchEvent } from 'react';
-import type { CalendarDay } from '../../../types/advent';
+import type { CalendarDay } from '../../../types/calendar';
 
 interface MemoryModalProps {
   isOpen: boolean;

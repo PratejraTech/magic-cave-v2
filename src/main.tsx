@@ -22,7 +22,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 // Initialize Firebase Messaging (only in browser environment)
-let messaging: any = null;
+let messaging: ReturnType<typeof getMessaging> | null = null;
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   messaging = getMessaging(firebaseApp);
 
@@ -42,13 +42,23 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
 }
 
 // Make Firebase instances available globally for other modules
-(window as any).firebaseApp = firebaseApp;
-(window as any).firebaseMessaging = messaging;
+interface WindowWithFirebase {
+  firebaseApp: typeof firebaseApp;
+  firebaseMessaging: typeof messaging;
+}
+
+(window as unknown as WindowWithFirebase).firebaseApp = firebaseApp;
+(window as unknown as WindowWithFirebase).firebaseMessaging = messaging;
 
 // Initialize error tracking
 initSentry();
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Root element not found');
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <ErrorBoundary>
       <App />

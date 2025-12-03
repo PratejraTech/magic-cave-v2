@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { applyTemplateStyling, getTemplateIcon } from '../lib/templateStyling';
 import { DEFAULT_TEMPLATES } from '../types/calendar';
+import { TemplatePreview } from './TemplatePreview';
 
 interface Template {
   id: string;
@@ -64,6 +65,8 @@ const AVAILABLE_TEMPLATES: Template[] = [
 ];
 
 const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, onSelectTemplate }) => {
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
+
   const handleSelectTemplate = (templateId: string) => {
     onSelectTemplate(templateId);
     // Apply template styling immediately for preview
@@ -71,6 +74,14 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
     if (template) {
       applyTemplateStyling(template.metadata, template.id);
     }
+  };
+
+  const handlePreviewTemplate = (template: Template) => {
+    setPreviewTemplate(template);
+  };
+
+  const handleSelectFromPreview = (template: Template) => {
+    handleSelectTemplate(template.id);
   };
 
   return (
@@ -106,17 +117,26 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
                 />
               </div>
 
-              {/* Template Info */}
-              <div className="flex-1">
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">{getTemplateIcon(template.metadata.icons[0])}</span>
-                  <h3 className="font-semibold text-gray-800">{template.name}</h3>
-                  {selectedTemplate === template.id && (
-                    <span className="text-blue-500">✓</span>
-                  )}
-                </div>
-                <p className="text-sm text-gray-600 mt-1">{template.description}</p>
-              </div>
+               {/* Template Info */}
+               <div className="flex-1">
+                 <div className="flex items-center space-x-2">
+                   <span className="text-2xl">{getTemplateIcon(template.metadata.icons[0])}</span>
+                   <h3 className="font-semibold text-gray-800">{template.name}</h3>
+                   {selectedTemplate === template.id && (
+                     <span className="text-blue-500">✓</span>
+                   )}
+                 </div>
+                 <p className="text-sm text-gray-600 mt-1">{template.description}</p>
+                 <button
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     handlePreviewTemplate(template);
+                   }}
+                   className="text-sm text-blue-500 hover:text-blue-700 mt-2 underline"
+                 >
+                   Preview Theme
+                 </button>
+               </div>
             </div>
 
             {/* Sample Calendar Preview */}
@@ -149,6 +169,16 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({ selectedTemplate, o
           </div>
         ))}
       </div>
+
+      {/* Template Preview Modal */}
+      {previewTemplate && (
+        <TemplatePreview
+          template={previewTemplate}
+          isOpen={!!previewTemplate}
+          onClose={() => setPreviewTemplate(null)}
+          onSelect={handleSelectFromPreview}
+        />
+      )}
     </div>
   );
 };

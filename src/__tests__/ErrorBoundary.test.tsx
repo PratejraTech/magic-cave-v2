@@ -37,7 +37,7 @@ describe('ErrorBoundary', () => {
     );
 
     expect(screen.getByText("Oops! Something went wrong")).toBeInTheDocument();
-    expect(screen.getByText("Harper's calendar encountered an unexpected error. Don't worry, Daddy will fix it soon!")).toBeInTheDocument();
+    expect(screen.getByText("Something went wrong with your Christmas calendar. Our team is working to fix it!")).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
   });
 

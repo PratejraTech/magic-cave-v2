@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
-import type { CalendarDay } from '../../../types/advent';
+import type { CalendarDay } from '../../../types/calendar';
 
 interface PastMemoryCarouselProps {
   memories: CalendarDay[];

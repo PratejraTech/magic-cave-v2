@@ -24,7 +24,7 @@ export interface CalendarEntry {
   message: string;
   confettiType?: ConfettiType;
   unlockEffect?: UnlockEffect;
-  palette: 'sunrise' | 'twilight' | 'forest' | 'ocean';
+  palette: 'sunrise' | 'twilight' | 'forest' | 'ocean' | 'starlight';
   subtitle?: string | null;
   musicUrl?: string;
   voiceUrl?: string;

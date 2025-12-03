@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import TileEditor from './TileEditor';
 import TemplateSelector from './TemplateSelector';
 import TemplateErrorBoundary from './TemplateErrorBoundary';
+import CustomizationPanel from './CustomizationPanel';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
 import { CalendarTile } from '../types/calendar';
@@ -80,6 +81,7 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showCustomization, setShowCustomization] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState<string | null>(null);
   const [profileForm, setProfileForm] = useState({
     parentName: parent?.name || '',
@@ -213,20 +215,27 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
                >
                  Edit Tiles
                </button>
-               <button
-                 onClick={() => setShowAnalytics(true)}
-                 className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm sm:text-base"
-                 aria-label="View analytics"
-               >
-                 Analytics
-               </button>
-               <button
-                 onClick={handleExportPDF}
-                 className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm sm:text-base"
-                 aria-label="Export calendar as PDF"
-               >
-                 Export PDF
-               </button>
+                <button
+                  onClick={() => setShowCustomization(true)}
+                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors text-sm sm:text-base"
+                  aria-label="Advanced customization options"
+                >
+                  🎨 Customize
+                </button>
+                <button
+                  onClick={() => setShowAnalytics(true)}
+                  className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm sm:text-base"
+                  aria-label="View analytics"
+                >
+                  Analytics
+                </button>
+                <button
+                  onClick={handleExportPDF}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm sm:text-base"
+                  aria-label="Export calendar as PDF"
+                >
+                  Export PDF
+                </button>
              </div>
           </div>
 
@@ -293,6 +302,10 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
           onUpdateTile={handleUpdateTile}
           onUploadMedia={handleUploadMedia}
           onClose={() => setShowTileEditor(false)}
+          childName={child?.name}
+          childAge={child?.birthdate ? new Date().getFullYear() - new Date(child.birthdate).getFullYear() : 3}
+          parentType={profileForm.systemPromptTemplate}
+          childInterests={child?.interests}
         />
       )}
 
@@ -676,6 +689,17 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
             </div>
           </div>
         </div>
+      )}
+
+      {showCustomization && (
+        <CustomizationPanel
+          onClose={() => setShowCustomization(false)}
+          onApply={(options) => {
+            // Save customization options (could be stored in user preferences)
+            console.log('Applied customizations:', options);
+            setShowCustomization(false);
+          }}
+        />
       )}
     </div>
   );

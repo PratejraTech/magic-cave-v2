@@ -1,9 +1,9 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 import AdventCalendar from './AdventCalendar';
 import { getAdelaideDate } from '../../lib/date';
 import React from 'react';
-import { CalendarDay } from '../../types/advent';
+import { CalendarDay } from '../../types/calendar';
 import userEvent from '@testing-library/user-event';
 
 // Mock framer-motion to disable animations in tests
@@ -21,11 +21,7 @@ vi.mock('framer-motion', () => {
   };
 });
 
-// Mock getAdelaideDate
-vi.mock('../../lib/date', () => ({
-  getAdelaideDate: vi.fn(),
-}));
-
+// Mock getAdelaideDate module
 vi.mock('../../lib/date', () => ({
   getAdelaideDate: vi.fn(),
 }));
@@ -59,27 +55,14 @@ describe('AdventCalendar', () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('enables the button for the current day in December', () => {
-    const mockDate = new Date('2024-12-05T12:00:00Z');
-    (getAdelaideDate as any).mockReturnValue(mockDate);
-
-    render(<AdventCalendar days={createMockDays()} onOpenDay={vi.fn()} />);
-
-    const buttonsDay5 = screen.getAllByText('5');
-    const buttonDay5 = buttonsDay5.find(btn => btn.tagName === 'BUTTON') || buttonsDay5[0];
-    expect(buttonDay5).not.toBeDisabled();
-
-    const buttonsDay6 = screen.getAllByText('6');
-    const buttonDay6 = buttonsDay6.find(btn => btn.tagName === 'BUTTON') || buttonsDay6[0];
-    expect(buttonDay6).toBeDisabled();
-  });
-
+  // Run the November test first to see if it passes when it's first
   it('disables all buttons if it is not December', () => {
     // Mock getAdelaideDate to return November date
     const mockDate = new Date('2024-11-05T12:00:00Z');
-    (getAdelaideDate as any).mockReturnValue(mockDate);
+    vi.mocked(getAdelaideDate).mockReturnValue(mockDate);
 
     render(<AdventCalendar days={createMockDays()} onOpenDay={vi.fn()} />);
 
@@ -90,24 +73,44 @@ describe('AdventCalendar', () => {
     });
   });
 
-  it('opens the modal when the correct button is clicked', async () => {
-    const user = userEvent.setup();
+  it('enables the button for the current day in December', () => {
     const mockDate = new Date('2024-12-05T12:00:00Z');
-    (getAdelaideDate as any).mockReturnValue(mockDate);
+    vi.mocked(getAdelaideDate).mockReturnValue(mockDate);
 
     render(<AdventCalendar days={createMockDays()} onOpenDay={vi.fn()} />);
 
-    const buttonsDay5 = screen.getAllByText('5');
-    const buttonDay5 = buttonsDay5.find(btn => btn.tagName === 'BUTTON' && !(btn as HTMLButtonElement).disabled) || buttonsDay5[0];
-    await user.click(buttonDay5);
+    const buttonsDay5 = screen.getAllByRole('button', { name: '5' });
+    expect(buttonsDay5.length).toBeGreaterThan(0);
+    buttonsDay5.forEach(button => {
+      expect(button).not.toBeDisabled();
+    });
 
-    // Fast-forward time to after the animation timeout
-    vi.advanceTimersByTime(2100);
+    const buttonsDay6 = screen.getAllByRole('button', { name: '6' });
+    expect(buttonsDay6.length).toBeGreaterThan(0);
+    buttonsDay6.forEach(button => {
+      expect(button).toBeDisabled();
+    });
+  });
 
-    // The modal should now be open - check for the title
+  it('opens the modal when the correct button is clicked', async () => {
+    const user = userEvent.setup();
+    const mockDate = new Date('2024-12-05T12:00:00Z');
+    vi.mocked(getAdelaideDate).mockReturnValue(mockDate);
+
+    render(<AdventCalendar days={createMockDays()} onOpenDay={vi.fn()} />);
+
+    // Find the enabled button for day 5 (not disabled)
+    const buttons = screen.getAllByRole('button', { name: '5' });
+    const enabledButton = buttons.find(button => !button.hasAttribute('disabled'));
+    expect(enabledButton).toBeInTheDocument();
+
+    await user.click(enabledButton!);
+
+    // The modal should open after the butterfly animation completes
+    // The Butterfly component calls onAnimationComplete immediately in tests (setTimeout 0)
     await waitFor(() => {
-      const modalTitle = screen.queryByText('Day 5');
+      const modalTitle = screen.getByText('Day 5');
       expect(modalTitle).toBeInTheDocument();
-    }, { timeout: 5000 });
+    });
   });
 });

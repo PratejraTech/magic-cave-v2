@@ -18,6 +18,9 @@ const paletteImages: Record<CalendarEntry['palette'], string> = {
   forest: svgUri(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="f" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a8e063"/><stop offset="100%" stop-color="#56ab2f"/></linearGradient></defs><rect width="200" height="200" rx="30" fill="url(#f)"/><path d="M50 150 L70 80 L90 150 Z" fill="#fff"/><path d="M100 150 L120 70 L140 150 Z" fill="#f9fbe7"/><path d="M130 150 L150 90 L170 150 Z" fill="#fff"/></svg>`
   ),
+  ocean: svgUri(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="o" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#667eea"/><stop offset="100%" stop-color="#764ba2"/></linearGradient></defs><rect width="200" height="200" rx="30" fill="url(#o)"/><path d="M0 120 Q50 100 100 120 T200 120 L200 200 L0 200 Z" fill="#fff" opacity="0.3"/><circle cx="160" cy="80" r="15" fill="#fff" opacity="0.8"/><circle cx="40" cy="60" r="10" fill="#fff" opacity="0.6"/></svg>`
+  ),
   starlight: svgUri(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="s" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1e3c72"/><stop offset="100%" stop-color="#2a5298"/></linearGradient></defs><rect width="200" height="200" rx="30" fill="url(#s)"/><g fill="#ffd9fb"><circle cx="60" cy="60" r="6"/><circle cx="120" cy="40" r="4"/><circle cx="150" cy="80" r="8"/><circle cx="80" cy="140" r="5"/><circle cx="140" cy="150" r="7"/></g></svg>`
   ),

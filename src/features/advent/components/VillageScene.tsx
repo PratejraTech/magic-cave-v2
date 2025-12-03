@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CalendarDay } from '../../../types/advent';
+import { CalendarDay } from '../../../types/calendar';
 import { HouseCard } from './HouseCard';
 import { Snowfall } from './Snowfall';
 import { NorthernLights } from './NorthernLights';
@@ -85,12 +85,12 @@ export function VillageScene({ days, onOpenDay, isGuest = false }: VillageSceneP
             {days.map((day) => {
               // Guests and force unlock: all tiles can be opened
               // After December 25th: all tiles can be opened (session complete)
-              // Harper in December: only tiles <= current day can be opened
+              // In December: only tiles <= current day can be opened
               const canOpen =
                 allowDevUnlocks || isAfterDecember25 || (isAdelaideDecember && currentAdelaideDay >= day.id);
 
               // isNextDay: true when this is the next day to open AND user can't open it yet
-              // Only show countdown for Harper (not guests or force unlock)
+              // Only show countdown for authenticated users (not guests or force unlock)
               const isNextDay = nextDay !== null && day.id === nextDay && !canOpen && !allowDevUnlocks;
               
               return (

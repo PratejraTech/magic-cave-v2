@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getAdelaideDate } from '../../lib/date';
 import { Butterfly } from '../../components/Butterfly';
 import Modal from '../../components/Modal';
-import { CalendarDay } from '../../types/advent';
+import { CalendarDay } from '../../types/calendar';
 
 interface AdventCalendarProps {
   days: CalendarDay[];

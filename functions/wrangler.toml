@@ -1,0 +1,12 @@
+name = "christmas-advent-api"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+
+# Add any required bindings here
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "your-database-name"

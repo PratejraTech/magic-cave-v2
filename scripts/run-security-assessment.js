@@ -3,7 +3,7 @@
  * Executes comprehensive security testing for production readiness
  */
 
-import { runSecurityAssessment } from '../src/lib/securityTesting.js';
+import { runSecurityAssessment } from '../src/lib/securityTesting.ts';
 
 async function main() {
   console.log('🚀 Starting Security Assessment for Family Advent Calendar v2.0\n');

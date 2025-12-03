@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import { CalendarTile, Gift, GiftType } from '../types/calendar';
+import ContentLibraryBrowser from './ContentLibraryBrowser';
 
 interface TileEditorProps {
   tiles: CalendarTile[];
   onUpdateTile: (tileId: string, updates: Partial<CalendarTile>) => void;
   onUploadMedia: (tileId: string, file: File) => Promise<string>;
   onClose: () => void;
+  childName?: string;
+  childAge?: number;
+  parentType?: string;
+  childInterests?: Record<string, any>;
 }
 
-const TileEditor: React.FC<TileEditorProps> = ({ tiles, onUpdateTile, onUploadMedia, onClose }) => {
+const TileEditor: React.FC<TileEditorProps> = ({
+  tiles,
+  onUpdateTile,
+  onUploadMedia,
+  onClose,
+  childName = 'child',
+  childAge = 3,
+  parentType = 'parent',
+  childInterests = {}
+}) => {
   const [selectedTile, setSelectedTile] = useState<CalendarTile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -19,6 +33,10 @@ const TileEditor: React.FC<TileEditorProps> = ({ tiles, onUpdateTile, onUploadMe
   });
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [generatingAI, setGeneratingAI] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState('christmas');
+  const [showContentLibrary, setShowContentLibrary] = useState(false);
 
   const handleTileSelect = (tile: CalendarTile) => {
     setSelectedTile(tile);
@@ -64,6 +82,60 @@ const TileEditor: React.FC<TileEditorProps> = ({ tiles, onUpdateTile, onUploadMe
 
   const handleRemoveMedia = () => {
     setEditForm(prev => ({ ...prev, media_url: '' }));
+  };
+
+  const handleGenerateAI = async () => {
+    if (!selectedTile) return;
+
+    setGeneratingAI(true);
+    setAiError(null);
+
+    try {
+      const response = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tileId: selectedTile.tile_id,
+          day: selectedTile.day,
+          childName,
+          childAge,
+          parentType,
+          theme: selectedTheme,
+          existingContent: editForm.body,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to generate content: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        setEditForm(prev => ({
+          ...prev,
+          body: data.content,
+          title: prev.title || `Day ${selectedTile.day} Surprise`
+        }));
+      } else {
+        throw new Error(data.error || 'Failed to generate content');
+      }
+    } catch (error) {
+      console.error('AI generation error:', error);
+      setAiError(error instanceof Error ? error.message : 'Failed to generate AI content');
+    } finally {
+      setGeneratingAI(false);
+    }
+  };
+
+  const handleSelectFromLibrary = (content: string) => {
+    setEditForm(prev => ({
+      ...prev,
+      body: content,
+      title: prev.title || `Day ${selectedTile?.day} Surprise`
+    }));
   };
 
   return (
@@ -137,20 +209,59 @@ const TileEditor: React.FC<TileEditorProps> = ({ tiles, onUpdateTile, onUploadMe
                 <div id="title-help" className="sr-only">Optional title for the calendar tile</div>
               </div>
 
-              <div>
-                <label htmlFor={`message-${selectedTile.tile_id}`} className="block text-sm font-medium text-gray-700 mb-1">
-                  Message
-                </label>
-                <textarea
-                  id={`message-${selectedTile.tile_id}`}
-                  value={editForm.body}
-                  onChange={(e) => setEditForm(prev => ({ ...prev, body: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-24 sm:h-32"
-                  placeholder="Write a personal message for your child..."
-                  aria-describedby="message-help"
-                />
-                <div id="message-help" className="sr-only">Personal message that will be shown when the tile is opened</div>
-              </div>
+               <div>
+                 <div className="flex justify-between items-center mb-1">
+                   <label htmlFor={`message-${selectedTile.tile_id}`} className="block text-sm font-medium text-gray-700">
+                     Message
+                   </label>
+                   <div className="flex items-center gap-2">
+                     <button
+                       onClick={() => setShowContentLibrary(true)}
+                       className="px-3 py-1 text-xs bg-green-500 text-white rounded-md hover:bg-green-600 flex items-center gap-1"
+                       title="Browse content library"
+                     >
+                       📚 Browse Library
+                     </button>
+                     <select
+                       value={selectedTheme}
+                       onChange={(e) => setSelectedTheme(e.target.value)}
+                       className="text-xs px-2 py-1 border border-gray-300 rounded"
+                       title="Select theme for AI generation"
+                     >
+                       <option value="christmas">Christmas Magic</option>
+                       <option value="encouragement">Encouragement</option>
+                       <option value="love">Love & Affection</option>
+                     </select>
+                     <button
+                       onClick={handleGenerateAI}
+                       disabled={generatingAI}
+                       className="px-3 py-1 text-xs bg-purple-500 text-white rounded-md hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                       title="Generate AI content for this tile"
+                     >
+                       {generatingAI ? (
+                         <>
+                           <span className="animate-spin">⟳</span>
+                           Generating...
+                         </>
+                       ) : (
+                         <>
+                           ✨ AI Generate
+                         </>
+                       )}
+                     </button>
+                   </div>
+                 </div>
+                 <textarea
+                   id={`message-${selectedTile.tile_id}`}
+                   value={editForm.body}
+                   onChange={(e) => setEditForm(prev => ({ ...prev, body: e.target.value }))}
+                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-24 sm:h-32"
+                   placeholder="Write a personal message for your child..."
+                   aria-describedby="message-help"
+                 />
+                 <div id="message-help" className="sr-only">Personal message that will be shown when the tile is opened</div>
+                 {aiError && <p className="text-sm text-red-500 mt-1">{aiError}</p>}
+               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -300,6 +411,15 @@ const TileEditor: React.FC<TileEditorProps> = ({ tiles, onUpdateTile, onUploadMe
             </div>
           </div>
         ) : null}
+
+        {showContentLibrary && (
+          <ContentLibraryBrowser
+            childAge={childAge}
+            childInterests={childInterests}
+            onSelectContent={handleSelectFromLibrary}
+            onClose={() => setShowContentLibrary(false)}
+          />
+        )}
       </div>
     </div>
   );

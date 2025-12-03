@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MusicPlayer } from '../components/MusicPlayer';
 
 const mockInit = vi.fn();
@@ -56,25 +56,32 @@ describe('MusicPlayer', () => {
   it('toggles playback via the SoundManager', async () => {
     const user = userEvent.setup();
     render(<MusicPlayer />);
-    const buttons = screen.getAllByRole('button');
-    const musicButton = buttons.find((btn) =>
-      btn.getAttribute('aria-label')?.includes('music')
-    ) || buttons[0];
 
-    await user.click(musicButton);
-
+    // Wait for initial render to stabilize
     await waitFor(() => {
-      const updatedButton = screen.getByRole('button', { name: /pause music/i });
-      expect(updatedButton).toBeInTheDocument();
+      const buttons = screen.getAllByRole('button', { name: /play music/i });
+      expect(buttons.length).toBeGreaterThan(0);
+    });
+
+    // Get the first play button (React StrictMode may cause double rendering)
+    const playButtons = screen.getAllByRole('button', { name: /play music/i });
+    expect(playButtons.length).toBeGreaterThan(0);
+    const playButton = playButtons[0];
+
+    await user.click(playButton);
+
+    // Wait for state change and re-render
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /pause music/i })).toBeInTheDocument();
     });
 
     const pauseButton = screen.getByRole('button', { name: /pause music/i });
     await user.click(pauseButton);
     expect(mockPauseMusic).toHaveBeenCalled();
 
+    // Wait for final state change
     await waitFor(() => {
-      const playButton = screen.getByRole('button', { name: /play music/i });
-      expect(playButton).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /play music/i })).toBeInTheDocument();
     });
   });
 });

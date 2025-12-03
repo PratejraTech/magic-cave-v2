@@ -134,20 +134,20 @@ const AuthPage: React.FC = () => {
         <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8 mb-4 border"
              style={{ borderColor: 'var(--theme-primary)' }}>
 
-          {/* Themed header */}
-          <div className="mb-6">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                 style={{ backgroundColor: 'var(--theme-primary)' }}>
-              <span className="text-2xl">🎄</span>
+            {/* Themed header */}
+            <div className="mb-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+                   style={{ backgroundColor: 'var(--theme-primary)' }}>
+                <span className="text-2xl">🎄</span>
+              </div>
+              <h1 className="text-3xl font-bold mb-2"
+                  style={{ color: 'var(--theme-primary)' }}>
+                Christmas Advent Creator
+              </h1>
+              <p className="text-gray-600">
+                Create magical holiday calendars for your family. Sign in as a parent to customize, or as a child to discover daily surprises.
+              </p>
             </div>
-            <h1 className="text-3xl font-bold mb-2"
-                style={{ color: 'var(--theme-primary)' }}>
-              Welcome to Your Advent Calendar!
-            </h1>
-            <p className="text-gray-600">
-              Sign in as a parent to manage your calendar, or log in as a child to unlock your daily surprises.
-            </p>
-          </div>
 
           <div className="space-y-4">
             <button
@@ -187,8 +187,8 @@ const AuthPage: React.FC = () => {
         {/* Seasonal message */}
         <div className="text-center text-sm text-gray-500 mt-4">
           {new Date().getMonth() === 11 && new Date().getDate() <= 25
-            ? "🎄 May your Advent season be filled with joy and wonder! 🎄"
-            : "❄️ Creating magical moments, one day at a time ❄️"
+            ? "🎄 Create magical Christmas memories with personalized advent calendars! 🎄"
+            : "❄️ Design holiday traditions that will last a lifetime ❄️"
           }
         </div>
       </div>
