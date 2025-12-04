@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CalendarTile, Gift } from '../types/calendar';
 import { analytics } from '../lib/analytics';
+import { useWinterEffects } from '../contexts/WinterEffectsContext';
 
 interface ChildCalendarProps {
   tiles: CalendarTile[];
@@ -14,6 +15,7 @@ interface ChildCalendarProps {
     tileHover?: string;
     tileClick?: string;
   };
+  highlightedTile?: CalendarTile | null;
 }
 
 const ChildCalendar: React.FC<ChildCalendarProps> = ({
@@ -21,13 +23,21 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
   onUnlockTile,
   layout = 'rounded_tiles',
   gradients,
-  animations
+  animations,
+  highlightedTile
 }) => {
+  const { triggerCelebration } = useWinterEffects();
   const [selectedTile, setSelectedTile] = useState<CalendarTile | null>(null);
   const [unlocking, setUnlocking] = useState(false);
   const [unlockedGift, setUnlockedGift] = useState<Gift | null>(null);
   const [note, setNote] = useState('');
   const [showNotePrompt, setShowNotePrompt] = useState(false);
+
+  // TODO: Phase 2 - Gesture navigation state (will be used when gesture handlers are connected)
+  // const [currentTileIndex, setCurrentTileIndex] = useState<number>(-1);
+  // const [zoomLevel, setZoomLevel] = useState<number>(1);
+  // const [previewTile, setPreviewTile] = useState<CalendarTile | null>(null);
+  // const calendarRef = useRef<HTMLDivElement>(null);
 
   const getTileClasses = () => {
     const baseClasses = 'aspect-square border-2 p-2 sm:p-4 cursor-pointer transition-all flex flex-col items-center justify-center touch-manipulation';
@@ -53,13 +63,8 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
   };
 
   const handleTileClick = (tile: CalendarTile) => {
-    if (!tile.gift || tile.gift_unlocked) return;
-
-    // Log tile opened event
-    analytics.logTileOpened(tile.tile_id, tile.day, tile.calendar_id);
-
-    setSelectedTile(tile);
-    setShowNotePrompt(true);
+    // Use gesture-enabled tap handler
+    handleTapUnlock(tile);
   };
 
   const handleUnlock = async () => {
@@ -84,6 +89,85 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
     setNote('');
     setShowNotePrompt(false);
   };
+
+  // TODO: Phase 2 - Connect these gesture handlers to WinterEffects context
+  // Gesture handlers (will be connected to actual gesture events in Phase 2 completion)
+  /*
+  const handleSwipeNavigation = (direction: 'left' | 'right' | 'up' | 'down') => {
+    const unlockedTiles = tiles.filter(tile => tile.gift_unlocked);
+    if (unlockedTiles.length === 0) return;
+
+    let newIndex = currentTileIndex;
+    switch (direction) {
+      case 'left':
+        newIndex = Math.max(0, currentTileIndex - 1);
+        break;
+      case 'right':
+        newIndex = Math.min(unlockedTiles.length - 1, currentTileIndex + 1);
+        break;
+      case 'up':
+        // Navigate to previous row (assuming 5 columns)
+        newIndex = Math.max(0, currentTileIndex - 5);
+        break;
+      case 'down':
+        // Navigate to next row (assuming 5 columns)
+        newIndex = Math.min(unlockedTiles.length - 1, currentTileIndex + 5);
+        break;
+    }
+
+    if (newIndex !== currentTileIndex) {
+      setCurrentTileIndex(newIndex);
+      const targetTile = unlockedTiles[newIndex];
+      if (targetTile) {
+        // Trigger celebration for navigation
+        triggerCelebration('navigation_magic', {
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight
+        });
+      }
+    }
+  };
+
+  const handlePinchZoom = (scale: number) => {
+    const newZoom = Math.max(0.5, Math.min(2, zoomLevel * scale));
+    setZoomLevel(newZoom);
+
+    // Trigger zoom celebration
+    if (newZoom > zoomLevel) {
+      triggerCelebration('zoom_in_magic');
+    } else if (newZoom < zoomLevel) {
+      triggerCelebration('zoom_out_magic');
+    }
+  };
+
+  const handleLongPressPreview = (tile: CalendarTile) => {
+    if (tile.gift_unlocked) {
+      setPreviewTile(tile);
+      // Auto-hide preview after 3 seconds
+      setTimeout(() => setPreviewTile(null), 3000);
+      triggerCelebration('preview_magic');
+    }
+  };
+  */
+
+  const handleTapUnlock = (tile: CalendarTile) => {
+    if (!tile.gift || tile.gift_unlocked) return;
+
+    // Log tile opened event
+    analytics.logTileOpened(tile.tile_id, tile.day, tile.calendar_id);
+
+    // Trigger magical tap celebration
+    triggerCelebration('tap_magic', {
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight
+    });
+
+    // Proceed with normal unlock flow
+    setSelectedTile(tile);
+    setShowNotePrompt(true);
+  };
+
+
 
   const renderGift = (gift: Gift) => {
     switch (gift.type) {
@@ -171,7 +255,9 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
             key={tile.tile_id}
             onClick={() => handleTileClick(tile)}
             className={`${getTileClasses()} ${
-              tile.gift && !tile.gift_unlocked
+              highlightedTile && highlightedTile.tile_id === tile.tile_id
+                ? 'border-yellow-400 bg-yellow-100 shadow-lg shadow-yellow-300/50 animate-pulse'
+                : tile.gift && !tile.gift_unlocked
                 ? `border-purple-300 bg-purple-50 hover:border-purple-400 active:bg-purple-100 ${animations?.tileHover || ''}`
                 : tile.gift_unlocked
                 ? 'border-green-300 bg-green-50'
@@ -291,6 +377,25 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
           </div>
         </div>
       )}
+
+      {/* TODO: Phase 2 - Tile Preview Overlay (for long press) */}
+      {/* {previewTile && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40 p-4">
+          <div className="winter-wonderland-card frosted p-6 max-w-sm w-full mx-4 text-center">
+            <div className="text-4xl mb-4">👁️</div>
+            <h3 className="text-lg font-bold mb-2">Day {previewTile.day} Preview</h3>
+            {previewTile.title && (
+              <p className="text-sm text-gray-600 mb-2">{previewTile.title}</p>
+            )}
+            {previewTile.body && (
+              <p className="text-xs text-gray-500">{previewTile.body}</p>
+            )}
+            <div className="mt-4 text-xs text-gray-400">
+              Long press to preview unlocked gifts!
+            </div>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };

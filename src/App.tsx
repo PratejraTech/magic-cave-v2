@@ -8,9 +8,16 @@ import ChildLoginModal from './components/ChildLoginModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeIntegrationService } from './lib/themeIntegration';
 import { EmotionalBackgroundProvider } from './lib/EmotionalBackground';
+import { ThemeModeProvider } from './contexts/ThemeModeContext';
+import { WinterThemeProvider, useWinterTheme } from './contexts/WinterThemeContext';
+import { WinterEffectsProvider, useWinterEffects } from './contexts/WinterEffectsContext';
+import WinterEffects from './components/winter/WinterEffects';
+import ChristmasShowcase from './components/ChristmasShowcase';
+import { BackgroundGradientAnimation } from './components/ui/background-gradient-animation';
 import { Parent, Child, Calendar } from './types/calendar';
 import type { Session } from '@supabase/supabase-js';
 import { authService } from './lib/auth';
+import WonderlandLayout from './components/layout/WonderlandLayout';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: string[] }> = ({
@@ -48,6 +55,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: st
 // Auth Page Component
 const AuthPage: React.FC = () => {
   const { isAuthenticated, userType, login, refreshProfile } = useAuth();
+  const { variant } = useWinterTheme();
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const [showChildLogin, setShowChildLogin] = React.useState(false);
   const location = useLocation();
@@ -177,23 +185,51 @@ const AuthPage: React.FC = () => {
 
   const [authStep, setAuthStep] = React.useState<'welcome' | 'parent-options' | 'child-options'>('welcome');
 
-  return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden winter-wonderland-bg">
+  const layoutMood = variant === 'masculine' ? 'frost' : variant === 'neutral' ? 'aurora' : 'ember';
 
-      {/* Winter Wonderland Snow Effects */}
-      <div className="winter-snow-overlay">
-        <div className="winter-snow-particle large" style={{left: '10%', animationDelay: '0s'}}>❄️</div>
-        <div className="winter-snow-particle medium" style={{left: '25%', animationDelay: '2s'}}>❄️</div>
-        <div className="winter-snow-particle small" style={{left: '40%', animationDelay: '4s'}}>❄️</div>
-        <div className="winter-snow-particle large" style={{left: '60%', animationDelay: '1s'}}>❄️</div>
-        <div className="winter-snow-particle medium" style={{left: '75%', animationDelay: '3s'}}>❄️</div>
-        <div className="winter-snow-particle small" style={{left: '85%', animationDelay: '5s'}}>❄️</div>
+  return (
+    <WonderlandLayout
+      title="Welcome to the Family Advent Portal"
+      subtitle="A Christmas wonderland filled with snow, butterflies, and heartfelt surprises for every child."
+      actions={
+        <button
+          onClick={() => setAuthStep('welcome')}
+          className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+        >
+          Reset Journey
+        </button>
+      }
+      mood={layoutMood}
+      showSnow
+      showButterflies
+      contentClassName="mx-auto flex w-full max-w-6xl flex-col items-center justify-center"
+    >
+      <div className="relative mb-10 h-72 w-full max-w-4xl overflow-hidden rounded-[2.5rem] border border-white/20 bg-white/10 shadow-2xl backdrop-blur-2xl">
+        <BackgroundGradientAnimation
+          gradientBackgroundStart="rgb(15, 23, 42)"
+          gradientBackgroundEnd="rgb(30, 58, 138)"
+          firstColor="255, 215, 0"
+          secondColor="220, 38, 38"
+          thirdColor="16, 185, 129"
+          fourthColor="147, 51, 234"
+          fifthColor="245, 158, 11"
+          sixthColor="236, 72, 153"
+          pointerColor="255, 215, 0"
+          size="85%"
+          blendingValue="hard-light"
+          interactive
+          containerClassName="absolute inset-0 opacity-50"
+        />
+        <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 text-center text-white">
+          <p className="text-lg uppercase tracking-[0.2em] text-white/80">Holiday Stories</p>
+          <h2 className="text-4xl font-bold md:text-5xl">Create Memories Together</h2>
+          <p className="max-w-2xl text-base text-white/80">
+            Invite your little ones into a handcrafted journey of kindness, surprises, and shimmering snow.
+          </p>
+        </div>
       </div>
 
-      {/* Holiday Lighting Effects */}
-      <div className="winter-holiday-lights"></div>
-
-      <div id="main-content" className="text-center max-w-md w-full mx-4 relative z-10">
+      <div id="main-content" className="relative z-10 w-full max-w-3xl text-center">
         {/* Welcome Step */}
         {authStep === 'welcome' && (
           <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
@@ -339,7 +375,7 @@ const AuthPage: React.FC = () => {
         onClose={() => setShowChildLogin(false)}
         onSuccess={handleChildLoginSuccess}
       />
-    </div>
+    </WonderlandLayout>
   );
 };
 
@@ -393,6 +429,7 @@ const AppRouter: React.FC = () => {
       <Routes>
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />
+        <Route path="/holiday/showcase" element={<ChristmasShowcase />} />
          <Route
            path="/parent/dashboard"
            element={
@@ -424,19 +461,50 @@ const AppRouter: React.FC = () => {
   );
 };
 
+// Winter Effects Wrapper Component
+const WinterEffectsWrapper: React.FC = () => {
+  const {
+    handleGestureMagic,
+    handleVoiceCommand,
+    handlePersonalizationUpdate,
+    handleAdaptiveEffect,
+    state
+  } = useWinterEffects();
+
+  return (
+    <WinterEffects
+      celebrationTrigger={state.celebrationTrigger?.type}
+      celebrationPosition={state.celebrationTrigger?.position}
+      onGestureMagic={handleGestureMagic}
+      onVoiceCommand={handleVoiceCommand}
+      onPersonalizationUpdate={handlePersonalizationUpdate}
+      onAdaptiveEffect={handleAdaptiveEffect}
+    />
+  );
+};
+
 // Main App Component
 function App() {
   return (
     <ErrorBoundary>
-      <EmotionalBackgroundProvider>
-        <AuthProvider>
-          {/* Skip Link for Accessibility */}
-          <a href="#main-content" className="skip-link">
-            Skip to main content
-          </a>
-          <AppRouter />
-        </AuthProvider>
-      </EmotionalBackgroundProvider>
+      <ThemeModeProvider>
+        <WinterThemeProvider>
+          <WinterEffectsProvider>
+            <EmotionalBackgroundProvider>
+              <AuthProvider>
+                {/* Skip Link for Accessibility */}
+                <a href="#main-content" className="skip-link">
+                  Skip to main content
+                </a>
+                <AppRouter />
+
+                {/* Winter Wonderland Effects */}
+                <WinterEffectsWrapper />
+              </AuthProvider>
+            </EmotionalBackgroundProvider>
+          </WinterEffectsProvider>
+        </WinterThemeProvider>
+      </ThemeModeProvider>
     </ErrorBoundary>
   );
 }

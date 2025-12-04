@@ -4,6 +4,54 @@ export default {
   theme: {
     extend: {
       colors: {
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
+        },
+        popover: {
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
+        },
+        primary: {
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
+        },
+        secondary: {
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
+        },
+        muted: {
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
+        },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
+        },
+        destructive: {
+          DEFAULT: 'var(--destructive)',
+          foreground: 'var(--destructive-foreground)',
+        },
+        sidebar: {
+          DEFAULT: 'var(--sidebar)',
+          foreground: 'var(--sidebar-foreground)',
+          primary: 'var(--sidebar-primary)',
+          'primary-foreground': 'var(--sidebar-primary-foreground)',
+          accent: 'var(--sidebar-accent)',
+          'accent-foreground': 'var(--sidebar-accent-foreground)',
+          border: 'var(--sidebar-border)',
+          ring: 'var(--sidebar-ring)',
+        },
+        'chart-1': 'var(--chart-1)',
+        'chart-2': 'var(--chart-2)',
+        'chart-3': 'var(--chart-3)',
+        'chart-4': 'var(--chart-4)',
+        'chart-5': 'var(--chart-5)',
         // Design Token Colors
         'dt-background': {
           light: 'var(--dt-color-background-light)',
@@ -63,6 +111,21 @@ export default {
           purple: '#9370DB',
           green: '#00FF7F',
           blue: '#00BFFF',
+        },
+        // Modern Christmas Magic Palette
+        'christmas-modern': {
+          'midnight': '#020617',      // Deep midnight blue
+          'slate': '#0f172a',         // Rich slate blue
+          'royal': '#1e3a8a',         // Royal blue
+          'gold': '#fbbf24',          // Golden yellow
+          'crimson': '#dc2626',       // Bright red
+          'emerald': '#10b981',       // Electric green
+          'purple': '#9333ea',        // Electric purple
+          'amber': '#f59e0b',         // Amber
+          'magenta': '#ec4899',       // Magenta
+          'cyan': '#06b6d4',          // Cyan
+          'electric-green': '#22c55e', // Electric green
+          'hot-pink': '#ec4899',      // Hot pink
         }
       },
       spacing: {
@@ -75,6 +138,9 @@ export default {
         'dt-xxl': 'var(--dt-spacing-xxl)',
       },
       borderRadius: {
+        lg: 'var(--radius-lg, 0.5rem)',
+        md: 'var(--radius-md, 0.375rem)',
+        sm: 'var(--radius-sm, 0.25rem)',
         'dt-sm': 'var(--dt-radius-sm)',
         'dt-md': 'var(--dt-radius-md)',
         'dt-lg': 'var(--dt-radius-lg)',
@@ -123,6 +189,9 @@ export default {
         'snow-fall': 'snow-fall 10s linear infinite',
         'frost-glow': 'frost-glow 3s ease-in-out infinite alternate',
         'ice-shimmer': 'ice-shimmer 4s ease-in-out infinite',
+        'gradient-x': 'gradient-x 15s ease infinite',
+        'gradient-y': 'gradient-y 15s ease infinite',
+        'gradient-xy': 'gradient-xy 15s ease infinite',
       },
       keyframes: {
         glow: {
@@ -144,6 +213,36 @@ export default {
         'ice-shimmer': {
           '0%, 100%': { opacity: '0.8', transform: 'scale(1)' },
           '50%': { opacity: '1', transform: 'scale(1.02)' },
+        },
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
+        },
+        'gradient-y': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'center top'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'center bottom'
+          }
+        },
+        'gradient-xy': {
+          '0%, 100%': {
+            'background-size': '400% 400%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
         },
       },
       boxShadow: {

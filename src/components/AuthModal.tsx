@@ -206,7 +206,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
           damping: 30,
           duration: 0.4
         }}
-        className="bg-white rounded-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20 hover-lift"
+        className="winter-wonderland-card frosted p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto winter-ornamentation"
       >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">

@@ -10,6 +10,9 @@ import { analytics } from '../lib/analytics';
 import { applyTemplateStyling } from '../lib/templateStyling';
 import { DEFAULT_TEMPLATES } from '../types/calendar';
 import { motion } from 'framer-motion';
+import WinterThemeToggle from './WinterThemeToggle';
+import { useWinterTheme } from '../contexts/WinterThemeContext';
+import WonderlandLayout from './layout/WonderlandLayout';
 
 // Import system prompt templates
 const SYSTEM_PROMPT_TEMPLATES = [
@@ -77,6 +80,7 @@ interface ParentDashboardProps {
 
 const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) => {
   const { userType, isAuthenticated, parent, child, logout, session } = useAuth();
+  const { variant } = useWinterTheme();
   const { tiles, loading, error, updateTile, uploadMedia } = useCalendarData();
   const [showTileEditor, setShowTileEditor] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
@@ -96,42 +100,68 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
   });
 
   // Only allow parents to access this dashboard (unless in test mode)
+  const layoutMood = variant === 'masculine' ? 'frost' : variant === 'neutral' ? 'aurora' : 'ember';
+
   if (!testMode && (!isAuthenticated || userType !== 'parent')) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h1>
-          <p className="text-gray-600">This page is only accessible to parents.</p>
+      <WonderlandLayout
+        title="Parents Only"
+        subtitle="Sign in to craft magical surprises for your little ones."
+        mood={layoutMood}
+        showSnow
+        showButterflies
+        contentClassName="flex items-center justify-center"
+      >
+        <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
+          <p className="text-lg text-white/90">This dashboard is only accessible to parents.</p>
+          <button
+            onClick={() => (window.location.href = '/auth')}
+            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
+          >
+            Return to Login
+          </button>
         </div>
-      </div>
+      </WonderlandLayout>
     );
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your calendar...</p>
+      <WonderlandLayout
+        title="Gathering Your Workshop"
+        subtitle="Fetching calendar data, snow, butterflies, and cheer..."
+        mood={layoutMood}
+        showSnow
+        contentClassName="flex items-center justify-center"
+      >
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/20 bg-white/10 px-10 py-8 text-white shadow-2xl backdrop-blur-xl">
+          <div className="h-12 w-12 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          <p className="text-white/90">Loading your calendar...</p>
         </div>
-      </div>
+      </WonderlandLayout>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-800 mb-4">Error</h1>
-          <p className="text-red-600 mb-4">{error}</p>
+      <WonderlandLayout
+        title="Something Went Frosty"
+        subtitle="Refresh and we’ll retune the workshop."
+        mood="ember"
+        showSnow
+        showButterflies={false}
+        contentClassName="flex items-center justify-center"
+      >
+        <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
+          <p className="text-lg text-white/90">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
             Try Again
           </button>
         </div>
-      </div>
+      </WonderlandLayout>
     );
   }
 
@@ -191,26 +221,16 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
   };
 
   return (
-    <div className="min-h-screen winter-wonderland-bg p-4 sm:p-6 relative overflow-hidden">
-      {/* Winter Wonderland Snow Effects */}
-      <div className="winter-snow-overlay fixed inset-0 pointer-events-none">
-        <div className="winter-snow-particle large" style={{left: '15%', animationDelay: '0s'}}>❄️</div>
-        <div className="winter-snow-particle medium" style={{left: '35%', animationDelay: '3s'}}>❄️</div>
-        <div className="winter-snow-particle small" style={{left: '55%', animationDelay: '6s'}}>❄️</div>
-        <div className="winter-snow-particle large" style={{left: '75%', animationDelay: '2s'}}>❄️</div>
-        <div className="winter-snow-particle medium" style={{left: '85%', animationDelay: '5s'}}>❄️</div>
-      </div>
-
-      {/* Holiday Lighting Effects */}
-      <div className="winter-holiday-lights fixed inset-0 pointer-events-none"></div>
-
+    <WonderlandLayout
+      title="Parent Dashboard"
+      subtitle="Customize your child's advent calendar with messages, photos, and magical gifts."
+      mood={layoutMood}
+      showSnow
+      showButterflies
+      actions={<WinterThemeToggle />}
+      contentClassName="relative space-y-6"
+    >
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="mb-6 sm:mb-8 winter-ornamentation winter-magic-sparkle">
-          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400 bg-clip-text text-transparent mb-2">
-            Parent Dashboard
-          </h1>
-          <p className="text-sm sm:text-base text-emerald-100/80">Customize your child's advent calendar with messages, photos, and magical gifts.</p>
-        </div>
 
         <div className="winter-wonderland-card frosted p-4 sm:p-6 mb-4 sm:mb-6 winter-ornamentation">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
@@ -746,7 +766,7 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
           }}
         />
       )}
-    </div>
+    </WonderlandLayout>
   );
 };
 

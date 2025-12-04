@@ -4,8 +4,13 @@ import TemplateErrorBoundary from './TemplateErrorBoundary';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
 import { useEmotionalResponse } from '../lib/EmotionalBackground';
+import { useWinterTheme } from '../contexts/WinterThemeContext';
+import { useWinterEffects } from '../contexts/WinterEffectsContext';
 import { Gift, CalendarTile, GiftType, TemplateMetadata } from '../types/calendar';
 import { applyTemplateStyling } from '../lib/templateStyling';
+import { VoiceCommandProcessor } from '../lib/voiceCommandProcessor';
+import { BackgroundGradientAnimation } from './ui/background-gradient-animation';
+import WonderlandLayout from './layout/WonderlandLayout';
 
 interface ChildCalendarViewProps {
   testMode?: boolean;
@@ -13,10 +18,17 @@ interface ChildCalendarViewProps {
 
 const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false }) => {
   const { userType, isAuthenticated, child } = useAuth();
+  const { variant } = useWinterTheme();
   const { triggerJoy, triggerCelebration, triggerAnticipation } = useEmotionalResponse();
+  const { triggerCelebration: triggerWinterEffectsCelebration } = useWinterEffects();
   const [showCelebration, setShowCelebration] = React.useState(false);
   const [celebrationMessage, setCelebrationMessage] = React.useState('');
   const [unlockedCount, setUnlockedCount] = React.useState(0);
+
+  // Voice command state
+  const [voiceFeedback, setVoiceFeedback] = React.useState<string | null>(null);
+  const [highlightedTile, setHighlightedTile] = React.useState<CalendarTile | null>(null);
+  const [voiceCommandProcessor, setVoiceCommandProcessor] = React.useState<VoiceCommandProcessor | null>(null);
 
   // Mock data for testing
   const mockTiles: CalendarTile[] = Array.from({ length: 25 }, (_, i) => ({
@@ -98,54 +110,92 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
     }
   }, [child, childData]);
 
+  // Initialize voice command processor
+  useEffect(() => {
+    if (tiles.length > 0) {
+      const context = {
+        availableTiles: tiles,
+        unlockedTiles: tiles.filter(tile => tile.gift_unlocked),
+        currentDay: new Date().getDate(),
+        totalDays: tiles.length,
+        lastUnlockedGift: lastUnlockedGift
+      };
+
+      const processor = new VoiceCommandProcessor(context);
+      setVoiceCommandProcessor(processor);
+    }
+  }, [tiles, lastUnlockedGift]);
+
+
+
   // Check if user has access (authenticated child, guest, or test mode)
   const hasAccess = testMode ||
     (isAuthenticated && userType === 'child') ||
     childData ||
     localStorage.getItem('guest_session') !== null;
 
+  const layoutMood = variant === 'masculine' ? 'frost' : variant === 'neutral' ? 'aurora' : 'ember';
+
   if (!hasAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h1>
-          <p className="text-gray-600 mb-4">This page is only accessible to children.</p>
+      <WonderlandLayout
+        title="Only For Little Explorers"
+        subtitle="Ask a grown-up for help or jump back to the welcome page."
+        mood={layoutMood}
+        showSnow
+        showButterflies
+        contentClassName="flex items-center justify-center"
+      >
+        <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
+          <p className="text-lg text-white/90">This page is only accessible to children.</p>
           <button
-            onClick={() => window.location.href = '/auth'}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            onClick={() => (window.location.href = '/auth')}
+            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
-            Go to Login
+            Return to Login
           </button>
         </div>
-      </div>
+      </WonderlandLayout>
     );
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your calendar...</p>
+      <WonderlandLayout
+        title="Preparing Your Calendar"
+        subtitle="Gathering butterflies, snowflakes, and tiny gifts..."
+        mood={layoutMood}
+        showSnow
+        contentClassName="flex items-center justify-center"
+      >
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/20 bg-white/10 px-10 py-8 text-white shadow-2xl backdrop-blur-xl">
+          <div className="h-12 w-12 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          <p className="text-white/90">Loading your calendar...</p>
         </div>
-      </div>
+      </WonderlandLayout>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-800 mb-4">Error</h1>
-          <p className="text-red-600 mb-4">{error}</p>
+      <WonderlandLayout
+        title="Something Sparkly Went Wrong"
+        subtitle="A snow sprite got tangled. Please try again."
+        mood="ember"
+        showSnow
+        showButterflies={false}
+        contentClassName="flex items-center justify-center"
+      >
+        <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
+          <p className="text-lg text-white/90">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
             Try Again
           </button>
         </div>
-      </div>
+      </WonderlandLayout>
     );
   }
 
@@ -191,19 +241,157 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
     }
   };
 
+  // Voice command handler (defined after handleUnlockTile to avoid hoisting issues)
+  const handleVoiceCommand = React.useCallback(async (command: any) => {
+    if (!voiceCommandProcessor) return;
+
+    const result = voiceCommandProcessor.processCommand(command);
+    if (!result) return;
+
+    console.log('🎤 Processed voice command:', result);
+
+    // Show voice feedback
+    setVoiceFeedback(result.response);
+
+    // Handle different actions
+    switch (result.action) {
+      case 'unlock_tile':
+        if (result.target && typeof result.target === 'object' && 'tile_id' in result.target) {
+          try {
+            await handleUnlockTile((result.target as CalendarTile).tile_id);
+            setVoiceFeedback('🎁 Gift unlocked successfully!');
+          } catch (error) {
+            setVoiceFeedback('❌ Sorry, couldn\'t unlock that gift right now.');
+          }
+        }
+        break;
+
+      case 'highlight_tile':
+        if (result.target && typeof result.target === 'object' && 'tile_id' in result.target) {
+          setHighlightedTile(result.target as CalendarTile);
+          // Auto-clear highlight after 3 seconds
+          setTimeout(() => setHighlightedTile(null), 3000);
+        }
+        break;
+
+      case 'show_unlocked_gifts':
+        // Trigger celebration for showing gifts
+        triggerWinterEffectsCelebration(result.celebration || 'gift_show_magic');
+        break;
+
+      case 'show_calendar':
+        // Scroll to top to show calendar
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        triggerWinterEffectsCelebration(result.celebration || 'calendar_show_magic');
+        break;
+
+      case 'show_progress':
+      case 'show_status':
+        // Update progress display
+        const unlocked = tiles.filter(t => t.gift_unlocked).length;
+        setUnlockedCount(unlocked);
+        triggerWinterEffectsCelebration(result.celebration || 'progress_magic');
+        break;
+
+      case 'show_help':
+        // Show available commands
+        const commands = voiceCommandProcessor.getAvailableCommands();
+        setVoiceFeedback(`Try saying: ${commands.slice(0, 3).join(', ')}... 🎤`);
+        triggerWinterEffectsCelebration(result.celebration || 'help_magic');
+        break;
+
+      case 'celebrate':
+        triggerCelebration(2000);
+        setCelebrationMessage(result.response);
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 3000);
+        break;
+
+      case 'no_action':
+        // Just show the response
+        break;
+    }
+
+    // Trigger celebration if specified
+    if (result.celebration) {
+      triggerWinterEffectsCelebration(result.celebration);
+    }
+
+    // Auto-clear voice feedback after 4 seconds
+    setTimeout(() => setVoiceFeedback(null), 4000);
+  }, [voiceCommandProcessor, handleUnlockTile, tiles, triggerWinterEffectsCelebration, triggerCelebration]);
+
+  // Connect voice command handler to WinterEffects context
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).calendarVoiceHandler = handleVoiceCommand;
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as any).calendarVoiceHandler;
+      }
+    };
+  }, [handleVoiceCommand]);
+
   return (
     <TemplateErrorBoundary>
-      <div className="min-h-screen winter-wonderland-bg p-4 sm:p-6 relative overflow-hidden">
-        {/* Winter Wonderland Snow Effects */}
-        <div className="winter-snow-overlay fixed inset-0 pointer-events-none">
-          <div className="winter-snow-particle large" style={{left: '20%', animationDelay: '0s'}}>❄️</div>
-          <div className="winter-snow-particle medium" style={{left: '40%', animationDelay: '4s'}}>❄️</div>
-          <div className="winter-snow-particle small" style={{left: '60%', animationDelay: '8s'}}>❄️</div>
-          <div className="winter-snow-particle large" style={{left: '80%', animationDelay: '2s'}}>❄️</div>
-        </div>
+      <WonderlandLayout
+        title={childData?.name ? `${childData.name}'s Enchanted Calendar` : 'Welcome, Little Explorer'}
+        subtitle="Unlock a new memory filled with love, snow, and sparkle each day."
+        mood={layoutMood}
+        showSnow
+        showButterflies
+        contentClassName="mx-auto flex w-full max-w-5xl flex-col gap-8"
+      >
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-2xl">
+          <BackgroundGradientAnimation
+            gradientBackgroundStart="rgb(2, 6, 23)"
+            gradientBackgroundEnd="rgb(15, 23, 42)"
+            firstColor="34, 197, 94"
+            secondColor="239, 68, 68"
+            thirdColor="251, 191, 36"
+            fourthColor="168, 85, 247"
+            fifthColor="236, 72, 153"
+            interactive
+            containerClassName="absolute inset-0 opacity-40"
+          />
+          <div className="relative z-10 text-center text-white">
+            <h1 className="text-3xl font-semibold tracking-tight drop-shadow sm:text-4xl">
+              {childData?.name ? `${childData.name}'s Magical Calendar` : 'Your Magical Calendar'}
+            </h1>
+            <p className="mt-3 text-white/80">Discover daily surprises and messages from your loved ones! ✨</p>
 
-        {/* Holiday Lighting Effects */}
-        <div className="winter-holiday-lights fixed inset-0 pointer-events-none"></div>
+            <div className="mx-auto mt-6 w-full max-w-md rounded-2xl border border-white/30 bg-white/10 p-4 shadow-lg shadow-rose-500/20 backdrop-blur-xl">
+              <div className="mb-2 flex items-center justify-between text-sm text-white/80">
+                <span>Your Progress</span>
+                <span>{unlockedCount}/25 Magical Days</span>
+              </div>
+              <div className="h-3 w-full rounded-full border border-white/20 bg-white/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 shadow-lg shadow-rose-500/40 transition-all duration-1000"
+                  style={{ width: `${(unlockedCount / 25) * 100}%` }}
+                  role="progressbar"
+                  aria-valuenow={unlockedCount}
+                  aria-valuemax={25}
+                  aria-label={`Progress: ${unlockedCount} of 25 magical surprises unlocked`}
+                />
+              </div>
+              <div className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.3em] text-white/50">
+                <span>Start</span>
+                <span>{unlockedCount > 0 ? `${Math.round((unlockedCount / 25) * 100)}%` : 'Ready'}</span>
+                <span>Finish</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => (window.location.href = '/parent/dashboard')}
+              className="mt-6 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+            >
+              Switch to Parent View 👨‍👩‍👧‍👦
+            </button>
+          </div>
+        </div>
 
         {/* Celebration Overlay */}
         {showCelebration && (
@@ -221,69 +409,38 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto relative z-10">
-        <div className="text-center mb-6 sm:mb-8 winter-ornamentation winter-magic-sparkle">
-          <h1 className="headline-1 bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent mb-2">
-            {childData?.name ? `${childData.name}'s Magical Calendar` : 'Your Magical Calendar'}
-          </h1>
-          <p className="body text-rose-100/80 px-2 mb-4">Discover daily surprises and messages from your loved ones! ✨</p>
-
-          {/* Emotional Progress Indicator */}
-          <div className="winter-wonderland-card frosted p-4 mb-4 max-w-md mx-auto">
-            <div className="flex items-center justify-between mb-2">
-              <span className="label text-rose-200/70">Your Progress</span>
-              <span className="caption bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">{unlockedCount}/25 Magical Days</span>
-            </div>
-            <div className="w-full bg-white/10 rounded-full h-3 mb-2 border border-white/20">
-              <div
-                className="bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 h-3 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-rose-500/30"
-                style={{ width: `${(unlockedCount / 25) * 100}%` }}
-                role="progressbar"
-                aria-valuenow={unlockedCount}
-                aria-valuemax={25}
-                aria-label={`Progress: ${unlockedCount} of 25 magical surprises unlocked`}
-              ></div>
-            </div>
-            <div className="flex justify-between text-xs text-rose-200/60">
-              <span>🎄 Start</span>
-              <span>🎊 {unlockedCount > 0 ? `${Math.round((unlockedCount / 25) * 100)}% Complete` : 'Begin Your Journey'}</span>
-              <span>🎁 Finish</span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => window.location.href = '/parent/dashboard'}
-            className="winter-wonderland-button frosted text-sm hover:scale-105 transition-all duration-300"
-          >
-            Switch to Parent View 👨‍👩‍👧‍👦
-          </button>
-        </div>
-
-        <ChildCalendar
-          tiles={tiles}
-          onUnlockTile={handleUnlockTile}
-          layout={template?.layout}
-          gradients={template?.gradients}
-          animations={template?.animations}
-        />
-
-
-
-        {/* Recent activity */}
-        {lastUnlockedGift && (
-          <div className="mt-4 sm:mt-6 winter-wonderland-card frosted p-4 sm:p-6 winter-ornamentation">
-            <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-4">Latest Unlock</h2>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl mb-2" role="img" aria-label="celebration">🎉</div>
-              <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">{lastUnlockedGift.title}</h3>
-              {lastUnlockedGift.description && (
-                <p className="text-sm sm:text-base text-emerald-100/80">{lastUnlockedGift.description}</p>
-              )}
+        {/* Voice Feedback Overlay */}
+        {voiceFeedback && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40">
+            <div className="winter-wonderland-card frosted p-4 text-center animate-bounce">
+              <div className="text-2xl mb-2">🎤</div>
+              <p className="text-sm font-medium">{voiceFeedback}</p>
             </div>
           </div>
         )}
-      </div>
-    </div>
+
+        <div className="relative z-10 space-y-6">
+          <ChildCalendar
+            tiles={tiles}
+            onUnlockTile={handleUnlockTile}
+            layout={template?.layout}
+            gradients={template?.gradients}
+            animations={template?.animations}
+            highlightedTile={highlightedTile}
+          />
+
+          {lastUnlockedGift && (
+            <div className="rounded-3xl border border-white/20 bg-white/10 p-6 text-center text-white shadow-2xl backdrop-blur-xl">
+              <h2 className="text-xl font-semibold">Latest Unlock</h2>
+              <div className="mt-4 text-4xl" role="img" aria-label="celebration">
+                🎉
+              </div>
+              <h3 className="mt-3 text-lg font-semibold">{lastUnlockedGift.title}</h3>
+              {lastUnlockedGift.description && <p className="mt-1 text-white/80">{lastUnlockedGift.description}</p>}
+            </div>
+          )}
+        </div>
+      </WonderlandLayout>
     </TemplateErrorBoundary>
   );
 };
