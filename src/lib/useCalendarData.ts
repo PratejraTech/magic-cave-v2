@@ -37,6 +37,52 @@ export const useCalendarData = (): UseCalendarDataReturn => {
   const API_BASE = (import.meta as any).env?.VITE_CHAT_API_URL || (import.meta as any).env?.CHAT_API_URL || ((import.meta as any).env?.PROD ? '' : 'https://toharper.dad');
 
   const fetchTiles = useCallback(async () => {
+    // Check if this is a guest session
+    const guestSession = localStorage.getItem('guest_session');
+    if (guestSession) {
+      try {
+        const parsed = JSON.parse(guestSession);
+        if (parsed.isGuest && parsed.calendar) {
+          // Provide demo tiles for guest users
+          const demoTiles: CalendarTile[] = Array.from({ length: 25 }, (_, i) => ({
+            tile_id: `guest-tile-${i + 1}`,
+            calendar_id: parsed.calendar.calendar_id,
+            day: i + 1,
+            title: i < 3 ? `Demo Day ${i + 1}` : undefined,
+            body: i < 3 ? `This is a demo message for day ${i + 1}. Try the guest experience!` : undefined,
+            media_url: undefined,
+            gift: i < 2 ? {
+              type: 'sticker' as const,
+              title: `Demo Gift ${i + 1}`,
+              description: `A special demo gift for day ${i + 1}`,
+              sticker: ['🎄', '🎁', '⭐'][i]
+            } : undefined,
+            gift_unlocked: false,
+            version: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }));
+
+          setTiles(demoTiles);
+
+          // Set demo template
+          const demoTemplate: TemplateMetadata = {
+            colors: { primary: '#FFB3BA', secondary: '#BAFFC9', accent: '#BAE1FF' },
+            fonts: { heading: 'Inter', body: 'Inter' },
+            icons: ['butterfly', 'star', 'heart'],
+            layout: 'rounded_tiles'
+          };
+          setTemplate(demoTemplate);
+          applyTemplateStyling(demoTemplate);
+
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing guest session:', error);
+      }
+    }
+
     if (!isAuthenticated || !session?.access_token) {
       // Try to load from cache for offline support
       const cached = localStorage.getItem(CACHE_KEY);
@@ -187,10 +233,17 @@ export const useCalendarData = (): UseCalendarDataReturn => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
         // Revert optimistic update on failure
         setTiles(previousTiles);
-        throw new Error(errorData.error || 'Failed to update tile');
+        let errorMessage = `Failed to update tile (${response.status})`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          console.error('Failed to parse error response JSON:', parseError);
+          errorMessage = `Server error (${response.status}): ${response.statusText || 'Unknown error'}`;
+        }
+        throw new Error(errorMessage);
       }
 
       // Update cache
@@ -223,8 +276,15 @@ export const useCalendarData = (): UseCalendarDataReturn => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to upload media');
+        let errorMessage = `Failed to upload media (${response.status})`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          console.error('Failed to parse error response JSON:', parseError);
+          errorMessage = `Server error (${response.status}): ${response.statusText || 'Unknown error'}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -240,6 +300,46 @@ export const useCalendarData = (): UseCalendarDataReturn => {
   }, [session?.access_token, API_BASE]);
 
   const unlockTile = useCallback(async (tileId: string, note?: string): Promise<Gift> => {
+    // Check if this is a guest session
+    const guestSession = localStorage.getItem('guest_session');
+    if (guestSession) {
+      try {
+        const parsed = JSON.parse(guestSession);
+        if (parsed.isGuest) {
+          // Handle guest tile unlocking locally
+          const tile = tiles.find(t => t.tile_id === tileId);
+          if (!tile) throw new Error('Tile not found');
+          if (!tile.gift) throw new Error('No gift available for this tile');
+
+          // Update tile locally for guest session
+          setTiles(prevTiles =>
+            prevTiles.map(t =>
+              t.tile_id === tileId
+                ? {
+                    ...t,
+                    gift_unlocked: true,
+                    note_from_child: note || undefined,
+                    opened_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                  }
+                : t
+            )
+          );
+
+          // Log analytics events (will be tracked but not persisted for guests)
+          analytics.logGiftUnlocked(tileId, tile.day, tile.gift.type);
+          if (note) {
+            analytics.logNoteSubmitted(tileId, tile.day, note.length);
+          }
+
+          return tile.gift;
+        }
+      } catch (error) {
+        console.error('Error handling guest tile unlock:', error);
+        throw new Error('Failed to unlock tile for guest session');
+      }
+    }
+
     if (!session?.access_token) throw new Error('Not authenticated');
 
     // For now, simulate unlocking - in a real implementation, this would call an API endpoint

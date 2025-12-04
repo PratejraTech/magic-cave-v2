@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,33 +11,576 @@
 
 @layer base {
   :root {
-    /* Modern Technology Christmas Wonderland Theme */
-    --theme-primary: #1e3a8a; /* Deep Ice Blue */
-    --theme-secondary: #f8fafc; /* Frost White */
-    --theme-accent: #10b981; /* Aurora Green */
-    --theme-neutral: #64748b; /* Silver Frost */
-    --theme-background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+    /* 🎨 Dark Theme - Tech Industry Standards (Apple, Linear, Stripe, OpenAI, Anthropic) */
+
+    /* Base Layers - Cool Neutral Palette */
+    --color-bg-primary: #0C0C0E;         /* Deep desaturated charcoal */
+    --color-bg-secondary: #141416;       /* Secondary background */
+    --color-surface-low: #1B1B1E;        /* Low elevation surface */
+    --color-surface-mid: #222226;        /* Mid elevation surface */
+    --color-surface-high: #2C2C31;       /* High elevation surface */
+
+    /* Text Colors - High Contrast on Dark */
+    --color-text-primary: rgba(255, 255, 255, 0.92);   /* Primary text */
+    --color-text-secondary: rgba(255, 255, 255, 0.68); /* Secondary text */
+    --color-text-tertiary: rgba(255, 255, 255, 0.45);  /* Tertiary text */
+    --color-text-inverse: #0C0C0E;       /* Inverse text for light surfaces */
+
+    /* Accent System - Tech Confidence (Electric Cyan) */
+    --color-accent-primary: #3FD0C9;     /* Electric Cyan - Main accent */
+    --color-accent-hover: #4AD7CF;       /* Intensified accent for hover */
+    --color-accent-outline: rgba(63, 208, 201, 0.35); /* Outline accent */
+    --color-accent-focus: rgba(63, 208, 201, 0.6);    /* Focus ring accent */
+
+    /* Semantic Colors - Adapted for Dark Theme */
+    --color-success: #3FD0C9;            /* Electric Cyan - Success */
+    --color-success-light: rgba(63, 208, 201, 0.1);   /* Light success */
+    --color-success-dark: #2BA89F;       /* Dark success */
+
+    --color-warning: #F59E0B;            /* Amber - Warning */
+    --color-warning-light: rgba(245, 158, 11, 0.1);   /* Light warning */
+    --color-warning-dark: #D97706;       /* Dark warning */
+
+    --color-error: #EF4444;              /* Red - Error */
+    --color-error-light: rgba(239, 68, 68, 0.1);      /* Light error */
+    --color-error-dark: #DC2626;         /* Dark error */
+
+    --color-info: #3B82F6;               /* Blue - Information */
+    --color-info-light: rgba(59, 130, 246, 0.1);      /* Light info */
+    --color-info-dark: #2563EB;          /* Dark info */
+
+    /* Neutral Colors - Dark Theme Grays */
+    --color-neutral-50: rgba(255, 255, 255, 0.05);    /* Very light on dark */
+    --color-neutral-100: rgba(255, 255, 255, 0.08);   /* Light on dark */
+    --color-neutral-200: rgba(255, 255, 255, 0.12);   /* Medium light on dark */
+    --color-neutral-300: rgba(255, 255, 255, 0.16);   /* Medium on dark */
+    --color-neutral-400: rgba(255, 255, 255, 0.24);   /* Medium dark on dark */
+    --color-neutral-500: rgba(255, 255, 255, 0.32);   /* Base on dark */
+    --color-neutral-600: rgba(255, 255, 255, 0.45);   /* Medium dark on dark */
+    --color-neutral-700: rgba(255, 255, 255, 0.68);   /* Dark on dark */
+    --color-neutral-800: rgba(255, 255, 255, 0.85);   /* Very dark on dark */
+    --color-neutral-900: rgba(255, 255, 255, 0.92);   /* Almost white on dark */
+
+    /* Background Colors - Dark Theme */
+    --color-bg-overlay: rgba(12, 12, 14, 0.8);        /* Dark overlay */
+    --color-bg-christmas: linear-gradient(135deg,
+      rgba(12, 12, 14, 0.95) 0%,       /* Deep charcoal */
+      rgba(20, 20, 22, 0.9) 30%,       /* Secondary dark */
+      rgba(27, 27, 30, 0.85) 60%,      /* Surface low */
+      rgba(44, 44, 49, 0.95) 100%      /* Surface high */
+    );
+
+    /* Interactive States - Dark Theme */
+    --color-hover-primary: rgba(63, 208, 201, 0.08);  /* Accent hover */
+    --color-hover-secondary: rgba(255, 255, 255, 0.05); /* Neutral hover */
+    --color-active-primary: rgba(63, 208, 201, 0.12);  /* Accent active */
+    --color-active-secondary: rgba(255, 255, 255, 0.08); /* Neutral active */
+    --color-focus-ring: rgba(63, 208, 201, 0.4);      /* Accent focus */
+
+    /* Border Colors - Dark Theme */
+    --color-border-light: rgba(255, 255, 255, 0.08);   /* Light border */
+    --color-border-medium: rgba(255, 255, 255, 0.12);  /* Medium border */
+    --color-border-dark: rgba(255, 255, 255, 0.16);    /* Dark border */
+    --color-border-brand: #3FD0C9;       /* Accent border */
+
+    /* Shadow Colors - Tech Industry Standards */
+    --color-shadow-light: rgba(0, 0, 0, 0.15);         /* Light shadow */
+    --color-shadow-medium: rgba(0, 0, 0, 0.25);        /* Medium shadow */
+    --color-shadow-heavy: rgba(0, 0, 0, 0.35);         /* Heavy shadow */
+    --color-shadow-brand: rgba(63, 208, 201, 0.15);    /* Accent shadow */
+
+    /* Surface Shadows - Tech Standard */
+    --shadow-surface: 0px 4px 18px rgba(0, 0, 0, 0.35);
+    --shadow-floating: 0px 8px 28px rgba(0, 0, 0, 0.45);
+
+    /* 🎯 Apple-Inspired Typography Scale */
+
+    /* Font Families - Tech Industry Standards */
+    --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    --font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+    --font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Fira Code', monospace;
+
+    /* Font Sizes - Tech-Optimized Scale */
+    --font-size-xs: 0.875rem;     /* 14px - Caption */
+    --font-size-sm: 1rem;         /* 16px - Body M */
+    --font-size-base: 1.125rem;   /* 18px - Body L */
+    --font-size-lg: 1.25rem;      /* 20px - H3 */
+    --font-size-xl: 1.5rem;       /* 24px - H2 */
+    --font-size-2xl: 1.875rem;    /* 30px - H1 */
+    --font-size-3xl: 2.25rem;     /* 36px - Large H1 */
+    --font-size-4xl: 3rem;        /* 48px - Display */
+    --font-size-5xl: 3.75rem;     /* 60px - Large Display */
+
+    /* Font Weights - Tech Standard */
+    --font-weight-thin: 100;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
+
+    /* Line Heights - Tech Standard */
+    --line-height-tight: 1.2;     /* Headers */
+    --line-height-snug: 1.4;      /* UI elements */
+    --line-height-normal: 1.5;    /* Body text */
+    --line-height-relaxed: 1.6;   /* Readability */
+    --line-height-loose: 1.8;     /* Emphasis */
+
+    /* Letter Spacing - Tech Crispness */
+    --letter-spacing-tighter: -0.02em;
+    --letter-spacing-tight: -0.01em;
+    --letter-spacing-normal: 0em;
+    --letter-spacing-wide: 0.01em;
+    --letter-spacing-wider: 0.02em;
+    --letter-spacing-widest: 0.04em;
+
+    /* 📱 Mobile-First Responsive Design Tokens */
+
+/* Breakpoint System */
+--breakpoint-sm: 640px;
+--breakpoint-md: 768px;
+--breakpoint-lg: 1024px;
+--breakpoint-xl: 1280px;
+
+/* Responsive Spacing Scale */
+--space-xs: 0.5rem;      /* 8px - Mobile first */
+--space-sm: 0.75rem;     /* 12px */
+--space-md: 1rem;        /* 16px */
+--space-lg: 1.5rem;      /* 24px */
+--space-xl: 2rem;        /* 32px */
+--space-2xl: 3rem;       /* 48px */
+--space-3xl: 4rem;       /* 64px */
+
+/* Responsive Typography Scale */
+--text-xs-mobile: 0.75rem;
+--text-sm-mobile: 0.875rem;
+--text-base-mobile: 1rem;
+--text-lg-mobile: 1.125rem;
+--text-xl-mobile: 1.25rem;
+
+--text-xs-tablet: 0.8125rem;
+--text-sm-tablet: 0.9375rem;
+--text-base-tablet: 1.0625rem;
+--text-lg-tablet: 1.1875rem;
+--text-xl-tablet: 1.3125rem;
+
+--text-xs-desktop: 0.875rem;
+--text-sm-desktop: 1rem;
+--text-base-desktop: 1.125rem;
+--text-lg-desktop: 1.25rem;
+--text-xl-desktop: 1.5rem;
+
+/* Performance Optimizations */
+.wonderland-card,
+.wonderland-button-primary,
+.wonderland-button-secondary {
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.wonderland-card::before,
+.wonderland-button-primary::after,
+.wonderland-button-secondary::after {
+  will-change: opacity, transform;
+}
+
+/* Optimized Animation Performance */
+.christmas-village-bg,
+.christmas-house,
+.christmas-tree,
+.butterfly {
+  will-change: transform;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* 📐 Component Design Tokens */
+
+    /* Spacing Scale - 8pt System (Tech Industry Standard) */
+    --space-xxs: 0.25rem;  /* 4px */
+    --space-xs: 0.5rem;    /* 8px */
+    --space-sm: 0.75rem;   /* 12px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 1.5rem;    /* 24px */
+    --space-xl: 2rem;      /* 32px */
+    --space-xxl: 3rem;     /* 48px */
+
+    /* Legacy Spacing (Maintained for Compatibility) */
+    --space-1: var(--space-xxs);
+    --space-2: var(--space-xs);
+    --space-3: var(--space-sm);
+    --space-4: var(--space-md);
+    --space-5: var(--space-lg);
+    --space-6: var(--space-xl);
+    --space-8: var(--space-xxl);
+    --space-10: 2.5rem;    /* 40px */
+    --space-12: 3rem;      /* 48px */
+    --space-16: 4rem;      /* 64px */
+    --space-20: 5rem;      /* 80px */
+    --space-24: 6rem;      /* 96px */
+    --space-32: 8rem;      /* 128px */
+
+     /* Border Radius - Modern 2025 Design (Apple/Google/Airbnb inspired) */
+     --radius-none: 0;
+     --radius-xs: 0.25rem;     /* 4px - Minimal rounding */
+     --radius-sm: 0.5rem;      /* 8px - Soft corners */
+     --radius-base: 0.75rem;   /* 12px - Modern rounding */
+     --radius-md: 1rem;        /* 16px - Gentle curves */
+     --radius-lg: 1.25rem;     /* 20px - Rounded */
+     --radius-xl: 1.5rem;      /* 24px - Very rounded */
+     --radius-2xl: 2rem;       /* 32px - Pill-like */
+     --radius-3xl: 2.5rem;     /* 40px - Extra rounded */
+     --radius-full: 9999px;    /* Fully rounded */
+
+    /* Shadows - Layered Depth */
+    --shadow-xs: 0 1px 2px 0 var(--color-shadow-light);
+    --shadow-sm: 0 1px 3px 0 var(--color-shadow-medium), 0 1px 2px -1px var(--color-shadow-light);
+    --shadow-base: 0 4px 6px -1px var(--color-shadow-medium), 0 2px 4px -2px var(--color-shadow-light);
+    --shadow-md: 0 10px 15px -3px var(--color-shadow-medium), 0 4px 6px -4px var(--color-shadow-light);
+    --shadow-lg: 0 20px 25px -5px var(--color-shadow-heavy), 0 8px 10px -6px var(--color-shadow-light);
+    --shadow-xl: 0 25px 50px -12px var(--color-shadow-heavy);
+    --shadow-2xl: 0 40px 80px -20px var(--color-shadow-heavy);
+
+    /* Inner Shadows - Contained Depth */
+    --shadow-inner: inset 0 2px 4px 0 var(--color-shadow-light);
+    --shadow-inner-sm: inset 0 1px 2px 0 var(--color-shadow-light);
+
+    /* Brand Shadows - Emotional Glow */
+    --shadow-brand-xs: 0 1px 2px 0 var(--color-shadow-brand);
+    --shadow-brand-sm: 0 1px 3px 0 rgba(255, 107, 157, 0.15), 0 1px 2px -1px rgba(255, 107, 157, 0.1);
+    --shadow-brand-base: 0 4px 6px -1px rgba(255, 107, 157, 0.2), 0 2px 4px -2px rgba(255, 107, 157, 0.1);
+    --shadow-brand-glow: 0 0 20px rgba(255, 107, 157, 0.3);
+
+     /* Transitions - Modern 2025 Smooth Interactions */
+     --transition-instant: 100ms cubic-bezier(0.4, 0, 1, 1);
+     --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+     --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+     --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+     --transition-bounce: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+     --transition-spring: 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* Z-Index Scale - Proper Layering */
+    --z-index-dropdown: 1000;
+    --z-index-sticky: 1020;
+    --z-index-fixed: 1030;
+    --z-index-modal-backdrop: 1040;
+    --z-index-modal: 1050;
+    --z-index-popover: 1060;
+    --z-index-tooltip: 1070;
+    --z-index-toast: 1080;
+
+    /* Legacy Theme Variables - Backward Compatibility */
+    --theme-primary: var(--color-brand-primary);
+    --theme-secondary: var(--color-brand-secondary);
+    --theme-accent: var(--color-success);
+    --theme-neutral: var(--color-neutral-100);
+    --theme-background: var(--color-bg-christmas);
     --theme-heading-font: 'Inter', system-ui, sans-serif;
     --theme-body-font: 'Inter', system-ui, sans-serif;
-    /* Legacy template variables for backward compatibility */
-    --template-primary: #1e3a8a;
-    --template-secondary: #f8fafc;
-    --template-accent: #10b981;
-    --template-heading-font: 'Inter', system-ui, sans-serif;
-    --template-body-font: 'Inter', system-ui, sans-serif;
+
+   /* Legacy Template Variables - Backward Compatibility */
+   --template-primary: var(--color-brand-primary);
+   --template-secondary: var(--color-brand-secondary);
+   --template-accent: var(--color-success);
+   --template-heading-font: 'Inter', system-ui, sans-serif;
+   --template-body-font: 'Inter', system-ui, sans-serif;
+
+   /* 🎄 Winter Wonderland Theme System - Gender-Based Variations */
+
+   /* Base Winter Wonderland Variables */
+   --winter-theme-active: false;
+   --winter-gender-variant: neutral; /* feminine | masculine | neutral */
+
+   /* Winter Wonderland Color Palettes */
+
+   /* Feminine: Frosted Rose & Silver Noel */
+   --winter-feminine-bg-primary: linear-gradient(135deg,
+     rgba(12, 12, 14, 0.95) 0%,
+     rgba(20, 20, 22, 0.9) 30%,
+     rgba(27, 27, 30, 0.85) 60%,
+     rgba(44, 44, 49, 0.95) 100%);
+   --winter-feminine-bg-secondary: rgba(31, 25, 30, 0.9);
+   --winter-feminine-surface-low: rgba(45, 35, 42, 0.85);
+   --winter-feminine-surface-mid: rgba(55, 42, 50, 0.9);
+   --winter-feminine-surface-high: rgba(68, 52, 62, 0.95);
+
+   --winter-feminine-text-primary: rgba(255, 248, 250, 0.95);
+   --winter-feminine-text-secondary: rgba(255, 228, 235, 0.75);
+   --winter-feminine-text-tertiary: rgba(255, 208, 220, 0.6);
+
+   --winter-feminine-accent-primary: #E8A5B5; /* Soft Rose */
+   --winter-feminine-accent-secondary: #C9A0D8; /* Lavender */
+   --winter-feminine-accent-tertiary: #F8F4FF; /* Silver Mist */
+
+   /* Masculine: Midnight Pine & Arctic Steel */
+   --winter-masculine-bg-primary: linear-gradient(135deg,
+     rgba(8, 15, 20, 0.95) 0%,
+     rgba(15, 25, 35, 0.9) 30%,
+     rgba(22, 35, 45, 0.85) 60%,
+     rgba(35, 50, 65, 0.95) 100%);
+   --winter-masculine-bg-secondary: rgba(18, 28, 38, 0.9);
+   --winter-masculine-surface-low: rgba(28, 42, 55, 0.85);
+   --winter-masculine-surface-mid: rgba(38, 55, 70, 0.9);
+   --winter-masculine-surface-high: rgba(50, 70, 88, 0.95);
+
+   --winter-masculine-text-primary: rgba(245, 248, 255, 0.95);
+   --winter-masculine-text-secondary: rgba(220, 235, 255, 0.75);
+   --winter-masculine-text-tertiary: rgba(190, 210, 235, 0.6);
+
+   --winter-masculine-accent-primary: #4A90A4; /* Steel Blue */
+   --winter-masculine-accent-secondary: #2C5F2D; /* Deep Pine */
+   --winter-masculine-accent-tertiary: #E8F4F8; /* Arctic White */
+
+   /* Neutral: Evergreen Wonderland */
+   --winter-neutral-bg-primary: linear-gradient(135deg,
+     rgba(10, 18, 15, 0.95) 0%,
+     rgba(18, 32, 25, 0.9) 30%,
+     rgba(25, 45, 35, 0.85) 60%,
+     rgba(40, 65, 50, 0.95) 100%);
+   --winter-neutral-bg-secondary: rgba(20, 35, 28, 0.9);
+   --winter-neutral-surface-low: rgba(30, 50, 40, 0.85);
+   --winter-neutral-surface-mid: rgba(40, 65, 52, 0.9);
+   --winter-neutral-surface-high: rgba(55, 85, 68, 0.95);
+
+   --winter-neutral-text-primary: rgba(248, 255, 245, 0.95);
+   --winter-neutral-text-secondary: rgba(220, 255, 220, 0.75);
+   --winter-neutral-text-tertiary: rgba(180, 235, 180, 0.6);
+
+   --winter-neutral-accent-primary: #10B981; /* Emerald */
+   --winter-neutral-accent-secondary: #059669; /* Forest Green */
+   --winter-neutral-accent-tertiary: #ECFDF5; /* Mint Frost */
+
+   /* Winter Wonderland Typography Enhancements */
+   --winter-font-family-primary: 'Inter', 'Crimson Text', serif;
+   --winter-font-family-display: 'Inter', 'Playfair Display', serif;
+   --winter-text-shadow-holiday: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 8px rgba(255, 255, 255, 0.1);
+
+   /* Winter Wonderland Component Variants */
+   --winter-card-bg: rgba(255, 255, 255, 0.08);
+   --winter-card-border: rgba(255, 255, 255, 0.15);
+   --winter-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 255, 255, 0.05);
+   --winter-button-glow: 0 0 20px rgba(255, 255, 255, 0.2);
+
+    /* Holiday Animation Variables */
+    --winter-snow-density: 12;
+    --winter-light-twinkle-speed: 2s;
+    --winter-ornament-swing: 3s;
+    --winter-magic-sparkle-delay: 0.5s;
+
+    /* Design Token Variables - New Structured System */
+    --dt-color-background-light: #FFFFFF;
+    --dt-color-background-dark: #0F0F12;
+    --dt-color-surface-low-light: #FAFBFC;
+    --dt-color-surface-mid-light: #F7F8FA;
+    --dt-color-surface-low-dark: #1B1B1E;
+    --dt-color-surface-mid-dark: #222226;
+    --dt-color-text-primary-light: #111827;
+    --dt-color-text-secondary-light: #4B5563;
+    --dt-color-text-primary-dark: rgba(255, 255, 255, 0.92);
+    --dt-color-text-secondary-dark: rgba(255, 255, 255, 0.68);
+    --dt-color-accent-primary: #3FD0C9;
+    --dt-color-accent-hover: #36BFB7;
+    --dt-color-accent-muted: #A5F1E9;
+    --dt-color-border-light: #E5E7EB;
+    --dt-color-border-dark: #2C2C34;
+    --dt-color-shadow-layer1: rgba(0, 0, 0, 0.05);
+    --dt-color-shadow-layer2: rgba(0, 0, 0, 0.15);
+    --dt-color-shadow-dark-layer1: rgba(0, 0, 0, 0.45);
+
+    --dt-spacing-xxs: 4px;
+    --dt-spacing-xs: 8px;
+    --dt-spacing-sm: 12px;
+    --dt-spacing-md: 16px;
+    --dt-spacing-lg: 24px;
+    --dt-spacing-xl: 32px;
+    --dt-spacing-xxl: 48px;
+
+    --dt-radius-sm: 4px;
+    --dt-radius-md: 8px;
+    --dt-radius-lg: 12px;
+    --dt-radius-pill: 9999px;
+
+    --dt-typography-heading1-fontFamily: 'Inter', sans-serif;
+    --dt-typography-heading1-fontSize: 44px;
+    --dt-typography-heading1-fontWeight: 700;
+    --dt-typography-heading1-lineHeight: 1.2;
+    --dt-typography-heading2-fontFamily: 'Inter', sans-serif;
+    --dt-typography-heading2-fontSize: 32px;
+    --dt-typography-heading2-fontWeight: 600;
+    --dt-typography-heading2-lineHeight: 1.3;
+    --dt-typography-heading3-fontFamily: 'Inter', sans-serif;
+    --dt-typography-heading3-fontSize: 24px;
+    --dt-typography-heading3-fontWeight: 600;
+    --dt-typography-heading3-lineHeight: 1.4;
+    --dt-typography-body-fontFamily: 'Inter', sans-serif;
+    --dt-typography-body-fontSize: 18px;
+    --dt-typography-body-fontWeight: 400;
+    --dt-typography-body-lineHeight: 1.5;
+    --dt-typography-body-small-fontFamily: 'Inter', sans-serif;
+    --dt-typography-body-small-fontSize: 16px;
+    --dt-typography-body-small-fontWeight: 400;
+    --dt-typography-body-small-lineHeight: 1.5;
+    --dt-typography-caption-fontFamily: 'Inter', sans-serif;
+    --dt-typography-caption-fontSize: 14px;
+    --dt-typography-caption-fontWeight: 400;
+    --dt-typography-caption-lineHeight: 1.4;
+
+    --dt-shadow-card: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    --dt-shadow-modal: 0px 8px 24px rgba(0, 0, 0, 0.15);
+    --dt-shadow-elevated-dark: 0px 8px 28px rgba(0, 0, 0, 0.45);
+
+    --dt-button-primary-background: var(--dt-color-accent-primary);
+    --dt-button-primary-text: var(--dt-color-text-primary-dark);
+    --dt-button-primary-borderRadius: var(--dt-radius-md);
+    --dt-button-primary-paddingVertical: var(--dt-spacing-sm);
+    --dt-button-primary-paddingHorizontal: var(--dt-spacing-lg);
+    --dt-button-primary-hover-background: var(--dt-color-accent-hover);
+    --dt-button-secondary-background: transparent;
+    --dt-button-secondary-text: var(--dt-color-accent-primary);
+    --dt-button-secondary-border: 1px solid var(--dt-color-accent-primary);
+    --dt-button-secondary-borderRadius: var(--dt-radius-md);
+    --dt-button-secondary-paddingVertical: var(--dt-spacing-sm);
+    --dt-button-secondary-paddingHorizontal: var(--dt-spacing-lg);
+    }
+
+  * {
+    font-family: var(--theme-body-font);
   }
 
   body {
-    font-family: var(--theme-body-font);
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Prevent text size adjustment on iOS */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    /* Modern Technology Christmas Wonderland background */
-    background: var(--theme-background);
+    /* Dark Theme Background - Tech Industry Standard */
+    background: var(--color-bg-primary);
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  /* Winter Wonderland Theme Application */
+  body.winter-wonderland {
+    /* Dynamic theme application based on gender variant */
+    background: var(--winter-bg-primary);
+    color: var(--winter-text-primary);
+    font-family: var(--winter-font-family-primary);
+  }
+
+  body.winter-wonderland.feminine {
+    --winter-bg-primary: var(--winter-feminine-bg-primary);
+    --winter-bg-secondary: var(--winter-feminine-bg-secondary);
+    --winter-surface-low: var(--winter-feminine-surface-low);
+    --winter-surface-mid: var(--winter-feminine-surface-mid);
+    --winter-surface-high: var(--winter-feminine-surface-high);
+    --winter-text-primary: var(--winter-feminine-text-primary);
+    --winter-text-secondary: var(--winter-feminine-text-secondary);
+    --winter-text-tertiary: var(--winter-feminine-text-tertiary);
+    --winter-accent-primary: var(--winter-feminine-accent-primary);
+    --winter-accent-secondary: var(--winter-feminine-accent-secondary);
+    --winter-accent-tertiary: var(--winter-feminine-accent-tertiary);
+  }
+
+  body.winter-wonderland.masculine {
+    --winter-bg-primary: var(--winter-masculine-bg-primary);
+    --winter-bg-secondary: var(--winter-masculine-bg-secondary);
+    --winter-surface-low: var(--winter-masculine-surface-low);
+    --winter-surface-mid: var(--winter-masculine-surface-mid);
+    --winter-surface-high: var(--winter-masculine-surface-high);
+    --winter-text-primary: var(--winter-masculine-text-primary);
+    --winter-text-secondary: var(--winter-masculine-text-secondary);
+    --winter-text-tertiary: var(--winter-masculine-text-tertiary);
+    --winter-accent-primary: var(--winter-masculine-accent-primary);
+    --winter-accent-secondary: var(--winter-masculine-accent-secondary);
+    --winter-accent-tertiary: var(--winter-masculine-accent-tertiary);
+  }
+
+  body.winter-wonderland.neutral {
+    --winter-bg-primary: var(--winter-neutral-bg-primary);
+    --winter-bg-secondary: var(--winter-neutral-bg-secondary);
+    --winter-surface-low: var(--winter-neutral-surface-low);
+    --winter-surface-mid: var(--winter-neutral-surface-mid);
+    --winter-surface-high: var(--winter-neutral-surface-high);
+    --winter-text-primary: var(--winter-neutral-text-primary);
+    --winter-text-secondary: var(--winter-neutral-text-secondary);
+    --winter-text-tertiary: var(--winter-neutral-text-tertiary);
+    --winter-accent-primary: var(--winter-neutral-accent-primary);
+    --winter-accent-secondary: var(--winter-neutral-accent-secondary);
+    --winter-accent-tertiary: var(--winter-neutral-accent-tertiary);
+  }
+
+  /* Light Mode - Design Token System */
+  body.light-mode {
+    --color-bg-primary: var(--dt-color-background-light);
+    --color-bg-secondary: var(--dt-color-surface-low-light);
+    --color-surface-low: var(--dt-color-surface-low-light);
+    --color-surface-mid: var(--dt-color-surface-mid-light);
+    --color-surface-high: var(--dt-color-surface-mid-light);
+    --color-text-primary: var(--dt-color-text-primary-light);
+    --color-text-secondary: var(--dt-color-text-secondary-light);
+    --color-text-tertiary: rgba(75, 85, 99, 0.6);
+    --color-text-inverse: var(--dt-color-background-light);
+    --color-accent-primary: var(--dt-color-accent-primary);
+    --color-accent-hover: var(--dt-color-accent-hover);
+    --color-accent-outline: rgba(63, 208, 201, 0.3);
+    --color-accent-focus: rgba(63, 208, 201, 0.5);
+    --color-border-light: var(--dt-color-border-light);
+    --color-border-medium: rgba(229, 231, 235, 0.8);
+    --color-border-dark: var(--dt-color-border-light);
+    --color-border-brand: var(--dt-color-accent-primary);
+    --color-shadow-light: var(--dt-color-shadow-layer1);
+    --color-shadow-medium: var(--dt-color-shadow-layer2);
+    --color-shadow-heavy: rgba(0, 0, 0, 0.1);
+    --color-shadow-brand: rgba(63, 208, 201, 0.1);
+    --shadow-surface: var(--dt-shadow-card);
+    --shadow-floating: var(--dt-shadow-modal);
+    --color-bg-overlay: rgba(255, 255, 255, 0.9);
+    --color-hover-primary: rgba(63, 208, 201, 0.08);
+    --color-hover-secondary: rgba(0, 0, 0, 0.05);
+    --color-active-primary: rgba(63, 208, 201, 0.12);
+    --color-active-secondary: rgba(0, 0, 0, 0.08);
+    --color-focus-ring: rgba(63, 208, 201, 0.5);
+  }
+
+  /* Dark Mode - Design Token System (Default) */
+  body.dark-mode {
+    --color-bg-primary: var(--dt-color-background-dark);
+    --color-bg-secondary: var(--dt-color-surface-low-dark);
+    --color-surface-low: var(--dt-color-surface-low-dark);
+    --color-surface-mid: var(--dt-color-surface-mid-dark);
+    --color-surface-high: var(--dt-color-surface-mid-dark);
+    --color-text-primary: var(--dt-color-text-primary-dark);
+    --color-text-secondary: var(--dt-color-text-secondary-dark);
+    --color-text-tertiary: rgba(255, 255, 255, 0.45);
+    --color-text-inverse: var(--dt-color-background-dark);
+    --color-accent-primary: var(--dt-color-accent-primary);
+    --color-accent-hover: var(--dt-color-accent-hover);
+    --color-accent-outline: rgba(63, 208, 201, 0.35);
+    --color-accent-focus: rgba(63, 208, 201, 0.6);
+    --color-border-light: rgba(255, 255, 255, 0.08);
+    --color-border-medium: rgba(255, 255, 255, 0.12);
+    --color-border-dark: rgba(255, 255, 255, 0.16);
+    --color-border-brand: var(--dt-color-accent-primary);
+    --color-shadow-light: rgba(0, 0, 0, 0.15);
+    --color-shadow-medium: rgba(0, 0, 0, 0.25);
+    --color-shadow-heavy: rgba(0, 0, 0, 0.35);
+    --color-shadow-brand: rgba(63, 208, 201, 0.15);
+    --shadow-surface: 0px 4px 18px rgba(0, 0, 0, 0.35);
+    --shadow-floating: 0px 8px 28px rgba(0, 0, 0, 0.45);
+    --color-bg-overlay: rgba(15, 15, 18, 0.8);
+    --color-hover-primary: rgba(63, 208, 201, 0.08);
+    --color-hover-secondary: rgba(255, 255, 255, 0.05);
+    --color-active-primary: rgba(63, 208, 201, 0.12);
+    --color-active-secondary: rgba(255, 255, 255, 0.08);
+    --color-focus-ring: rgba(63, 208, 201, 0.4);
   }
 
   /* Improve touch targets on mobile */
@@ -45,9 +588,328 @@
     touch-action: manipulation;
   }
 
+  /* Typography Utility Classes */
+  .text-xs { font-size: var(--font-size-xs); line-height: var(--line-height-snug); }
+  .text-sm { font-size: var(--font-size-sm); line-height: var(--line-height-normal); }
+  .text-base { font-size: var(--font-size-base); line-height: var(--line-height-normal); }
+  .text-lg { font-size: var(--font-size-lg); line-height: var(--line-height-relaxed); }
+  .text-xl { font-size: var(--font-size-xl); line-height: var(--line-height-relaxed); }
+  .text-2xl { font-size: var(--font-size-2xl); line-height: var(--line-height-tight); }
+  .text-3xl { font-size: var(--font-size-3xl); line-height: var(--line-height-tight); }
+  .text-4xl { font-size: var(--font-size-4xl); line-height: var(--line-height-tight); }
+  .text-5xl { font-size: var(--font-size-5xl); line-height: var(--line-height-tight); }
+  .text-6xl { font-size: var(--font-size-6xl); line-height: var(--line-height-tight); }
+
+  .font-thin { font-weight: var(--font-weight-thin); }
+  .font-light { font-weight: var(--font-weight-light); }
+  .font-normal { font-weight: var(--font-weight-normal); }
+  .font-medium { font-weight: var(--font-weight-medium); }
+  .font-semibold { font-weight: var(--font-weight-semibold); }
+  .font-bold { font-weight: var(--font-weight-bold); }
+  .font-extrabold { font-weight: var(--font-weight-extrabold); }
+  .font-black { font-weight: var(--font-weight-black); }
+
+  .tracking-tighter { letter-spacing: var(--letter-spacing-tighter); }
+  .tracking-tight { letter-spacing: var(--letter-spacing-tight); }
+  .tracking-normal { letter-spacing: var(--letter-spacing-normal); }
+  .tracking-wide { letter-spacing: var(--letter-spacing-wide); }
+  .tracking-wider { letter-spacing: var(--letter-spacing-wider); }
+  .tracking-widest { letter-spacing: var(--letter-spacing-widest); }
+
+  .leading-tight { line-height: var(--line-height-tight); }
+  .leading-snug { line-height: var(--line-height-snug); }
+  .leading-normal { line-height: var(--line-height-normal); }
+  .leading-relaxed { line-height: var(--line-height-relaxed); }
+  .leading-loose { line-height: var(--line-height-loose); }
+
+  /* Responsive Typography */
+  @media (min-width: 640px) {
+    .text-xs { font-size: var(--text-xs-tablet); }
+    .text-sm { font-size: var(--text-sm-tablet); }
+    .text-base { font-size: var(--text-base-tablet); }
+    .text-lg { font-size: var(--text-lg-tablet); }
+    .text-xl { font-size: var(--text-xl-tablet); }
+  }
+
+  @media (min-width: 1024px) {
+    .text-xs { font-size: var(--text-xs-desktop); }
+    .text-sm { font-size: var(--text-sm-desktop); }
+    .text-base { font-size: var(--text-base-desktop); }
+    .text-lg { font-size: var(--text-lg-desktop); }
+    .text-xl { font-size: var(--text-xl-desktop); }
+  }
+
+  /* 🎯 Semantic Typography Classes - Apple Inspired */
+
+  /* Display Text - Large, impactful headings */
+  .display-1 {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tighter);
+    color: var(--color-text-primary);
+  }
+
+  .display-2 {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tighter);
+    color: var(--color-text-primary);
+  }
+
+  /* Headlines - Section and page titles */
+  .headline-1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+  }
+
+  .headline-2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+  }
+
+  .headline-3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-snug);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+  }
+
+  .headline-4 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-snug);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--color-text-primary);
+  }
+
+  /* Body Text - Content and descriptions */
+  .body-large {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--color-text-primary);
+  }
+
+  .body {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--color-text-primary);
+  }
+
+  .body-small {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
+    color: var(--color-text-secondary);
+  }
+
+  /* Labels and Captions - Small UI text */
+  .label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-snug);
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+  }
+
+  .caption {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-snug);
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-text-tertiary);
+  }
+
+  /* Design Token Typography Classes */
+  .dt-heading1 {
+    font-family: var(--dt-typography-heading1-fontFamily);
+    font-size: var(--dt-typography-heading1-fontSize);
+    font-weight: var(--dt-typography-heading1-fontWeight);
+    line-height: var(--dt-typography-heading1-lineHeight);
+    color: var(--color-text-primary);
+  }
+
+  .dt-heading2 {
+    font-family: var(--dt-typography-heading2-fontFamily);
+    font-size: var(--dt-typography-heading2-fontSize);
+    font-weight: var(--dt-typography-heading2-fontWeight);
+    line-height: var(--dt-typography-heading2-lineHeight);
+    color: var(--color-text-primary);
+  }
+
+  .dt-heading3 {
+    font-family: var(--dt-typography-heading3-fontFamily);
+    font-size: var(--dt-typography-heading3-fontSize);
+    font-weight: var(--dt-typography-heading3-fontWeight);
+    line-height: var(--dt-typography-heading3-lineHeight);
+    color: var(--color-text-primary);
+  }
+
+  .dt-body {
+    font-family: var(--dt-typography-body-fontFamily);
+    font-size: var(--dt-typography-body-fontSize);
+    font-weight: var(--dt-typography-body-fontWeight);
+    line-height: var(--dt-typography-body-lineHeight);
+    color: var(--color-text-primary);
+  }
+
+  .dt-body-small {
+    font-family: var(--dt-typography-body-small-fontFamily);
+    font-size: var(--dt-typography-body-small-fontSize);
+    font-weight: var(--dt-typography-body-small-fontWeight);
+    line-height: var(--dt-typography-body-small-lineHeight);
+    color: var(--color-text-primary);
+  }
+
+  .dt-caption {
+    font-family: var(--dt-typography-caption-fontFamily);
+    font-size: var(--dt-typography-caption-fontSize);
+    font-weight: var(--dt-typography-caption-fontWeight);
+    line-height: var(--dt-typography-caption-lineHeight);
+    color: var(--color-text-secondary);
+  }
+
+  /* Special Text Styles */
+  .text-emphasis {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-brand-primary);
+  }
+
+  .text-muted {
+    color: var(--color-text-tertiary);
+  }
+
+  .text-link {
+    color: var(--color-brand-primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .text-link:hover {
+    color: color-mix(in srgb, var(--color-brand-primary) 80%, var(--color-brand-secondary));
+  }
+
+  /* Spacing Utility Classes */
+  .p-1 { padding: var(--space-1); }
+  .p-2 { padding: var(--space-2); }
+  .p-3 { padding: var(--space-3); }
+  .p-4 { padding: var(--space-4); }
+  .p-5 { padding: var(--space-5); }
+  .p-6 { padding: var(--space-6); }
+  .p-8 { padding: var(--space-8); }
+  .p-10 { padding: var(--space-10); }
+  .p-12 { padding: var(--space-12); }
+
+  .m-1 { margin: var(--space-1); }
+  .m-2 { margin: var(--space-2); }
+  .m-3 { margin: var(--space-3); }
+  .m-4 { margin: var(--space-4); }
+  .m-5 { margin: var(--space-5); }
+  .m-6 { margin: var(--space-6); }
+  .m-8 { margin: var(--space-8); }
+  .m-10 { margin: var(--space-10); }
+  .m-12 { margin: var(--space-12); }
+
+   /* Border Radius Utility Classes - Modern 2025 */
+   .rounded-xs { border-radius: var(--radius-xs); }
+   .rounded-sm { border-radius: var(--radius-sm); }
+   .rounded { border-radius: var(--radius-base); }
+   .rounded-md { border-radius: var(--radius-md); }
+   .rounded-lg { border-radius: var(--radius-lg); }
+   .rounded-xl { border-radius: var(--radius-xl); }
+   .rounded-2xl { border-radius: var(--radius-2xl); }
+   .rounded-3xl { border-radius: var(--radius-3xl); }
+   .rounded-full { border-radius: var(--radius-full); }
+
+  /* Shadow Utility Classes */
+  .shadow-xs { box-shadow: var(--shadow-xs); }
+  .shadow-sm { box-shadow: var(--shadow-sm); }
+  .shadow { box-shadow: var(--shadow-base); }
+  .shadow-md { box-shadow: var(--shadow-md); }
+  .shadow-lg { box-shadow: var(--shadow-lg); }
+  .shadow-xl { box-shadow: var(--shadow-xl); }
+  .shadow-2xl { box-shadow: var(--shadow-2xl); }
+  .shadow-brand { box-shadow: var(--shadow-brand-base); }
+
+  /* Color Utility Classes - Dark Theme */
+  .text-primary { color: var(--color-text-primary); }
+  .text-secondary { color: var(--color-text-secondary); }
+  .text-tertiary { color: var(--color-text-tertiary); }
+  .text-inverse { color: var(--color-text-inverse); }
+  .text-accent { color: var(--color-accent-primary); }
+  .text-success { color: var(--color-success); }
+  .text-warning { color: var(--color-warning); }
+  .text-error { color: var(--color-error); }
+  .text-info { color: var(--color-info); }
+
+  .bg-primary { background-color: var(--color-bg-primary); }
+  .bg-secondary { background-color: var(--color-bg-secondary); }
+  .bg-surface-low { background-color: var(--color-surface-low); }
+  .bg-surface-mid { background-color: var(--color-surface-mid); }
+  .bg-surface-high { background-color: var(--color-surface-high); }
+  .bg-accent { background-color: var(--color-accent-primary); }
+  .bg-success { background-color: var(--color-success); }
+  .bg-warning { background-color: var(--color-warning); }
+  .bg-error { background-color: var(--color-error); }
+  .bg-info { background-color: var(--color-info); }
+
+   /* Border Utility Classes */
+   .border-light { border-color: var(--color-border-light); }
+   .border-medium { border-color: var(--color-border-medium); }
+   .border-dark { border-color: var(--color-border-dark); }
+   .border-brand { border-color: var(--color-border-brand); }
+
+   /* Modern 2025 Animation Utility Classes */
+   .animate-fade-in-up {
+     animation: fadeInUp var(--transition-base) ease-out;
+   }
+
+   .animate-slide-in-right {
+     animation: slideInRight var(--transition-base) ease-out;
+   }
+
+   .animate-modern-hover:hover {
+     animation: modernHover var(--transition-fast) ease-out;
+   }
+
+   .animate-modern-press:active {
+     animation: modernPress var(--transition-fast) ease-out;
+   }
+
+   /* Modern Interaction States */
+   .hover-lift:hover {
+     transform: translateY(-2px);
+     transition: transform var(--transition-spring);
+   }
+
+   .hover-glow:hover {
+     box-shadow: var(--shadow-brand-glow);
+     transition: box-shadow var(--transition-base);
+   }
+
+   .focus-ring-modern:focus-visible {
+     outline: 2px solid var(--color-accent-primary);
+     outline-offset: 2px;
+     box-shadow: 0 0 0 4px var(--color-accent-focus);
+   }
+
   /* Frosted glass effect utility */
   .frosted-glass {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--color-bg-overlay);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -107,11 +969,17 @@
 
 @keyframes snow-fall {
   0% {
-    transform: translateY(-100vh) rotate(0deg);
+    transform: translateY(-100vh) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
     opacity: 1;
   }
   100% {
-    transform: translateY(100vh) rotate(360deg);
+    transform: translateY(100vh) rotate(360deg) scale(0.8);
     opacity: 0;
   }
 }
@@ -133,6 +1001,95 @@
   50% {
     opacity: 1;
     transform: scale(1.02);
+  }
+}
+
+@keyframes christmasGradient {
+  0% {
+    background-position: 0% 50%, 0% 50%, 0% 50%, 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%, 50% 100%, 25% 75%, 75% 25%;
+  }
+  50% {
+    background-position: 50% 100%, 100% 50%, 50% 25%, 25% 75%;
+  }
+  75% {
+    background-position: 25% 75%, 75% 25%, 100% 50%, 50% 100%;
+  }
+  100% {
+    background-position: 0% 50%, 0% 50%, 0% 50%, 0% 50%;
+  }
+}
+
+@keyframes floatingOrbs {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(30px, -20px) scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-20px, 30px) scale(0.9);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(20px, 20px) scale(1.05);
+    opacity: 0.7;
+  }
+}
+
+@keyframes buttonShimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes modernHover {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes modernPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -185,55 +1142,850 @@
   }
 }
 
-/* Modern Technology Christmas Wonderland Components */
+/* ✨ Magical Card System with Emotional Intelligence */
 
 .wonderland-card {
-  @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-frost border border-white/20;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--color-surface-low);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  box-shadow: var(--shadow-surface);
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1), transform cubic-bezier(0.17, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 🏔️ Winter Wonderland Card Variants */
+
+.winter-wonderland-card {
+  background: var(--winter-card-bg);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--winter-card-border);
+  border-radius: 32px;
+  box-shadow: var(--winter-card-shadow);
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.winter-wonderland-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.02) 70%,
+    rgba(255, 255, 255, 0.08) 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.winter-wonderland-card:hover::before {
+  opacity: 1;
+}
+
+.winter-wonderland-card.frosted {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 40px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.winter-wonderland-card.frosted.feminine {
+  background: linear-gradient(135deg,
+    rgba(232, 165, 181, 0.08) 0%,
+    rgba(201, 160, 216, 0.06) 50%,
+    rgba(248, 244, 255, 0.04) 100%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(232, 165, 181, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.winter-wonderland-card.frosted.masculine {
+  background: linear-gradient(135deg,
+    rgba(74, 144, 164, 0.08) 0%,
+    rgba(44, 95, 45, 0.06) 50%,
+    rgba(232, 244, 248, 0.04) 100%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(74, 144, 164, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.winter-wonderland-card.frosted.neutral {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.08) 0%,
+    rgba(5, 150, 105, 0.06) 50%,
+    rgba(236, 253, 245, 0.04) 100%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Emotional State Variants */
+.wonderland-card.joy {
+  background: linear-gradient(135deg,
+    rgba(255, 107, 157, 0.1) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(255, 230, 109, 0.1) 100%);
+  border-color: rgba(255, 107, 157, 0.3);
+  box-shadow: var(--shadow-brand-sm), 0 0 20px rgba(255, 107, 157, 0.1);
+}
+
+.wonderland-card.joy::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--color-brand-primary) 30%,
+    var(--color-brand-tertiary) 70%,
+    transparent 100%);
+}
+
+.wonderland-card.anticipation {
+  background: linear-gradient(135deg,
+    rgba(78, 205, 196, 0.1) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(59, 130, 246, 0.1) 100%);
+  border-color: rgba(78, 205, 196, 0.3);
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(78, 205, 196, 0.1);
+}
+
+.wonderland-card.anticipation::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--color-brand-secondary) 30%,
+    var(--color-info) 70%,
+    transparent 100%);
+}
+
+.wonderland-card.reflection {
+  background: linear-gradient(135deg,
+    rgba(139, 92, 246, 0.1) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(16, 185, 129, 0.1) 100%);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+.wonderland-card.reflection::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #8b5cf6 30%,
+    var(--color-success) 70%,
+    transparent 100%);
+}
+
+.wonderland-card.celebration {
+  background: linear-gradient(135deg,
+    rgba(255, 230, 109, 0.15) 0%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 107, 157, 0.15) 100%);
+  border-color: rgba(255, 230, 109, 0.4);
+  box-shadow: var(--shadow-brand-base), 0 0 30px rgba(255, 230, 109, 0.2);
+}
+
+.wonderland-card.celebration::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--color-brand-tertiary) 25%,
+    var(--color-brand-primary) 50%,
+    var(--color-brand-secondary) 75%,
+    transparent 100%);
+}
+
+/* Accessibility Enhancements */
+.wonderland-card:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-lg), 0 0 0 4px rgba(255, 107, 157, 0.1);
 }
 
 .wonderland-card:hover {
-  @apply shadow-arctic transform scale-105;
-  box-shadow: 0 8px 32px rgba(30, 58, 138, 0.15), 0 0 20px rgba(16, 185, 129, 0.1);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: var(--shadow-floating);
+  border-color: rgba(63, 208, 201, 0.2);
+}
+
+.wonderland-card:hover::before {
+  opacity: 1;
+}
+
+.wonderland-card:active {
+  transform: translateY(0) scale(0.99);
+  transition: all var(--transition-fast);
+}
+
+/* Magical Particle Effects */
+.wonderland-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--color-brand-primary) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all var(--transition-base);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.wonderland-card:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 0.3;
+  transition: all 0s;
 }
 
 .wonderland-button-primary {
-  @apply bg-ice-blue text-frost-white font-medium rounded-lg px-6 py-3;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--color-text-inverse);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  border-radius: 16px;
+  padding: var(--space-sm) var(--space-lg);
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1);
+  background: var(--color-accent-primary);
+  box-shadow: var(--shadow-surface);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 48px; /* Modern touch target */
+}
+
+.wonderland-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent);
+  transition: left var(--transition-slow);
 }
 
 .wonderland-button-primary:hover {
-  @apply bg-arctic-blue;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-  transform: translateY(-2px);
+  background: var(--color-accent-hover);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: var(--shadow-floating);
+}
+
+.wonderland-button-primary:hover::before {
+  left: 100%;
 }
 
 .wonderland-button-primary:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(0.98) translateY(0);
+  box-shadow: var(--shadow-brand-xs);
+}
+
+/* ♿ Accessibility Enhancements - WCAG 2.1 AA Compliance */
+
+/* Focus Management */
+.wonderland-card:focus-visible,
+.wonderland-button-primary:focus-visible,
+.wonderland-button-secondary:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(255, 107, 157, 0.1);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .wonderland-card {
+    border: 2px solid var(--color-border-dark);
+  }
+
+  .text-primary { color: var(--color-neutral-900); }
+  .text-secondary { color: var(--color-neutral-700); }
+  .text-tertiary { color: var(--color-neutral-600); }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .float,
+  .pulse,
+  .shimmer,
+  .celebrate {
+    animation: none !important;
+  }
+
+  .christmas-village-bg {
+    animation: none !important;
+  }
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-brand-primary);
+  color: var(--color-text-inverse);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--radius-base);
+  z-index: 1000;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* 🎭 Micro-Interactions - Delightful Details */
+
+.wonderland-button-primary:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-brand-sm), 0 0 0 4px rgba(255, 107, 157, 0.1);
+}
+
+.wonderland-button-secondary:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-lg), 0 0 0 4px rgba(78, 205, 196, 0.1);
+}
+
+/* Interactive Ripple Effects */
+.wonderland-button-primary,
+.wonderland-button-secondary {
+  position: relative;
+  overflow: hidden;
+}
+
+.wonderland-button-primary::after,
+.wonderland-button-secondary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width var(--transition-fast), height var(--transition-fast);
+  pointer-events: none;
+}
+
+.wonderland-button-primary:active::after,
+.wonderland-button-secondary:active::after {
+  width: 300px;
+  height: 300px;
+  transition: width 0s, height 0s;
+}
+
+/* Floating Animation for Interactive Elements */
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.wonderland-card.float {
+  animation: gentle-float 6s ease-in-out infinite;
+}
+
+.wonderland-button-primary.float {
+  animation: gentle-float 4s ease-in-out infinite;
+}
+
+.wonderland-button-secondary.float {
+  animation: gentle-float 5s ease-in-out infinite 1s;
+}
+
+/* Pulse Animation for Attention-Grabbing Elements */
+@keyframes soft-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-sm);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.wonderland-card.pulse {
+  animation: soft-pulse 3s ease-in-out infinite;
+}
+
+.wonderland-button-primary.pulse {
+  animation: soft-pulse 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect for Special Elements */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.wonderland-card.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-overlay) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    var(--color-bg-overlay) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.wonderland-button-primary.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-primary) 0%,
+    color-mix(in srgb, var(--color-brand-primary) 80%, var(--color-brand-secondary)) 50%,
+    var(--color-brand-primary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Success Celebration Animation */
+@keyframes celebrate {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.05) rotate(1deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(-1deg);
+  }
+  75% {
+    transform: scale(1.05) rotate(0.5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.wonderland-card.celebrate {
+  animation: celebrate 0.8s ease-in-out;
+}
+
+.wonderland-button-primary.celebrate {
+  animation: celebrate 0.6s ease-in-out;
+}
+
+/* Loading States */
+@keyframes loading-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.wonderland-card.loading,
+.wonderland-button-primary.loading,
+.wonderland-button-secondary.loading {
+  animation: loading-pulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Hover Micro-Interactions */
+.wonderland-card:hover .magical-sparkle {
+  opacity: 1;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(180deg);
+  }
+}
+
+.magical-sparkle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background: var(--color-brand-tertiary);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.magical-sparkle::before {
+  content: '✨';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  line-height: 1;
 }
 
 .wonderland-button-secondary {
-  @apply bg-transparent border-2 border-ice-blue text-ice-blue font-medium rounded-lg px-6 py-3;
-  transition: all 0.2s ease-in-out;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--color-accent-outline);
+  border-radius: 16px;
+  padding: var(--space-sm) var(--space-lg);
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 48px; /* Modern touch target */
 }
 
-.wonderland-button-secondary:hover {
-  @apply bg-ice-blue text-frost-white;
+/* ❄️ Winter Wonderland Button Variants */
+
+.winter-wonderland-button {
+  font-family: var(--winter-font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  border-radius: 20px;
+  padding: var(--space-sm) var(--space-lg);
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 48px;
+  text-shadow: var(--winter-text-shadow-holiday);
+  box-shadow: var(--winter-button-glow);
+}
+
+.winter-wonderland-button.frosted {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--winter-text-primary);
+}
+
+.winter-wonderland-button.frosted.feminine {
+  background: linear-gradient(135deg,
+    rgba(232, 165, 181, 0.1) 0%,
+    rgba(201, 160, 216, 0.08) 50%,
+    rgba(248, 244, 255, 0.06) 100%);
+  border-color: rgba(232, 165, 181, 0.3);
+  color: var(--winter-feminine-text-primary);
+  box-shadow: 0 0 20px rgba(232, 165, 181, 0.2);
+}
+
+.winter-wonderland-button.frosted.masculine {
+  background: linear-gradient(135deg,
+    rgba(74, 144, 164, 0.1) 0%,
+    rgba(44, 95, 45, 0.08) 50%,
+    rgba(232, 244, 248, 0.06) 100%);
+  border-color: rgba(74, 144, 164, 0.3);
+  color: var(--winter-masculine-text-primary);
+  box-shadow: 0 0 20px rgba(74, 144, 164, 0.2);
+}
+
+.winter-wonderland-button.frosted.neutral {
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.1) 0%,
+    rgba(5, 150, 105, 0.08) 50%,
+    rgba(236, 253, 245, 0.06) 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: var(--winter-neutral-text-primary);
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
 }
 
+.winter-wonderland-button.frosted:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+.wonderland-button-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+    var(--color-hover-primary) 0%,
+    var(--color-hover-secondary) 50%,
+    var(--color-hover-primary) 100%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.wonderland-button-secondary:hover {
+  border-color: var(--color-accent-primary);
+  background: rgba(63, 208, 201, 0.05);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: var(--shadow-surface);
+}
+
+  .wonderland-button-secondary:hover::before {
+    opacity: 1;
+  }
+
+  /* Design Token Button Components */
+  .dt-button-primary {
+    background: var(--dt-button-primary-background);
+    color: var(--dt-button-primary-text);
+    border-radius: var(--dt-button-primary-borderRadius);
+    padding: var(--dt-button-primary-paddingVertical) var(--dt-button-primary-paddingHorizontal);
+    font-weight: 600;
+    font-size: var(--dt-typography-body-small-fontSize);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dt-button-primary:hover {
+    background: var(--dt-button-primary-hover-background);
+    transform: translateY(-1px);
+    box-shadow: var(--dt-shadow-card);
+  }
+
+  .dt-button-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--dt-shadow-card);
+  }
+
+  .dt-button-primary:focus-visible {
+    outline: 2px solid var(--dt-color-accent-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(63, 208, 201, 0.1);
+  }
+
+  .dt-button-secondary {
+    background: var(--dt-button-secondary-background);
+    color: var(--dt-button-secondary-text);
+    border: var(--dt-button-secondary-border);
+    border-radius: var(--dt-button-secondary-borderRadius);
+    padding: var(--dt-button-secondary-paddingVertical) var(--dt-button-secondary-paddingHorizontal);
+    font-weight: 500;
+    font-size: var(--dt-typography-body-small-fontSize);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dt-button-secondary:hover {
+    background: rgba(63, 208, 201, 0.05);
+    border-color: var(--dt-color-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--dt-shadow-card);
+  }
+
+  .dt-button-secondary:active {
+    transform: translateY(0);
+    box-shadow: var(--dt-shadow-card);
+  }
+
+  .dt-button-secondary:focus-visible {
+    outline: 2px solid var(--dt-color-accent-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(63, 208, 201, 0.1);
+  }
+
 .wonderland-container {
-  @apply frosted-glass rounded-xl p-6 shadow-frost;
+  background: var(--color-surface-high);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-floating);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1);
 }
 
 .wonderland-heading {
-  @apply font-inter font-semibold text-ice-blue;
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tight);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .wonderland-body {
-  @apply font-inter text-silver-frost;
+  font-family: var(--font-family-primary);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Christmas-themed decorative elements */
+.christmas-decoration {
+  position: relative;
+  overflow: hidden;
+}
+
+.christmas-decoration::before {
+  content: '✨';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1.5rem;
+  animation: christmasTwinkle 3s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+.christmas-decoration::after {
+  content: '🎄';
+  position: absolute;
+  bottom: -10px;
+  left: -10px;
+  font-size: 1.2rem;
+  animation: christmasTwinkle 4s ease-in-out infinite 1s;
+  opacity: 0.4;
+}
+
+/* 🎄 Winter Wonderland Holiday Ornamentation */
+
+.winter-ornamentation {
+  position: relative;
+  overflow: hidden;
+}
+
+.winter-ornamentation::before {
+  content: '❄️';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 1.8rem;
+  animation: winter-ornament-swing var(--winter-ornament-swing) ease-in-out infinite;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+}
+
+.winter-ornamentation::after {
+  content: '🎁';
+  position: absolute;
+  bottom: -8px;
+  left: -8px;
+  font-size: 1.4rem;
+  animation: winter-ornament-swing var(--winter-ornament-swing) ease-in-out infinite reverse;
+  opacity: 0.6;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.winter-ornamentation.feminine::before {
+  content: '🌹';
+  color: var(--winter-feminine-accent-primary);
+  filter: drop-shadow(0 0 6px rgba(232, 165, 181, 0.4));
+}
+
+.winter-ornamentation.feminine::after {
+  content: '💖';
+  color: var(--winter-feminine-accent-secondary);
+  filter: drop-shadow(0 0 6px rgba(201, 160, 216, 0.4));
+}
+
+.winter-ornamentation.masculine::before {
+  content: '🌲';
+  color: var(--winter-masculine-accent-secondary);
+  filter: drop-shadow(0 0 6px rgba(44, 95, 45, 0.4));
+}
+
+.winter-ornamentation.masculine::after {
+  content: '⚡';
+  color: var(--winter-masculine-accent-primary);
+  filter: drop-shadow(0 0 6px rgba(74, 144, 164, 0.4));
+}
+
+.winter-ornamentation.neutral::before {
+  content: '🌿';
+  color: var(--winter-neutral-accent-secondary);
+  filter: drop-shadow(0 0 6px rgba(5, 150, 105, 0.4));
+}
+
+.winter-ornamentation.neutral::after {
+  content: '✨';
+  color: var(--winter-neutral-accent-primary);
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.4));
+}
+
+/* Magical Sparkle Effects */
+.winter-magic-sparkle {
+  position: relative;
+  overflow: hidden;
+}
+
+.winter-magic-sparkle::before {
+  content: '✨';
+  position: absolute;
+  top: 20%;
+  right: 15%;
+  font-size: 0.8rem;
+  animation: winter-magic-sparkle-animation 3s ease-in-out infinite;
+  animation-delay: var(--winter-magic-sparkle-delay);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.winter-magic-sparkle::after {
+  content: '⭐';
+  position: absolute;
+  bottom: 25%;
+  left: 10%;
+  font-size: 0.6rem;
+  animation: winter-magic-sparkle-animation 4s ease-in-out infinite;
+  animation-delay: calc(var(--winter-magic-sparkle-delay) + 1s);
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 /* Legacy components for backward compatibility */
@@ -286,11 +2038,38 @@
 }
 
 @keyframes sparkle {
-  0%, 100% { opacity: 1; transform: scale(1); text-shadow: 0 0 4px #fff; }
-  50% { opacity: 0.7; transform: scale(1.05); text-shadow: 0 0 12px #fff, 0 0 20px rgba(16, 185, 129, 0.6); }
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 1), 0 0 20px rgba(220, 252, 231, 0.6);
+  }
 }
 
-/* Snow effect overlay */
+@keyframes christmasTwinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.2) rotate(90deg);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.9) rotate(180deg);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scale(1.1) rotate(270deg);
+  }
+}
+
+/* Enhanced White Christmas Snow effect overlay */
 .snow-overlay {
   position: fixed;
   top: 0;
@@ -301,28 +2080,1326 @@
   z-index: 1;
 }
 
-.snow-overlay::before {
+.snow-overlay::before,
+.snow-overlay::after,
+.snow-overlay .snow-flake-1,
+.snow-overlay .snow-flake-2,
+.snow-overlay .snow-flake-3,
+.snow-overlay .snow-flake-4,
+.snow-overlay .snow-flake-5 {
+  content: '❄';
+  position: absolute;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.5rem;
+  animation: snow-fall 15s linear infinite;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* ❄️ Winter Wonderland Enhanced Snow System */
+
+.winter-snow-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.9;
+}
+
+.winter-snow-overlay.feminine .winter-snow-flake {
+  color: rgba(248, 244, 255, 0.7);
+  text-shadow:
+    0 0 8px rgba(232, 165, 181, 0.4),
+    0 0 15px rgba(201, 160, 216, 0.3);
+}
+
+.winter-snow-overlay.masculine .winter-snow-flake {
+  color: rgba(232, 244, 248, 0.7);
+  text-shadow:
+    0 0 8px rgba(74, 144, 164, 0.4),
+    0 0 15px rgba(44, 95, 45, 0.3);
+}
+
+.winter-snow-overlay.neutral .winter-snow-flake {
+  color: rgba(236, 253, 245, 0.7);
+  text-shadow:
+    0 0 8px rgba(16, 185, 129, 0.4),
+    0 0 15px rgba(5, 150, 105, 0.3);
+}
+
+/* Dynamic Snow Particles */
+.winter-snow-particle {
+  position: absolute;
+  pointer-events: none;
+  animation: winter-snow-particle-fall 20s linear infinite;
+  opacity: 0.8;
+}
+
+.winter-snow-particle.large {
+  font-size: 2rem;
+  animation-duration: 25s;
+}
+
+.winter-snow-particle.medium {
+  font-size: 1.5rem;
+  animation-duration: 20s;
+  animation-delay: -5s;
+}
+
+.winter-snow-particle.small {
+  font-size: 1rem;
+  animation-duration: 15s;
+  animation-delay: -10s;
+}
+
+/* Holiday Lighting Effects */
+.winter-holiday-lights {
+  position: relative;
+  overflow: hidden;
+}
+
+.winter-holiday-lights::before {
   content: '';
   position: absolute;
-  top: -10px;
-  left: 10%;
-  width: 2px;
-  height: 2px;
-  background: white;
-  border-radius: 50%;
-  animation: snow-fall 8s linear infinite;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--winter-accent-primary) 20%,
+    var(--winter-accent-secondary) 40%,
+    var(--winter-accent-tertiary) 60%,
+    var(--winter-accent-primary) 80%,
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: winter-light-string 3s ease-in-out infinite;
   opacity: 0.6;
 }
 
+.winter-holiday-lights.feminine::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #E8A5B5 20%,
+    #C9A0D8 40%,
+    #F8F4FF 60%,
+    #E8A5B5 80%,
+    transparent 100%);
+}
+
+.winter-holiday-lights.masculine::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #4A90A4 20%,
+    #2C5F2D 40%,
+    #E8F4F8 60%,
+    #4A90A4 80%,
+    transparent 100%);
+}
+
+.winter-holiday-lights.neutral::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    #10B981 20%,
+    #059669 40%,
+    #ECFDF5 60%,
+    #10B981 80%,
+    transparent 100%);
+}
+
+.snow-overlay::before {
+  top: -20px;
+  left: 10%;
+  animation-delay: 0s;
+  font-size: 1.2rem;
+}
+
 .snow-overlay::after {
+  top: -20px;
+  right: 20%;
+  animation-delay: 3s;
+  font-size: 1.8rem;
+}
+
+.snow-overlay .snow-flake-1 {
+  top: -20px;
+  left: 30%;
+  animation-delay: 6s;
+  font-size: 1.4rem;
+}
+
+.snow-overlay .snow-flake-2 {
+  top: -20px;
+  right: 40%;
+  animation-delay: 9s;
+  font-size: 1.6rem;
+}
+
+.snow-overlay .snow-flake-3 {
+  top: -20px;
+  left: 60%;
+  animation-delay: 12s;
+  font-size: 1.3rem;
+}
+
+.snow-overlay .snow-flake-4 {
+  top: -20px;
+  right: 70%;
+  animation-delay: 15s;
+  font-size: 1.7rem;
+}
+
+.snow-overlay .snow-flake-5 {
+  top: -20px;
+  left: 80%;
+  animation-delay: 18s;
+  font-size: 1.5rem;
+}
+
+/* 🎄 Dynamic Christmas Village Background System */
+
+/* Base Christmas Village Background - Dark Theme */
+.christmas-village-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse at top, rgba(12, 12, 14, 0.95) 0%, rgba(20, 20, 22, 0.9) 50%, rgba(27, 27, 30, 0.85) 100%),
+    linear-gradient(180deg,
+      rgba(12, 12, 14, 0.9) 0%,
+      rgba(20, 20, 22, 0.85) 30%,
+      rgba(34, 34, 38, 0.8) 60%,
+      rgba(44, 44, 49, 0.95) 100%);
+  overflow: hidden;
+  z-index: -1;
+  transition: all cubic-bezier(0.17, 0.84, 0.44, 1);
+}
+
+/* Background Transition States */
+.christmas-village-bg.background-transitioning {
+  transition: all var(--transition-slow);
+}
+
+.christmas-village-bg.background-transitioning * {
+  transition: all var(--transition-slow);
+}
+
+/* Emotional State Backgrounds */
+.christmas-village-bg.joy {
+  background:
+    radial-gradient(ellipse at top, rgba(255, 107, 157, 0.1) 0%, rgba(78, 205, 196, 0.05) 30%, rgba(255, 230, 109, 0.08) 60%, rgba(2, 6, 23, 1) 100%),
+    linear-gradient(180deg,
+      rgba(255, 107, 157, 0.08) 0%,
+      rgba(78, 205, 196, 0.06) 30%,
+      rgba(255, 230, 109, 0.04) 60%,
+      rgba(71, 85, 105, 1) 100%);
+}
+
+.christmas-village-bg.anticipation {
+  background:
+    radial-gradient(ellipse at top, rgba(78, 205, 196, 0.12) 0%, rgba(255, 107, 157, 0.06) 40%, rgba(59, 130, 246, 0.08) 70%, rgba(2, 6, 23, 1) 100%),
+    linear-gradient(180deg,
+      rgba(78, 205, 196, 0.1) 0%,
+      rgba(255, 107, 157, 0.05) 40%,
+      rgba(59, 130, 246, 0.06) 70%,
+      rgba(71, 85, 105, 1) 100%);
+}
+
+.christmas-village-bg.reflection {
+  background:
+    radial-gradient(ellipse at top, rgba(139, 92, 246, 0.1) 0%, rgba(78, 205, 196, 0.08) 50%, rgba(16, 185, 129, 0.06) 80%, rgba(2, 6, 23, 1) 100%),
+    linear-gradient(180deg,
+      rgba(139, 92, 246, 0.08) 0%,
+      rgba(78, 205, 196, 0.06) 50%,
+      rgba(16, 185, 129, 0.04) 80%,
+      rgba(71, 85, 105, 1) 100%);
+}
+
+.christmas-village-bg.celebration {
+  background:
+    radial-gradient(ellipse at top, rgba(255, 230, 109, 0.15) 0%, rgba(255, 107, 157, 0.12) 30%, rgba(78, 205, 196, 0.08) 60%, rgba(2, 6, 23, 1) 100%),
+    linear-gradient(180deg,
+      rgba(255, 230, 109, 0.12) 0%,
+      rgba(255, 107, 157, 0.1) 30%,
+      rgba(78, 205, 196, 0.06) 60%,
+      rgba(71, 85, 105, 1) 100%);
+}
+
+/* Dynamic Atmospheric Effects */
+.christmas-village-bg::before {
   content: '';
   position: absolute;
-  top: -10px;
-  right: 20%;
-  width: 1px;
-  height: 1px;
-  background: white;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 60%, rgba(255, 255, 255, 0.02) 0%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 50% 100%, rgba(255, 255, 255, 0.01) 0%, transparent 70%);
+  animation: fog-drift 60s ease-in-out infinite;
+  transition: all var(--transition-slow);
+}
+
+/* Emotional State Atmospheric Effects */
+.christmas-village-bg.joy::before {
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 80%, rgba(255, 107, 157, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 60%, rgba(255, 230, 109, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 50% 100%, rgba(78, 205, 196, 0.04) 0%, transparent 70%);
+  animation: fog-drift 45s ease-in-out infinite, emotional-glow 8s ease-in-out infinite;
+}
+
+.christmas-village-bg.anticipation::before {
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 80%, rgba(78, 205, 196, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 50% 100%, rgba(255, 107, 157, 0.03) 0%, transparent 70%);
+  animation: fog-drift 55s ease-in-out infinite, anticipation-pulse 12s ease-in-out infinite;
+}
+
+.christmas-village-bg.reflection::before {
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 60%, rgba(16, 185, 129, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 50% 100%, rgba(78, 205, 196, 0.03) 0%, transparent 70%);
+  animation: fog-drift 70s ease-in-out infinite, reflection-shimmer 15s ease-in-out infinite;
+}
+
+.christmas-village-bg.celebration::before {
+  background:
+    radial-gradient(ellipse 800px 600px at 20% 80%, rgba(255, 230, 109, 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 60%, rgba(255, 107, 157, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 1000px 800px at 50% 100%, rgba(78, 205, 196, 0.06) 0%, transparent 70%);
+  animation: fog-drift 35s ease-in-out infinite, celebration-sparkle 6s ease-in-out infinite;
+}
+
+/* Realistic Snow Layer */
+.christmas-snow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.christmas-snow::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 100px);
+  background-image:
+    /* Large snowflakes */
+    radial-gradient(circle 3px at 10% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%),
+    radial-gradient(circle 2px at 25% 40%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%),
+    radial-gradient(circle 4px at 40% 10%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%),
+    radial-gradient(circle 2.5px at 55% 30%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%),
+    radial-gradient(circle 3.5px at 70% 50%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.65) 50%, transparent 100%),
+    radial-gradient(circle 2px at 85% 15%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%),
+    /* Medium snowflakes */
+    radial-gradient(circle 1.5px at 15% 60%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%),
+    radial-gradient(circle 1px at 35% 80%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%),
+    radial-gradient(circle 2px at 60% 25%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%),
+    radial-gradient(circle 1.5px at 80% 70%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%),
+    /* Small snowflakes */
+    radial-gradient(circle 1px at 5% 35%, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%),
+    radial-gradient(circle 0.8px at 45% 55%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%),
+    radial-gradient(circle 1.2px at 75% 85%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
+  background-size: 300px 200px;
+  background-repeat: repeat;
+  animation: realistic-snow-fall 25s linear infinite;
+}
+
+.christmas-snow::after {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: -50px;
+  width: calc(100% + 50px);
+  height: calc(100% + 100px);
+  background-image:
+    /* More varied snowflakes */
+    radial-gradient(circle 2.8px at 18% 25%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.58) 50%, transparent 100%),
+    radial-gradient(circle 1.8px at 32% 45%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.48) 50%, transparent 100%),
+    radial-gradient(circle 3.2px at 48% 15%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.67) 50%, transparent 100%),
+    radial-gradient(circle 2.2px at 62% 35%, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.52) 50%, transparent 100%),
+    radial-gradient(circle 3.8px at 78% 55%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%),
+    radial-gradient(circle 1.6px at 88% 20%, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.46) 50%, transparent 100%);
+  background-size: 350px 180px;
+  background-repeat: repeat;
+  animation: realistic-snow-fall 30s linear infinite reverse;
+  animation-delay: -15s;
+}
+
+/* Realistic Village Houses */
+.christmas-house {
+  position: absolute;
+  bottom: 0;
+  width: 90px;
+  height: 70px;
+  background: linear-gradient(145deg, #92400e, #78350f, #5d2a0c);
+  border: 1px solid #451a03;
+  border-radius: 6px 6px 0 0;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.christmas-house::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  left: -3px;
+  width: 96px;
+  height: 35px;
+  background: linear-gradient(145deg, #dc2626, #b91c1c, #991b1b);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.christmas-house::after {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  left: 28px;
+  width: 18px;
+  height: 30px;
+  background: linear-gradient(145deg, #fbbf24, #f59e0b, #d97706);
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* House Windows */
+.christmas-house .window {
+  position: absolute;
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.christmas-house .window-1 {
+  bottom: 25px;
+  left: 8px;
+  width: 12px;
+  height: 15px;
+  border-radius: 2px;
+}
+
+.christmas-house .window-2 {
+  bottom: 25px;
+  right: 8px;
+  width: 12px;
+  height: 15px;
+  border-radius: 2px;
+}
+
+/* Chimneys */
+.christmas-house .chimney {
+  position: absolute;
+  top: -35px;
+  right: 15px;
+  width: 8px;
+  height: 12px;
+  background: linear-gradient(145deg, #92400e, #5d2a0c);
+  border: 1px solid #451a03;
+  border-radius: 2px 2px 0 0;
+}
+
+/* House Variations with Emotional States */
+.christmas-house:nth-child(1) {
+  left: 8%;
+  transform: scale(0.85);
+}
+
+.christmas-house:nth-child(1)::before {
+  background: linear-gradient(145deg, #7c2d12, #9a3412, #c2410c);
+  transition: all var(--transition-base);
+}
+
+.christmas-house:nth-child(1) .window-1,
+.christmas-house:nth-child(1) .window-2 {
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  animation: window-glow 4s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.christmas-house:nth-child(2) {
+  left: 23%;
+  transform: scale(0.95);
+}
+
+.christmas-house:nth-child(2)::before {
+  background: linear-gradient(145deg, #be123c, #dc2626, #ef4444);
+  transition: all var(--transition-base);
+}
+
+.christmas-house:nth-child(2) .window-1 {
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  animation: window-glow 5s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.christmas-house:nth-child(2) .window-2 {
+  background: linear-gradient(145deg, #60a5fa, #3b82f6);
+  animation: window-glow 3.5s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.christmas-house:nth-child(3) {
+  left: 48%;
+  transform: scale(1.15);
+}
+
+.christmas-house:nth-child(3)::before {
+  background: linear-gradient(145deg, #dc2626, #b91c1c, #991b1b);
+  transition: all var(--transition-base);
+}
+
+.christmas-house:nth-child(3) .window-1,
+.christmas-house:nth-child(3) .window-2 {
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  animation: window-glow 4.5s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.christmas-house:nth-child(3) .chimney {
+  width: 10px;
+  height: 15px;
+}
+
+.christmas-house:nth-child(4) {
+  left: 68%;
+  transform: scale(0.9);
+}
+
+.christmas-house:nth-child(4)::before {
+  background: linear-gradient(145deg, #7c2d12, #ea580c, #dc2626);
+  transition: all var(--transition-base);
+}
+
+.christmas-house:nth-child(4) .window-1 {
+  background: linear-gradient(145deg, #60a5fa, #3b82f6);
+  animation: window-glow 3s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.christmas-house:nth-child(4) .window-2 {
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  animation: window-glow 4.2s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+.christmas-house:nth-child(5) {
+  left: 83%;
+  transform: scale(0.8);
+}
+
+.christmas-house:nth-child(5)::before {
+  background: linear-gradient(145deg, #991b1b, #dc2626, #f87171);
+  transition: all var(--transition-base);
+}
+
+.christmas-house:nth-child(5) .window-1,
+.christmas-house:nth-child(5) .window-2 {
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  animation: window-glow 3.8s ease-in-out infinite;
+  transition: all var(--transition-fast);
+}
+
+/* Emotional State House Responses */
+.christmas-village-bg.joy .christmas-house::before {
+  filter: brightness(1.1) saturate(1.2);
+}
+
+.christmas-village-bg.joy .christmas-house .window {
+  filter: brightness(1.3) saturate(1.4);
+  animation-duration: 2.5s;
+}
+
+.christmas-village-bg.anticipation .christmas-house::before {
+  filter: brightness(1.05) hue-rotate(5deg);
+}
+
+.christmas-village-bg.anticipation .christmas-house .window {
+  filter: brightness(1.2) hue-rotate(10deg);
+  animation-duration: 3s;
+}
+
+.christmas-village-bg.reflection .christmas-house::before {
+  filter: brightness(0.95) saturate(0.9);
+}
+
+.christmas-village-bg.reflection .christmas-house .window {
+  filter: brightness(0.9) opacity(0.8);
+  animation-duration: 4s;
+}
+
+.christmas-village-bg.celebration .christmas-house::before {
+  filter: brightness(1.2) saturate(1.3) hue-rotate(-5deg);
+}
+
+.christmas-village-bg.celebration .christmas-house .window {
+  filter: brightness(1.4) saturate(1.5);
+  animation-duration: 2s;
+}
+
+/* Realistic Christmas Tree */
+.christmas-tree {
+  position: absolute;
+  bottom: 0;
+  left: 35%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 160px;
+}
+
+/* Tree trunk */
+.christmas-tree .trunk {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 25px;
+  background: linear-gradient(145deg, #92400e, #78350f, #5d2a0c);
+  border-radius: 6px 6px 2px 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tree layers */
+.christmas-tree .layer-1 {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 60px solid transparent;
+  border-right: 60px solid transparent;
+  border-bottom: 45px solid #166534;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.christmas-tree .layer-2 {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 40px solid #15803d;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.christmas-tree .layer-3 {
+  position: absolute;
+  bottom: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-bottom: 35px solid #16a34a;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.christmas-tree .layer-4 {
+  position: absolute;
+  bottom: 95px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+  border-bottom: 30px solid #15803d;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Christmas lights */
+.christmas-tree .light {
+  position: absolute;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  animation: snow-fall 12s linear infinite 2s;
-  opacity: 0.4;
+  box-shadow: 0 0 4px currentColor;
+  animation: light-twinkle 2s ease-in-out infinite;
+}
+
+.christmas-tree .light-1 {
+  background: #ef4444;
+  color: #ef4444;
+  bottom: 35px;
+  left: 25px;
+  animation-delay: 0s;
+}
+
+.christmas-tree .light-2 {
+  background: #f59e0b;
+  color: #f59e0b;
+  bottom: 55px;
+  right: 20px;
+  animation-delay: 0.5s;
+}
+
+.christmas-tree .light-3 {
+  background: #10b981;
+  color: #10b981;
+  bottom: 75px;
+  left: 15px;
+  animation-delay: 1s;
+}
+
+.christmas-tree .light-4 {
+  background: #3b82f6;
+  color: #3b82f6;
+  bottom: 95px;
+  right: 25px;
+  animation-delay: 1.5s;
+}
+
+.christmas-tree .light-5 {
+  background: #8b5cf6;
+  color: #8b5cf6;
+  bottom: 110px;
+  left: 35px;
+  animation-delay: 0.2s;
+}
+
+/* Christmas ornaments */
+.christmas-tree .ornament {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.christmas-tree .ornament-1 {
+  background: #dc2626;
+  color: #dc2626;
+  bottom: 45px;
+  right: 35px;
+}
+
+.christmas-tree .ornament-2 {
+  background: #f59e0b;
+  color: #f59e0b;
+  bottom: 65px;
+  left: 30px;
+}
+
+.christmas-tree .ornament-3 {
+  background: #06b6d4;
+  color: #06b6d4;
+  bottom: 85px;
+  right: 15px;
+}
+
+.christmas-tree .ornament-4 {
+  background: #8b5cf6;
+  color: #8b5cf6;
+  bottom: 105px;
+  left: 20px;
+}
+
+/* Star on top */
+.christmas-tree .star {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 12px solid #fbbf24;
+  filter: drop-shadow(0 0 4px #fbbf24);
+}
+
+.christmas-tree .star::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: -6px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 12px solid #fbbf24;
+}
+
+.christmas-tree .star::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: #fbbf24;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* Realistic Butterflies */
+.butterfly {
+  position: absolute;
+  width: 32px;
+  height: 28px;
+  animation: butterfly-flight 12s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.butterfly .body {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(to bottom, #2d1810, #1a0f08);
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.butterfly .antennae {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 6px;
+}
+
+.butterfly .antennae::before,
+.butterfly .antennae::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #1a0f08;
+  border-radius: 50%;
+  top: 0;
+}
+
+.butterfly .antennae::before {
+  left: -2px;
+  transform: rotate(-15deg);
+}
+
+.butterfly .antennae::after {
+  right: -2px;
+  transform: rotate(15deg);
+}
+
+/* Left Wing */
+.butterfly .wing-left {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 20px;
+  transform-origin: right center;
+  animation: wing-flap-left 0.15s ease-in-out infinite alternate;
+}
+
+.butterfly .wing-left-upper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 12px;
+  clip-path: ellipse(70% 60% at 85% 30%);
+}
+
+.butterfly .wing-left-lower {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  height: 10px;
+  clip-path: ellipse(60% 50% at 80% 70%);
+}
+
+/* Right Wing */
+.butterfly .wing-right {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 20px;
+  transform-origin: left center;
+  animation: wing-flap-right 0.15s ease-in-out infinite alternate;
+}
+
+.butterfly .wing-right-upper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 12px;
+  clip-path: ellipse(70% 60% at 15% 30%);
+}
+
+.butterfly .wing-right-lower {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 10px;
+  clip-path: ellipse(60% 50% at 20% 70%);
+}
+
+/* Pink Butterfly (Monarch-like) */
+.butterfly-pink {
+  animation-delay: 0s;
+  top: 25%;
+  left: 12%;
+}
+
+.butterfly-pink .wing-left-upper {
+  background: linear-gradient(135deg,
+    #f472b6 0%, #ec4899 20%, #db2777 40%,
+    #f472b6 60%, #ec4899 80%, #be185d 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-pink .wing-left-lower {
+  background: linear-gradient(135deg,
+    #ec4899 0%, #db2777 30%, #be185d 60%, #9d174d 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-pink .wing-right-upper {
+  background: linear-gradient(45deg,
+    #f472b6 0%, #ec4899 20%, #db2777 40%,
+    #f472b6 60%, #ec4899 80%, #be185d 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-pink .wing-right-lower {
+  background: linear-gradient(45deg,
+    #ec4899 0%, #db2777 30%, #be185d 60%, #9d174d 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Blue Butterfly (Morpho-like) */
+.butterfly-blue {
+  animation-delay: 3s;
+  top: 40%;
+  right: 15%;
+}
+
+.butterfly-blue .wing-left-upper {
+  background: linear-gradient(135deg,
+    #60a5fa 0%, #3b82f6 25%, #2563eb 50%,
+    #1d4ed8 75%, #1e40af 100%);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+}
+
+.butterfly-blue .wing-left-lower {
+  background: linear-gradient(135deg,
+    #3b82f6 0%, #2563eb 40%, #1d4ed8 80%, #1e40af 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-blue .wing-right-upper {
+  background: linear-gradient(45deg,
+    #60a5fa 0%, #3b82f6 25%, #2563eb 50%,
+    #1d4ed8 75%, #1e40af 100%);
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+}
+
+.butterfly-blue .wing-right-lower {
+  background: linear-gradient(45deg,
+    #3b82f6 0%, #2563eb 40%, #1d4ed8 80%, #1e40af 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Purple Butterfly (Swallowtail-like) */
+.butterfly-purple {
+  animation-delay: 6s;
+  top: 55%;
+  left: 20%;
+}
+
+.butterfly-purple .wing-left-upper {
+  background: linear-gradient(135deg,
+    #a78bfa 0%, #8b5cf6 30%, #7c3aed 60%,
+    #6d28d9 90%, #5b21b6 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-purple .wing-left-lower {
+  background: linear-gradient(135deg,
+    #8b5cf6 0%, #7c3aed 40%, #6d28d9 80%, #5b21b6 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-purple .wing-right-upper {
+  background: linear-gradient(45deg,
+    #a78bfa 0%, #8b5cf6 30%, #7c3aed 60%,
+    #6d28d9 90%, #5b21b6 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.butterfly-purple .wing-right-lower {
+  background: linear-gradient(45deg,
+    #8b5cf6 0%, #7c3aed 40%, #6d28d9 80%, #5b21b6 100%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Realistic Animations */
+@keyframes fog-drift {
+  0%, 100% {
+    transform: translateX(0) translateY(0) scale(1);
+    opacity: 0.03;
+  }
+  25% {
+    transform: translateX(20px) translateY(-10px) scale(1.05);
+    opacity: 0.02;
+  }
+  50% {
+    transform: translateX(-15px) translateY(5px) scale(0.95);
+    opacity: 0.025;
+  }
+  75% {
+    transform: translateX(10px) translateY(-5px) scale(1.02);
+    opacity: 0.035;
+  }
+}
+
+@keyframes realistic-snow-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes window-glow {
+  0%, 100% {
+    opacity: 0.8;
+    filter: brightness(1) drop-shadow(0 0 2px currentColor);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.2) drop-shadow(0 0 6px currentColor);
+  }
+}
+
+@keyframes light-twinkle {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes wing-flap-left {
+  0% {
+    transform: rotateY(0deg) scaleX(1);
+  }
+  100% {
+    transform: rotateY(-30deg) scaleX(0.9);
+  }
+}
+
+@keyframes wing-flap-right {
+  0% {
+    transform: rotateY(0deg) scaleX(1);
+  }
+  100% {
+    transform: rotateY(30deg) scaleX(0.9);
+  }
+}
+
+@keyframes butterfly-flight {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 0.9;
+  }
+  10% {
+    transform: translate(80px, -40px) rotate(15deg) scale(1.05);
+    opacity: 1;
+  }
+  20% {
+    transform: translate(160px, -20px) rotate(-10deg) scale(0.95);
+    opacity: 0.95;
+  }
+  30% {
+    transform: translate(240px, -60px) rotate(25deg) scale(1.1);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(320px, -30px) rotate(-5deg) scale(0.9);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(400px, -80px) rotate(20deg) scale(1.05);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(480px, -40px) rotate(-15deg) scale(0.95);
+    opacity: 0.95;
+  }
+  70% {
+    transform: translate(560px, -70px) rotate(30deg) scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(640px, -20px) rotate(-8deg) scale(0.9);
+    opacity: 0.9;
+  }
+  90% {
+    transform: translate(720px, -50px) rotate(18deg) scale(1.05);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(800px, 0) rotate(0deg) scale(1);
+    opacity: 0.9;
+  }
+}
+
+/* 🎭 Emotional State Animations */
+@keyframes emotional-glow {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.1) saturate(1.2);
+  }
+}
+
+@keyframes anticipation-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes reflection-shimmer {
+  0%, 100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% {
+    filter: hue-rotate(15deg) brightness(1.05);
+  }
+  50% {
+    filter: hue-rotate(30deg) brightness(1.1);
+  }
+  75% {
+    filter: hue-rotate(15deg) brightness(1.05);
+  }
+}
+
+@keyframes celebration-sparkle {
+  0%, 100% {
+    filter: brightness(1) contrast(1);
+  }
+  50% {
+    filter: brightness(1.2) contrast(1.1);
+  }
+}
+
+/* ❄️ Winter Wonderland Animations */
+
+@keyframes winter-ornament-swing {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: rotate(5deg) scale(1.05);
+    opacity: 0.8;
+  }
+  50% {
+    transform: rotate(-3deg) scale(0.95);
+    opacity: 0.9;
+  }
+  75% {
+    transform: rotate(2deg) scale(1.02);
+    opacity: 0.7;
+  }
+}
+
+@keyframes winter-magic-sparkle-animation {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.6;
+    filter: blur(0px);
+  }
+  25% {
+    transform: scale(1.2) rotate(90deg);
+    opacity: 1;
+    filter: blur(0.5px);
+  }
+  50% {
+    transform: scale(0.8) rotate(180deg);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  75% {
+    transform: scale(1.1) rotate(270deg);
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+}
+
+@keyframes winter-snow-particle-fall {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  20% {
+    transform: translateY(-80vh) translateX(20px) rotate(45deg) scale(1.1);
+  }
+  40% {
+    transform: translateY(-60vh) translateX(-10px) rotate(90deg) scale(0.9);
+  }
+  60% {
+    transform: translateY(-40vh) translateX(15px) rotate(135deg) scale(1.05);
+  }
+  80% {
+    transform: translateY(-20vh) translateX(-5px) rotate(180deg) scale(0.95);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(100vh) translateX(0) rotate(360deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes winter-light-string {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.4;
+  }
+  25% {
+    background-position: 25% 50%;
+    opacity: 0.8;
+  }
+  50% {
+    background-position: 50% 50%;
+    opacity: 1;
+  }
+  75% {
+    background-position: 75% 50%;
+    opacity: 0.6;
+  }
+}
+
+@keyframes winter-frost-shimmer {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.8;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes winter-holiday-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(255, 255, 255, 0.1),
+      0 0 40px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(255, 255, 255, 0.15),
+      0 0 60px rgba(255, 255, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Winter Wonderland Background Variants */
+.winter-wonderland-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-attachment: fixed;
+  z-index: -2;
+  animation: winter-bg-transition 30s ease-in-out infinite;
+}
+
+.winter-wonderland-bg.feminine {
+  background:
+    radial-gradient(ellipse at top, rgba(232, 165, 181, 0.1) 0%, rgba(201, 160, 216, 0.08) 30%, rgba(248, 244, 255, 0.06) 60%, rgba(31, 25, 30, 0.95) 100%),
+    linear-gradient(180deg,
+      rgba(232, 165, 181, 0.08) 0%,
+      rgba(201, 160, 216, 0.06) 30%,
+      rgba(248, 244, 255, 0.04) 60%,
+      rgba(45, 35, 42, 0.9) 100%);
+}
+
+.winter-wonderland-bg.masculine {
+  background:
+    radial-gradient(ellipse at top, rgba(74, 144, 164, 0.1) 0%, rgba(44, 95, 45, 0.08) 30%, rgba(232, 244, 248, 0.06) 60%, rgba(18, 28, 38, 0.95) 100%),
+    linear-gradient(180deg,
+      rgba(74, 144, 164, 0.08) 0%,
+      rgba(44, 95, 45, 0.06) 30%,
+      rgba(232, 244, 248, 0.04) 60%,
+      rgba(28, 42, 55, 0.9) 100%);
+}
+
+.winter-wonderland-bg.neutral {
+  background:
+    radial-gradient(ellipse at top, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.08) 30%, rgba(236, 253, 245, 0.06) 60%, rgba(20, 35, 28, 0.95) 100%),
+    linear-gradient(180deg,
+      rgba(16, 185, 129, 0.08) 0%,
+      rgba(5, 150, 105, 0.06) 30%,
+      rgba(236, 253, 245, 0.04) 60%,
+      rgba(30, 50, 40, 0.9) 100%);
+}
+
+@keyframes winter-bg-transition {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  25% {
+    filter: brightness(1.05) saturate(1.1);
+  }
+  50% {
+    filter: brightness(1.1) saturate(1.2);
+  }
+  75% {
+    filter: brightness(1.05) saturate(1.1);
+  }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './lib/AuthContext';
 import ParentDashboard from './components/ParentDashboard';
 import ChildCalendarView from './components/ChildCalendarView';
@@ -7,8 +7,10 @@ import AuthModal from './components/AuthModal';
 import ChildLoginModal from './components/ChildLoginModal';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeIntegrationService } from './lib/themeIntegration';
+import { EmotionalBackgroundProvider } from './lib/EmotionalBackground';
 import { Parent, Child, Calendar } from './types/calendar';
 import type { Session } from '@supabase/supabase-js';
+import { authService } from './lib/auth';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: string[] }> = ({
@@ -49,9 +51,18 @@ const AuthPage: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const [showChildLogin, setShowChildLogin] = React.useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Theme integration
+  // Theme integration - Enable Winter Wonderland
   React.useEffect(() => {
+    // Apply Winter Wonderland theme for magical Christmas experience
+    ThemeIntegrationService.applyWinterWonderlandTheme({
+      enabled: true,
+      genderVariant: 'neutral', // Start with neutral, can be customized per user
+      enhancedEffects: true
+    });
+
+    // Fallback seasonal theme if Winter Wonderland fails
     const theme = ThemeIntegrationService.getSeasonalTheme();
     ThemeIntegrationService.applyThemeToPage(theme);
   }, []);
@@ -83,26 +94,32 @@ const AuthPage: React.FC = () => {
   }, [isAuthenticated, userType]);
 
   const handleParentAuthSuccess = async (user: Parent, child?: Child) => {
-    // Get session from Supabase
-    const { authService } = await import('./lib/auth');
     try {
-      const session = await authService.getCurrentSession();
-      
+      // Wait for session to be established
+      let session = null;
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      while (!session && attempts < maxAttempts) {
+        session = await authService.getCurrentSession();
+        if (!session) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          attempts++;
+        }
+      }
+
       if (session) {
         await login('parent', session, user as Parent, child);
-        window.location.href = '/parent/dashboard';
+        // Use React Router navigation instead of window.location.href
+        navigate('/parent/dashboard');
       } else {
-        // Session might not be ready yet, wait and retry
-        setTimeout(async () => {
-          const retrySession = await authService.getCurrentSession();
-          if (retrySession) {
-            await login('parent', retrySession, user as Parent, child);
-            window.location.href = '/parent/dashboard';
-          }
-        }, 1000);
+        console.error('Failed to establish session after signup');
+        // Show error to user
+        alert('Authentication failed. Please try logging in manually.');
       }
     } catch (error) {
-      console.error('Error getting session:', error);
+      console.error('Error in parent auth success:', error);
+      alert('Authentication failed. Please try again.');
     }
   };
 
@@ -110,86 +127,204 @@ const AuthPage: React.FC = () => {
     // Store child session in localStorage
     localStorage.setItem('child_session', JSON.stringify({ child, calendar }));
     await login('child', null as unknown as Session, undefined, child);
-    window.location.href = '/child/calendar';
+    navigate('/child/calendar');
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
-         style={{
-           background: 'var(--theme-background)',
-           fontFamily: 'var(--theme-font)'
-         }}>
+  const handleGuestLogin = async () => {
+    try {
+      // Create a guest session with demo data
+      const guestChild: Child = {
+        child_uuid: 'guest-' + Date.now(),
+        parent_uuid: 'guest-parent',
+        name: 'Guest Explorer',
+        birthdate: '2018-01-01', // 6 years old
+        gender: 'unspecified',
+        interests: { butterflies: true, books: true },
+        selected_template: 'pastel-dreams',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-20 h-20 rounded-full"
-             style={{ backgroundColor: 'var(--theme-primary)' }}></div>
-        <div className="absolute bottom-20 right-20 w-32 h-32 rounded-full"
-             style={{ backgroundColor: 'var(--theme-secondary)' }}></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full"
-             style={{ backgroundColor: 'var(--theme-accent)' }}></div>
+      const guestCalendar: Calendar = {
+        calendar_id: 'guest-calendar',
+        child_uuid: guestChild.child_uuid,
+        parent_uuid: 'guest-parent',
+        template_id: '550e8400-e29b-41d4-a716-446655440000', // pastel-dreams
+        share_uuid: undefined,
+        is_published: false,
+        year: new Date().getFullYear(),
+        version: 1,
+        last_tile_opened: 0,
+        settings: { theme: 'pastel-dreams', isGuest: true },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // Store guest session in localStorage
+      localStorage.setItem('guest_session', JSON.stringify({
+        child: guestChild,
+        calendar: guestCalendar,
+        isGuest: true
+      }));
+
+      await login('child', null as unknown as Session, undefined, guestChild);
+      navigate('/child/calendar');
+    } catch (error) {
+      console.error('Guest login error:', error);
+      alert('Failed to start guest session. Please try again.');
+    }
+  };
+
+  const [authStep, setAuthStep] = React.useState<'welcome' | 'parent-options' | 'child-options'>('welcome');
+
+  return (
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden winter-wonderland-bg">
+
+      {/* Winter Wonderland Snow Effects */}
+      <div className="winter-snow-overlay">
+        <div className="winter-snow-particle large" style={{left: '10%', animationDelay: '0s'}}>❄️</div>
+        <div className="winter-snow-particle medium" style={{left: '25%', animationDelay: '2s'}}>❄️</div>
+        <div className="winter-snow-particle small" style={{left: '40%', animationDelay: '4s'}}>❄️</div>
+        <div className="winter-snow-particle large" style={{left: '60%', animationDelay: '1s'}}>❄️</div>
+        <div className="winter-snow-particle medium" style={{left: '75%', animationDelay: '3s'}}>❄️</div>
+        <div className="winter-snow-particle small" style={{left: '85%', animationDelay: '5s'}}>❄️</div>
       </div>
 
-      <div className="text-center max-w-md w-full mx-4 relative z-10">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8 mb-4 border"
-             style={{ borderColor: 'var(--theme-primary)' }}>
+      {/* Holiday Lighting Effects */}
+      <div className="winter-holiday-lights"></div>
 
-            {/* Themed header */}
+      <div id="main-content" className="text-center max-w-md w-full mx-4 relative z-10">
+        {/* Welcome Step */}
+        {authStep === 'welcome' && (
+          <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
             <div className="mb-6">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-                   style={{ backgroundColor: 'var(--theme-primary)' }}>
-                <span className="text-2xl">🎄</span>
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 shadow-2xl shadow-emerald-500/30">
+                <span className="text-4xl">🎄</span>
               </div>
-              <h1 className="text-3xl font-bold mb-2"
-                  style={{ color: 'var(--theme-primary)' }}>
-                Christmas Advent Creator
+              <h1 className="display-1 mb-3 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400 bg-clip-text text-transparent">
+                Welcome to Christmas Magic
               </h1>
-              <p className="text-gray-600">
-                Create magical holiday calendars for your family. Sign in as a parent to customize, or as a child to discover daily surprises.
+              <p className="body-large text-emerald-100/80">
+                Let's create unforgettable holiday memories together
               </p>
             </div>
 
-          <div className="space-y-4">
+            <div className="space-y-4">
+              <button
+                onClick={handleGuestLogin}
+                className="winter-wonderland-button frosted w-full text-xl py-4 hover:scale-105 transition-all duration-300"
+              >
+                ✨ Start Exploring ✨
+              </button>
+
+              <button
+                onClick={() => setAuthStep('parent-options')}
+                className="winter-wonderland-button frosted w-full text-lg py-3 hover:scale-105 transition-all duration-300"
+              >
+                I'm a Parent → Create Custom Calendar
+              </button>
+
+              <button
+                onClick={() => setAuthStep('child-options')}
+                className="w-full py-3 px-6 rounded-2xl font-medium text-lg transition-all hover:scale-105 shadow-xl bg-gradient-to-r from-rose-500/20 to-pink-500/20 text-rose-200 border border-rose-400/30 hover:border-rose-400/50 backdrop-blur-sm"
+              >
+                I'm a Child → Open My Calendar 🎁
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Parent Options Step */}
+        {authStep === 'parent-options' && (
+          <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
             <button
-              onClick={() => setShowAuthModal(true)}
-              className="w-full py-3 px-6 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
-              style={{
-                backgroundColor: 'var(--theme-primary)',
-                color: 'white'
-              }}
+              onClick={() => setAuthStep('welcome')}
+              className="absolute top-4 left-4 text-emerald-200/70 hover:text-emerald-100 transition-colors"
+              aria-label="Go back"
             >
-              Parent Sign In / Sign Up
+              ← Back
             </button>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+            <div className="mb-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-500 shadow-2xl shadow-blue-500/30">
+                <span className="text-2xl">👨‍👩‍👧‍👦</span>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">or</span>
-              </div>
+              <h2 className="headline-1 mb-2 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                Create Family Magic
+              </h2>
+              <p className="body text-blue-100/80">
+                Sign up to customize personalized advent calendars for your children
+              </p>
             </div>
 
-            <button
-              onClick={() => setShowChildLogin(true)}
-              className="w-full py-3 px-6 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg border-2"
-              style={{
-                borderColor: 'var(--theme-secondary)',
-                color: 'var(--theme-secondary)',
-                backgroundColor: 'white'
-              }}
-            >
-              Child Login 🎄
-            </button>
-          </div>
-        </div>
+            <div className="space-y-4">
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="winter-wonderland-button frosted w-full text-lg py-3 hover:scale-105 transition-all duration-300"
+              >
+                Sign Up as Parent
+              </button>
 
-        {/* Seasonal message */}
-        <div className="text-center text-sm text-gray-500 mt-4">
-          {new Date().getMonth() === 11 && new Date().getDate() <= 25
-            ? "🎄 Create magical Christmas memories with personalized advent calendars! 🎄"
-            : "❄️ Design holiday traditions that will last a lifetime ❄️"
-          }
+              <div className="text-center">
+                <span className="text-sm text-blue-200/60">Already have an account?</span>
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="ml-1 text-blue-300 hover:text-blue-200 underline transition-colors"
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Child Options Step */}
+        {authStep === 'child-options' && (
+          <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
+            <button
+              onClick={() => setAuthStep('welcome')}
+              className="absolute top-4 left-4 text-rose-200/70 hover:text-rose-100 transition-colors"
+              aria-label="Go back"
+            >
+              ← Back
+            </button>
+
+            <div className="mb-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br from-rose-400 to-pink-500 shadow-2xl shadow-rose-500/30">
+                <span className="text-2xl">🎁</span>
+              </div>
+              <h2 className="headline-1 mb-2 bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent">
+                Your Daily Surprise Awaits!
+              </h2>
+              <p className="body text-rose-100/80">
+                Enter your family code to discover today's magical surprise
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => setShowChildLogin(true)}
+                className="winter-wonderland-button frosted w-full text-lg py-3 hover:scale-105 transition-all duration-300 bg-gradient-to-r from-rose-500/20 to-pink-500/20"
+              >
+                Open My Calendar 🎄
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Winter Wonderland Seasonal Message */}
+        <div className="text-center mt-6 p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <p className="text-emerald-200/80 font-medium text-sm">
+            {new Date().getMonth() === 11 && new Date().getDate() <= 25
+              ? "🎄 Every day brings a new moment of holiday magic in our Winter Wonderland 🎄"
+              : "❄️ Creating traditions that warm the heart forever in our magical wonderland ❄️"
+            }
+          </p>
+          <div className="flex justify-center items-center mt-2 space-x-2">
+            <span className="text-xs text-emerald-300/60">✨</span>
+            <span className="text-xs text-teal-300/60">Powered by Winter Wonderland</span>
+            <span className="text-xs text-cyan-300/60">✨</span>
+          </div>
         </div>
       </div>
 
@@ -293,9 +428,15 @@ const AppRouter: React.FC = () => {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <AppRouter />
-      </AuthProvider>
+      <EmotionalBackgroundProvider>
+        <AuthProvider>
+          {/* Skip Link for Accessibility */}
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
+          <AppRouter />
+        </AuthProvider>
+      </EmotionalBackgroundProvider>
     </ErrorBoundary>
   );
 }

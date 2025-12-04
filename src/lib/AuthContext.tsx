@@ -179,6 +179,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               // Invalid child session data
             }
           }
+
+          // Check for guest session in localStorage
+          const guestSessionData = localStorage.getItem('guest_session');
+          if (guestSessionData && !child) {
+            try {
+              const parsed = JSON.parse(guestSessionData);
+              if (parsed.child && parsed.calendar && parsed.isGuest) {
+                setChild(parsed.child);
+                setUserType('guest');
+              }
+            } catch {
+              // Invalid guest session data
+            }
+          }
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
@@ -246,27 +260,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (
     newUserType: UserType,
-    newSession: Session,
+    newSession: Session | null,
     newParent?: Parent,
     newChild?: Child
   ) => {
     setUserType(newUserType);
+
+    // Handle guest users differently - no Supabase session
+    if (newUserType === 'guest') {
+      setSession(null);
+      setUser(null);
+      if (newChild) {
+        setChild(newChild);
+        // Guest session is already stored in localStorage by the calling component
+      }
+      return;
+    }
+
     setSession(newSession);
     const currentUser = await authService.getCurrentUser().catch(() => null);
     if (currentUser) {
       setUser(currentUser);
 
       // Create session record for enhanced session management
-      if (newUserType === 'parent') {
+      if (newSession) {
         await SessionManager.createSession(
           currentUser.id,
           newSession,
+          newUserType as 'parent' | 'child',
           undefined, // IP address (will be set by server)
           navigator.userAgent
         );
 
-        // Generate CSRF token for form protection
-        await CSRFProtection.generateToken(currentUser.id);
+        // Generate CSRF token for form protection (only for parents)
+        if (newUserType === 'parent') {
+          await CSRFProtection.generateToken(currentUser.id);
+        }
       }
     }
     if (newParent) setParent(newParent);
@@ -294,6 +323,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setSession(null);
       localStorage.removeItem('child_session');
+      localStorage.removeItem('guest_session');
       CSRFProtection.clearToken();
     } catch (error) {
       console.error('Error signing out:', error);
@@ -319,7 +349,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     child,
     user,
     session,
-    isAuthenticated: !!session || !!child,
+    isAuthenticated: !!session || !!child || userType === 'guest',
     isLoading,
     login,
     logout,

@@ -4,15 +4,46 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Modern Technology Christmas Wonderland Palette
-        'ice-blue': '#1e3a8a',
-        'frost-white': '#f8fafc',
-        'aurora-green': '#10b981',
-        'silver-frost': '#64748b',
-        'deep-ice': '#0f172a',
-        'arctic-blue': '#3b82f6',
-        'winter-mint': '#06b6d4',
-        'snow-flake': '#e2e8f0',
+        // Design Token Colors
+        'dt-background': {
+          light: 'var(--dt-color-background-light)',
+          dark: 'var(--dt-color-background-dark)',
+        },
+        'dt-surface': {
+          'low-light': 'var(--dt-color-surface-low-light)',
+          'mid-light': 'var(--dt-color-surface-mid-light)',
+          'low-dark': 'var(--dt-color-surface-low-dark)',
+          'mid-dark': 'var(--dt-color-surface-mid-dark)',
+        },
+        'dt-text': {
+          'primary-light': 'var(--dt-color-text-primary-light)',
+          'secondary-light': 'var(--dt-color-text-secondary-light)',
+          'primary-dark': 'var(--dt-color-text-primary-dark)',
+          'secondary-dark': 'var(--dt-color-text-secondary-dark)',
+        },
+        'dt-accent': {
+          primary: 'var(--dt-color-accent-primary)',
+          hover: 'var(--dt-color-accent-hover)',
+          muted: 'var(--dt-color-accent-muted)',
+        },
+        'dt-border': {
+          light: 'var(--dt-color-border-light)',
+          dark: 'var(--dt-color-border-dark)',
+        },
+        'dt-shadow': {
+          layer1: 'var(--dt-color-shadow-layer1)',
+          layer2: 'var(--dt-color-shadow-layer2)',
+          'dark-layer1': 'var(--dt-color-shadow-dark-layer1)',
+        },
+        // White Christmas Wonderland Palette
+        'ice-blue': '#e0f2fe',
+        'frost-white': '#ffffff',
+        'aurora-green': '#dcfce7',
+        'silver-frost': '#f1f5f9',
+        'deep-ice': '#f8fafc',
+        'arctic-blue': '#f0f9ff',
+        'winter-mint': '#ecfdf5',
+        'snow-flake': '#ffffff',
         // Legacy colors for backward compatibility
         peppermint: '#FF69B4',
         aurora: '#00FF7F',
@@ -34,9 +65,56 @@ export default {
           blue: '#00BFFF',
         }
       },
+      spacing: {
+        'dt-xxs': 'var(--dt-spacing-xxs)',
+        'dt-xs': 'var(--dt-spacing-xs)',
+        'dt-sm': 'var(--dt-spacing-sm)',
+        'dt-md': 'var(--dt-spacing-md)',
+        'dt-lg': 'var(--dt-spacing-lg)',
+        'dt-xl': 'var(--dt-spacing-xl)',
+        'dt-xxl': 'var(--dt-spacing-xxl)',
+      },
+      borderRadius: {
+        'dt-sm': 'var(--dt-radius-sm)',
+        'dt-md': 'var(--dt-radius-md)',
+        'dt-lg': 'var(--dt-radius-lg)',
+        'dt-pill': 'var(--dt-radius-pill)',
+      },
+      boxShadow: {
+        'dt-card': 'var(--dt-shadow-card)',
+        'dt-modal': 'var(--dt-shadow-modal)',
+        'dt-elevated-dark': 'var(--dt-shadow-elevated-dark)',
+      },
       fontFamily: {
         'inter': ['Inter', 'system-ui', 'sans-serif'],
+        'nunito': ['Nunito', 'system-ui', 'sans-serif'],
         christmas: ['Fredoka', 'cursive'],
+      },
+      fontSize: {
+        'dt-heading1': ['var(--dt-typography-heading1-fontSize)', {
+          lineHeight: 'var(--dt-typography-heading1-lineHeight)',
+          fontWeight: 'var(--dt-typography-heading1-fontWeight)',
+        }],
+        'dt-heading2': ['var(--dt-typography-heading2-fontSize)', {
+          lineHeight: 'var(--dt-typography-heading2-lineHeight)',
+          fontWeight: 'var(--dt-typography-heading2-fontWeight)',
+        }],
+        'dt-heading3': ['var(--dt-typography-heading3-fontSize)', {
+          lineHeight: 'var(--dt-typography-heading3-lineHeight)',
+          fontWeight: 'var(--dt-typography-heading3-fontWeight)',
+        }],
+        'dt-body': ['var(--dt-typography-body-fontSize)', {
+          lineHeight: 'var(--dt-typography-body-lineHeight)',
+          fontWeight: 'var(--dt-typography-body-fontWeight)',
+        }],
+        'dt-body-small': ['var(--dt-typography-body-small-fontSize)', {
+          lineHeight: 'var(--dt-typography-body-small-lineHeight)',
+          fontWeight: 'var(--dt-typography-body-small-fontWeight)',
+        }],
+        'dt-caption': ['var(--dt-typography-caption-fontSize)', {
+          lineHeight: 'var(--dt-typography-caption-lineHeight)',
+          fontWeight: 'var(--dt-typography-caption-fontWeight)',
+        }],
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

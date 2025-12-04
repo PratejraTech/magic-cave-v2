@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { authService, AuthUtils } from '../lib/auth';
 import TemplateSelector from './TemplateSelector';
 import { analytics } from '../lib/analytics';
+import { motion } from 'framer-motion';
 
 
 interface AuthModalProps {
@@ -146,10 +147,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
         })
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        // If JSON parsing fails, create a generic error message
+        console.error('Failed to parse response JSON:', parseError);
+        throw new Error(`Server error (${response.status}): ${response.statusText || 'Unknown error'}`);
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
+        throw new Error(data?.error || `Registration failed (${response.status})`);
       }
 
       // Success - the API should have created the user in Supabase Auth
@@ -182,8 +190,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          duration: 0.4
+        }}
+        className="bg-white rounded-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20 hover-lift"
+      >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">
             {mode === 'login' ? 'Welcome Back!' : 'Create Your Account'}
@@ -205,36 +229,42 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
         {/* Auth Method Selection */}
         <div className="mb-6">
           <div className="flex space-x-2 mb-4">
-            <button
-              onClick={() => setAuthMethod('email')}
-              className={`flex-1 py-2 px-4 rounded ${
-                authMethod === 'email'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
+             <motion.button
+               whileHover={{ scale: 1.05 }}
+               whileTap={{ scale: 0.95 }}
+               onClick={() => setAuthMethod('email')}
+               className={`flex-1 py-2 px-4 rounded-2xl transition-all duration-200 min-h-[48px] ${
+                 authMethod === 'email'
+                   ? 'bg-blue-500 text-white shadow-lg'
+                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+               }`}
+             >
               Email
-            </button>
-            <button
-              onClick={() => setAuthMethod('google')}
-              className={`flex-1 py-2 px-4 rounded ${
-                authMethod === 'google'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+            </motion.button>
+             <motion.button
+               whileHover={{ scale: 1.05 }}
+               whileTap={{ scale: 0.95 }}
+               onClick={() => setAuthMethod('google')}
+               className={`flex-1 py-2 px-4 rounded-2xl transition-all duration-200 min-h-[48px] ${
+                 authMethod === 'google'
+                   ? 'bg-blue-500 text-white shadow-lg'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               Google
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setAuthMethod('facebook')}
-              className={`flex-1 py-2 px-4 rounded ${
+              className={`flex-1 py-2 px-4 rounded-xl transition-all duration-200 ${
                 authMethod === 'facebook'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                  ? 'bg-blue-500 text-white shadow-lg'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               Facebook
-            </button>
+            </motion.button>
           </div>
         </div>
 
@@ -456,9 +486,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
             </p>
           )}
         </div>
-      </div>
-    </div>
-  );
+        </motion.div>
+      </motion.div>
+    );
 };
 
 export default AuthModal;

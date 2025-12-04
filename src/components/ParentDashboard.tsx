@@ -9,6 +9,7 @@ import { CalendarTile } from '../types/calendar';
 import { analytics } from '../lib/analytics';
 import { applyTemplateStyling } from '../lib/templateStyling';
 import { DEFAULT_TEMPLATES } from '../types/calendar';
+import { motion } from 'framer-motion';
 
 // Import system prompt templates
 const SYSTEM_PROMPT_TEMPLATES = [
@@ -190,107 +191,144 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Parent Dashboard</h1>
-          <p className="text-sm sm:text-base text-gray-600">Customize your child's advent calendar with messages, photos, and gifts.</p>
+    <div className="min-h-screen winter-wonderland-bg p-4 sm:p-6 relative overflow-hidden">
+      {/* Winter Wonderland Snow Effects */}
+      <div className="winter-snow-overlay fixed inset-0 pointer-events-none">
+        <div className="winter-snow-particle large" style={{left: '15%', animationDelay: '0s'}}>❄️</div>
+        <div className="winter-snow-particle medium" style={{left: '35%', animationDelay: '3s'}}>❄️</div>
+        <div className="winter-snow-particle small" style={{left: '55%', animationDelay: '6s'}}>❄️</div>
+        <div className="winter-snow-particle large" style={{left: '75%', animationDelay: '2s'}}>❄️</div>
+        <div className="winter-snow-particle medium" style={{left: '85%', animationDelay: '5s'}}>❄️</div>
+      </div>
+
+      {/* Holiday Lighting Effects */}
+      <div className="winter-holiday-lights fixed inset-0 pointer-events-none"></div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="mb-6 sm:mb-8 winter-ornamentation winter-magic-sparkle">
+          <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400 bg-clip-text text-transparent mb-2">
+            Parent Dashboard
+          </h1>
+          <p className="text-sm sm:text-base text-emerald-100/80">Customize your child's advent calendar with messages, photos, and magical gifts.</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="winter-wonderland-card frosted p-4 sm:p-6 mb-4 sm:mb-6 winter-ornamentation">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Calendar Overview</h2>
-             <div className="flex gap-2">
-               <button
-                 onClick={() => setShowProfileSettings(true)}
-                 className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm sm:text-base"
-                 aria-label="Profile and settings"
-               >
-                 Profile & Settings
-               </button>
-               <button
-                 onClick={() => setShowTileEditor(true)}
-                 className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm sm:text-base"
-                 aria-label="Edit calendar tiles"
-               >
-                 Edit Tiles
-               </button>
-                <button
+            <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">Calendar Overview</h2>
+              <div className="flex gap-2 flex-wrap">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowProfileSettings(true)}
+                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300"
+                  aria-label="Profile and settings"
+                >
+                  Profile & Settings
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowTileEditor(true)}
+                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-blue-500/20 to-indigo-500/20"
+                  aria-label="Edit calendar tiles"
+                >
+                  Edit Tiles
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setShowCustomization(true)}
-                  className="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors text-sm sm:text-base"
+                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-indigo-500/20 to-purple-500/20"
                   aria-label="Advanced customization options"
                 >
                   🎨 Customize
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setShowAnalytics(true)}
-                  className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-sm sm:text-base"
+                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-pink-500/20"
                   aria-label="View analytics"
                 >
                   Analytics
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleExportPDF}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm sm:text-base"
+                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-emerald-500/20 to-teal-500/20"
                   aria-label="Export calendar as PDF"
                 >
                   Export PDF
-                </button>
-             </div>
+                </motion.button>
+              </div>
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4">
-            {Array.from({ length: 25 }, (_, i) => i + 1).map(day => {
+            {Array.from({ length: 25 }, (_, i) => i + 1).map((day, index) => {
               const tile = tiles.find(t => t.day === day);
               return (
-                <div
+                <motion.div
                   key={day}
-                  className="aspect-square border-2 border-gray-200 rounded-lg p-1 sm:p-2 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`Day ${day} tile${tile?.title ? `: ${tile.title}` : ''}`}
-                >
-                  <div className="text-xs sm:text-sm font-bold text-gray-800 mb-1">Day {day}</div>
-                  {tile?.title && (
-                    <div className="text-xs text-gray-600 text-center mb-1 truncate w-full leading-tight">
-                      {tile.title}
-                    </div>
-                  )}
-                  {tile?.media_url && (
-                    <div className="w-4 h-4 sm:w-6 sm:h-6 bg-blue-200 rounded flex items-center justify-center mb-1 text-xs sm:text-sm">
-                      📷
-                    </div>
-                  )}
-                  {tile?.gift && (
-                    <div className="text-xs text-purple-600" aria-label="Has gift">🎁</div>
-                  )}
-                  {tile?.gift_unlocked && (
-                    <div className="text-xs text-green-600 mt-1" aria-label="Gift unlocked">✅</div>
-                  )}
-                </div>
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    delay: index * 0.02,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20
+                  }}
+                  whileHover={{
+                    scale: 1.05,
+                    transition: { duration: 0.2 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                   className="aspect-square winter-wonderland-card frosted p-1 sm:p-2 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer winter-magic-sparkle"
+                   role="button"
+                   tabIndex={0}
+                   aria-label={`Day ${day} tile${tile?.title ? `: ${tile.title}` : ''}`}
+                 >
+                   <div className="text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-1">Day {day}</div>
+                   {tile?.title && (
+                     <div className="text-xs text-emerald-100/80 text-center mb-1 truncate w-full leading-tight">
+                       {tile.title}
+                     </div>
+                   )}
+                   {tile?.media_url && (
+                     <div className="w-4 h-4 sm:w-6 sm:h-6 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-lg flex items-center justify-center mb-1 text-xs sm:text-sm border border-blue-400/30">
+                       📷
+                     </div>
+                   )}
+                   {tile?.gift && (
+                     <div className="text-xs text-purple-300/80" aria-label="Has gift">🎁</div>
+                   )}
+                   {tile?.gift_unlocked && (
+                     <div className="text-xs text-emerald-300/80 mt-1" aria-label="Gift unlocked">✅</div>
+                   )}
+                </motion.div>
               );
             })}
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Quick Stats</h2>
+        <div className="winter-wonderland-card frosted p-4 sm:p-6 winter-ornamentation">
+          <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-4">Quick Stats</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="text-center p-3 sm:p-4 bg-blue-50 rounded-lg">
-              <div className="text-xl sm:text-2xl font-bold text-blue-600">{tiles.length}</div>
-              <div className="text-xs sm:text-sm text-gray-600">Total Tiles</div>
+            <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-2xl border border-blue-400/30">
+              <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">{tiles.length}</div>
+              <div className="text-xs sm:text-sm text-blue-200/80">Total Tiles</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-green-50 rounded-lg">
-              <div className="text-xl sm:text-2xl font-bold text-green-600">
+            <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl border border-emerald-400/30">
+              <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 {tiles.filter(t => t.gift).length}
               </div>
-              <div className="text-xs sm:text-sm text-gray-600">Tiles with Gifts</div>
+              <div className="text-xs sm:text-sm text-emerald-200/80">Tiles with Gifts</div>
             </div>
-            <div className="text-center p-3 sm:p-4 bg-purple-50 rounded-lg">
-              <div className="text-xl sm:text-2xl font-bold text-purple-600">
+            <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-400/30">
+              <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
                 {tiles.filter(t => t.gift_unlocked).length}
               </div>
-              <div className="text-xs sm:text-sm text-gray-600">Unlocked Gifts</div>
+              <div className="text-xs sm:text-sm text-purple-200/80">Unlocked Gifts</div>
             </div>
           </div>
         </div>
@@ -310,10 +348,10 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
       )}
 
       {showProfileSettings && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="winter-wonderland-card frosted rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto winter-ornamentation">
             <div className="p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Profile & Settings</h2>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-4">Profile & Settings</h2>
 
               <div className="space-y-4">
                 <div>
@@ -604,8 +642,15 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
                     });
 
                     if (!response.ok) {
-                      const errorData = await response.json();
-                      throw new Error(errorData.error || 'Failed to update template');
+                      let errorMessage = `Failed to update template (${response.status})`;
+                      try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.error || errorMessage;
+                      } catch (parseError) {
+                        console.error('Failed to parse error response JSON:', parseError);
+                        errorMessage = `Server error (${response.status}): ${response.statusText || 'Unknown error'}`;
+                      }
+                      throw new Error(errorMessage);
                     }
 
                      // Log template change event

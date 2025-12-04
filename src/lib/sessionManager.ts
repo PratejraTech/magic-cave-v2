@@ -16,20 +16,23 @@ export interface SessionInfo {
 }
 
 export class SessionManager {
-  private static readonly SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+  private static readonly PARENT_SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+  private static readonly CHILD_SESSION_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
   private static readonly SESSION_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
   /**
-   * Create a new session record in the database
-   */
+    * Create a new session record in the database
+    */
   static async createSession(
     userId: string,
     session: Session,
+    userType: 'parent' | 'child' = 'parent',
     ipAddress?: string,
     userAgent?: string
   ): Promise<SessionInfo | null> {
     try {
-      const expiresAt = new Date(Date.now() + this.SESSION_DURATION);
+      const duration = userType === 'child' ? this.CHILD_SESSION_DURATION : this.PARENT_SESSION_DURATION;
+      const expiresAt = new Date(Date.now() + duration);
       const sessionTokenHash = await this.hashSessionToken(session.access_token);
 
       const { data, error } = await supabase
@@ -96,12 +99,13 @@ export class SessionManager {
   }
 
   /**
-   * Rotate session token (create new session, invalidate old)
-   */
+    * Rotate session token (create new session, invalidate old)
+    */
   static async rotateSession(
     userId: string,
     oldSession: Session,
     newSession: Session,
+    userType: 'parent' | 'child' = 'parent',
     ipAddress?: string,
     userAgent?: string
   ): Promise<SessionInfo | null> {
@@ -115,7 +119,7 @@ export class SessionManager {
         .eq('user_id', userId);
 
       // Create new session
-      return await this.createSession(userId, newSession, ipAddress, userAgent);
+      return await this.createSession(userId, newSession, userType, ipAddress, userAgent);
     } catch (error) {
       console.error('Session rotation error:', error);
       return null;

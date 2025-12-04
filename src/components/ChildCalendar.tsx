@@ -39,7 +39,7 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
         return `${baseClasses} rounded-none`; // Hexagon will be handled with CSS clip-path
       case 'rounded_tiles':
       default:
-        return `${baseClasses} rounded-lg`;
+        return `${baseClasses} rounded-xl hover-lift focus-ring-modern`;
     }
   };
 

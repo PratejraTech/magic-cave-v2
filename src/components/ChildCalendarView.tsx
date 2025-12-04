@@ -3,6 +3,7 @@ import ChildCalendar from './ChildCalendar';
 import TemplateErrorBoundary from './TemplateErrorBoundary';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
+import { useEmotionalResponse } from '../lib/EmotionalBackground';
 import { Gift, CalendarTile, GiftType, TemplateMetadata } from '../types/calendar';
 import { applyTemplateStyling } from '../lib/templateStyling';
 
@@ -12,6 +13,10 @@ interface ChildCalendarViewProps {
 
 const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false }) => {
   const { userType, isAuthenticated, child } = useAuth();
+  const { triggerJoy, triggerCelebration, triggerAnticipation } = useEmotionalResponse();
+  const [showCelebration, setShowCelebration] = React.useState(false);
+  const [celebrationMessage, setCelebrationMessage] = React.useState('');
+  const [unlockedCount, setUnlockedCount] = React.useState(0);
 
   // Mock data for testing
   const mockTiles: CalendarTile[] = Array.from({ length: 25 }, (_, i) => ({
@@ -60,9 +65,10 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
     }
   }, [template]);
 
-  // Load child data from localStorage if not in context
+  // Load child data from localStorage if not in context (including guest sessions)
   useEffect(() => {
     if (!child) {
+      // First check for regular child session
       const storedChildSession = localStorage.getItem('child_session');
       if (storedChildSession) {
         try {
@@ -74,13 +80,31 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
           console.error('Error parsing child session:', error);
         }
       }
+
+      // Then check for guest session
+      const storedGuestSession = localStorage.getItem('guest_session');
+      if (storedGuestSession && !childData) {
+        try {
+          const parsed = JSON.parse(storedGuestSession);
+          if (parsed.child && parsed.isGuest) {
+            setChildData(parsed.child);
+          }
+        } catch (error) {
+          console.error('Error parsing guest session:', error);
+        }
+      }
     } else {
       setChildData(child);
     }
-  }, [child]);
+  }, [child, childData]);
 
-  // Only allow children to access this view (unless in test mode)
-  if (!testMode && (!isAuthenticated || (userType !== 'child' && !childData))) {
+  // Check if user has access (authenticated child, guest, or test mode)
+  const hasAccess = testMode ||
+    (isAuthenticated && userType === 'child') ||
+    childData ||
+    localStorage.getItem('guest_session') !== null;
+
+  if (!hasAccess) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
         <div className="text-center">
@@ -129,6 +153,37 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
     try {
       const gift = await unlockTile(tileId, note);
       setLastUnlockedGift(gift);
+
+      // Trigger emotional responses based on unlock
+      const newUnlockedCount = tiles.filter(t => t.gift_unlocked).length + 1;
+      setUnlockedCount(newUnlockedCount);
+
+      // Emotional celebration based on progress
+      if (newUnlockedCount === 1) {
+        // First unlock - pure joy
+        triggerJoy(2000);
+        setCelebrationMessage("🎉 Your first surprise! The magic begins!");
+        setShowCelebration(true);
+      } else if (newUnlockedCount === tiles.length) {
+        // All unlocked - celebration
+        triggerCelebration(5000);
+        setCelebrationMessage("🎊 Congratulations! You've unlocked all 25 days of magic!");
+        setShowCelebration(true);
+      } else if (newUnlockedCount % 5 === 0) {
+        // Milestone every 5 unlocks
+        triggerJoy(3000);
+        setCelebrationMessage(`🌟 Amazing! ${newUnlockedCount} magical surprises unlocked!`);
+        setShowCelebration(true);
+      } else {
+        // Regular unlock - anticipation for next
+        triggerAnticipation(1500);
+      }
+
+      // Auto-hide celebration after 4 seconds
+      if (showCelebration) {
+        setTimeout(() => setShowCelebration(false), 4000);
+      }
+
       return gift;
     } catch (err) {
       console.error('Failed to unlock tile:', err);
@@ -138,18 +193,69 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
 
   return (
     <TemplateErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4 sm:p-6">
-        <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-            {childData?.name ? `${childData.name}'s Advent Calendar` : 'Your Advent Calendar'}
+      <div className="min-h-screen winter-wonderland-bg p-4 sm:p-6 relative overflow-hidden">
+        {/* Winter Wonderland Snow Effects */}
+        <div className="winter-snow-overlay fixed inset-0 pointer-events-none">
+          <div className="winter-snow-particle large" style={{left: '20%', animationDelay: '0s'}}>❄️</div>
+          <div className="winter-snow-particle medium" style={{left: '40%', animationDelay: '4s'}}>❄️</div>
+          <div className="winter-snow-particle small" style={{left: '60%', animationDelay: '8s'}}>❄️</div>
+          <div className="winter-snow-particle large" style={{left: '80%', animationDelay: '2s'}}>❄️</div>
+        </div>
+
+        {/* Holiday Lighting Effects */}
+        <div className="winter-holiday-lights fixed inset-0 pointer-events-none"></div>
+
+        {/* Celebration Overlay */}
+        {showCelebration && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div className="winter-wonderland-card frosted celebration p-8 text-center max-w-md mx-4 animate-bounce winter-ornamentation">
+              <div className="text-6xl mb-4">🎊</div>
+              <h2 className="headline-2 text-brand mb-2">Amazing!</h2>
+              <p className="body-large text-secondary">{celebrationMessage}</p>
+              <div className="mt-4 flex justify-center space-x-2">
+                <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-brand-secondary rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-brand-tertiary rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="max-w-4xl mx-auto relative z-10">
+        <div className="text-center mb-6 sm:mb-8 winter-ornamentation winter-magic-sparkle">
+          <h1 className="headline-1 bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent mb-2">
+            {childData?.name ? `${childData.name}'s Magical Calendar` : 'Your Magical Calendar'}
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 px-2 mb-4">Click on tiles to unlock gifts and messages from your parents!</p>
+          <p className="body text-rose-100/80 px-2 mb-4">Discover daily surprises and messages from your loved ones! ✨</p>
+
+          {/* Emotional Progress Indicator */}
+          <div className="winter-wonderland-card frosted p-4 mb-4 max-w-md mx-auto">
+            <div className="flex items-center justify-between mb-2">
+              <span className="label text-rose-200/70">Your Progress</span>
+              <span className="caption bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">{unlockedCount}/25 Magical Days</span>
+            </div>
+            <div className="w-full bg-white/10 rounded-full h-3 mb-2 border border-white/20">
+              <div
+                className="bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 h-3 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-rose-500/30"
+                style={{ width: `${(unlockedCount / 25) * 100}%` }}
+                role="progressbar"
+                aria-valuenow={unlockedCount}
+                aria-valuemax={25}
+                aria-label={`Progress: ${unlockedCount} of 25 magical surprises unlocked`}
+              ></div>
+            </div>
+            <div className="flex justify-between text-xs text-rose-200/60">
+              <span>🎄 Start</span>
+              <span>🎊 {unlockedCount > 0 ? `${Math.round((unlockedCount / 25) * 100)}% Complete` : 'Begin Your Journey'}</span>
+              <span>🎁 Finish</span>
+            </div>
+          </div>
+
           <button
             onClick={() => window.location.href = '/parent/dashboard'}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+            className="winter-wonderland-button frosted text-sm hover:scale-105 transition-all duration-300"
           >
-            Switch to Parent View
+            Switch to Parent View 👨‍👩‍👧‍👦
           </button>
         </div>
 
@@ -161,35 +267,17 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
           animations={template?.animations}
         />
 
-        {/* Progress indicator */}
-        <div className="mt-6 sm:mt-8 bg-white rounded-lg shadow-lg p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Your Progress</h2>
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="flex-1 bg-gray-200 rounded-full h-3 sm:h-4">
-              <div
-                className="bg-green-500 h-3 sm:h-4 rounded-full transition-all duration-300"
-                style={{ width: `${(tiles.filter(t => t.gift_unlocked).length / tiles.length) * 100}%` }}
-                role="progressbar"
-                aria-valuenow={tiles.filter(t => t.gift_unlocked).length}
-                aria-valuemax={tiles.length}
-                aria-label={`Progress: ${tiles.filter(t => t.gift_unlocked).length} of ${tiles.length} gifts unlocked`}
-              ></div>
-            </div>
-            <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-              {tiles.filter(t => t.gift_unlocked).length} of {tiles.length} gifts unlocked
-            </div>
-          </div>
-        </div>
+
 
         {/* Recent activity */}
         {lastUnlockedGift && (
-          <div className="mt-4 sm:mt-6 bg-white rounded-lg shadow-lg p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Latest Unlock</h2>
+          <div className="mt-4 sm:mt-6 winter-wonderland-card frosted p-4 sm:p-6 winter-ornamentation">
+            <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-4">Latest Unlock</h2>
             <div className="text-center">
               <div className="text-3xl sm:text-4xl mb-2" role="img" aria-label="celebration">🎉</div>
-              <h3 className="text-base sm:text-lg font-bold text-green-600 mb-2">{lastUnlockedGift.title}</h3>
+              <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-2">{lastUnlockedGift.title}</h3>
               {lastUnlockedGift.description && (
-                <p className="text-sm sm:text-base text-gray-600">{lastUnlockedGift.description}</p>
+                <p className="text-sm sm:text-base text-emerald-100/80">{lastUnlockedGift.description}</p>
               )}
             </div>
           </div>

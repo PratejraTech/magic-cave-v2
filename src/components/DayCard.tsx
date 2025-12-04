@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { CalendarDay } from '../types/calendar';
 import { getAdelaideDate } from '../lib/date';
+import { motion } from 'framer-motion';
 
 interface DayCardProps {
   day: CalendarDay;
@@ -51,15 +52,21 @@ export function DayCard({ day, onOpen, isDecember }: DayCardProps) {
 
   return (
     <div className="perspective-1000" ref={containerRef}>
-      <div
-        className={`relative cursor-pointer transition-all duration-500 ease-out transform ${
-          isOpening ? 'scale-95' : 'hover:scale-110'
-        } ${!canOpen ? 'opacity-40 cursor-not-allowed' : ''}`}
+      <motion.div
+        className={`relative cursor-pointer ${
+          !canOpen ? 'opacity-40 cursor-not-allowed' : ''
+        }`}
         onClick={handleClick}
+        whileHover={canOpen ? { scale: 1.05 } : {}}
+        whileTap={canOpen ? { scale: 0.95 } : {}}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
       >
         {!showContent ? (
-          <div
-            className={`clay-card w-full aspect-square rounded-[20px] flex items-center justify-center text-6xl font-black relative overflow-hidden ${
+          <motion.div
+            initial={{ rotateY: 0 }}
+            animate={{ rotateY: isOpening ? 180 : 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className={`clay-card w-full aspect-square rounded-2xl flex items-center justify-center text-6xl font-black relative overflow-hidden ${
               isOpening ? 'portal-opening' : ''
             }`}
             style={{
@@ -80,10 +87,13 @@ export function DayCard({ day, onOpen, isDecember }: DayCardProps) {
                 }}
               ></div>
             )}
-          </div>
+          </motion.div>
         ) : (
-          <div
-            className={`clay-card-open w-full aspect-square rounded-[20px] overflow-hidden relative ${
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`clay-card-open w-full aspect-square rounded-2xl overflow-hidden relative ${
               isOpening ? 'portal-active' : ''
             }`}
             style={{
@@ -106,9 +116,9 @@ export function DayCard({ day, onOpen, isDecember }: DayCardProps) {
                 {day.message}
               </p>
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       {particles.map((particle) => (
         <div
