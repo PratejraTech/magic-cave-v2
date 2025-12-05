@@ -11,6 +11,7 @@ import { applyTemplateStyling } from '../lib/templateStyling';
 import { VoiceCommandProcessor } from '../lib/voiceCommandProcessor';
 import { BackgroundGradientAnimation } from './ui/background-gradient-animation';
 import WonderlandLayout from './layout/WonderlandLayout';
+import { Button } from './ui/WonderButton';
 
 interface ChildCalendarViewProps {
   testMode?: boolean;
@@ -148,12 +149,14 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
       >
         <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
           <p className="text-lg text-white/90">This page is only accessible to children.</p>
-          <button
+          <Button
+            fullWidth
+            variant="frosted"
+            size="lg"
             onClick={() => (window.location.href = '/auth')}
-            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
             Return to Login
-          </button>
+          </Button>
         </div>
       </WonderlandLayout>
     );
@@ -188,12 +191,14 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
       >
         <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
           <p className="text-lg text-white/90">{error}</p>
-          <button
+          <Button
+            fullWidth
+            variant="frosted"
+            size="lg"
             onClick={() => window.location.reload()}
-            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
             Try Again
-          </button>
+          </Button>
         </div>
       </WonderlandLayout>
     );
@@ -384,12 +389,14 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
               </div>
             </div>
 
-            <button
+            <Button
+              variant="secondary"
+              size="lg"
+              className="mt-6 rounded-full border border-white/30 bg-white/10"
               onClick={() => (window.location.href = '/parent/dashboard')}
-              className="mt-6 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
             >
               Switch to Parent View 👨‍👩‍👧‍👦
-            </button>
+            </Button>
           </div>
         </div>
 

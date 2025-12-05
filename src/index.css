@@ -82,12 +82,14 @@
   }
 
   * {
-    @apply border-border;
+    border-color: var(--border);
     outline-color: color-mix(in oklch, var(--ring) 50%, transparent); /* default outline tint for focus states */
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: var(--theme-background, var(--background));
+    color: var(--foreground);
+    font-family: var(--theme-font, var(--theme-body-font, 'Inter', system-ui, sans-serif));
   }
 }
 
@@ -373,6 +375,20 @@
    --template-accent: var(--color-success);
    --template-heading-font: 'Inter', system-ui, sans-serif;
    --template-body-font: 'Inter', system-ui, sans-serif;
+
+   /* Theme Generator / Customization defaults */
+   --grid-columns: 5;
+   --tile-spacing: 1rem;
+   --tile-size: 11.5rem;
+   --tile-border-radius: 1.5rem;
+   --tile-clip-path: none;
+   --tile-hover-transform: scale(1.03);
+   --tile-hover-filter: brightness(1.05);
+   --tile-hover-transition: transform 0.3s ease, filter 0.3s ease;
+   --tile-active-transform: scale(0.97);
+   --tile-active-transition: transform 0.2s ease;
+   --tile-enter-animation: none;
+   --tile-exit-animation: none;
 
    /* 🎄 Winter Wonderland Theme System - Gender-Based Variations */
 
@@ -669,6 +685,31 @@
     --winter-gradient-current: var(--winter-gradient-neutral);
     --winter-text-shadow-current: var(--winter-text-shadow-neutral);
     --winter-button-glow-current: var(--winter-button-glow-neutral);
+  }
+
+  .winter-variant-overlay {
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 55%);
+    transition: opacity 0.6s ease, filter 0.6s ease;
+  }
+
+  .winter-variant-overlay.winter-variant-feminine {
+    background:
+      radial-gradient(circle at 20% 20%, color-mix(in oklch, var(--winter-feminine-accent-primary) 40%, transparent), transparent 60%),
+      radial-gradient(circle at 80% 10%, color-mix(in oklch, var(--winter-feminine-accent-secondary) 35%, transparent), transparent 65%);
+  }
+
+  .winter-variant-overlay.winter-variant-masculine {
+    background:
+      radial-gradient(circle at 15% 25%, color-mix(in oklch, var(--winter-masculine-accent-primary) 35%, transparent), transparent 60%),
+      radial-gradient(circle at 80% 30%, color-mix(in oklch, var(--winter-masculine-accent-secondary) 30%, transparent), transparent 65%);
+  }
+
+  .winter-variant-overlay.winter-variant-neutral {
+    background:
+      radial-gradient(circle at 25% 15%, color-mix(in oklch, var(--winter-neutral-accent-primary) 35%, transparent), transparent 60%),
+      radial-gradient(circle at 70% 30%, color-mix(in oklch, var(--winter-neutral-accent-secondary) 30%, transparent), transparent 65%);
   }
 
   /* Light Mode - Design Token System */
@@ -1407,6 +1448,170 @@
     0 8px 32px rgba(0, 0, 0, 0.2),
     0 0 30px rgba(16, 185, 129, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Calendar grid powered by customization engine */
+.winter-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 5), minmax(0, 1fr));
+  gap: var(--tile-spacing, 1rem);
+  width: 100%;
+}
+
+.winter-calendar-tile {
+  position: relative;
+  width: 100%;
+  max-width: var(--tile-size, 11.5rem);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--tile-border-radius, 1.5rem);
+  clip-path: var(--tile-clip-path, none);
+  padding: 0.75rem;
+  background: var(--winter-card-bg);
+  border: 1px solid var(--winter-card-border);
+  box-shadow: var(--winter-card-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--winter-text-primary);
+  font-family: var(--template-body-font, var(--font-family-primary));
+  font-size: calc(1rem * var(--font-scale, 1));
+  transition: var(--tile-hover-transition, transform 0.3s ease, filter 0.3s ease);
+  animation: var(--tile-enter-animation, none);
+  overflow: hidden;
+  justify-self: center;
+}
+
+.winter-calendar-day-label {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: clamp(0.75rem, 0.8vw, 0.95rem);
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  background: linear-gradient(
+    120deg,
+    color-mix(in oklch, var(--template-primary, #34d399) 85%, transparent),
+    color-mix(in oklch, var(--template-secondary, #0ea5e9) 70%, transparent)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.winter-calendar-title {
+  width: 100%;
+  text-align: center;
+  font-size: clamp(0.7rem, 0.8vw, 0.85rem);
+  font-weight: 600;
+  color: color-mix(in oklch, var(--template-accent, var(--winter-text-primary)) 65%, var(--winter-text-primary));
+  margin-bottom: 0.35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.winter-calendar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklch, var(--template-primary, #34d399) 45%, transparent);
+  background: color-mix(in oklch, var(--template-primary, #34d399) 12%, transparent);
+  color: var(--template-primary, var(--winter-text-primary));
+  font-size: 0.75rem;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.4rem;
+}
+
+.winter-calendar-badge--media {
+  min-width: 2.5rem;
+}
+
+.winter-calendar-meta {
+  font-size: 0.75rem;
+  text-align: center;
+  color: color-mix(in oklch, var(--winter-text-secondary) 75%, transparent);
+}
+
+.winter-calendar-meta--gift {
+  color: color-mix(in oklch, var(--template-secondary, #a855f7) 70%, var(--winter-text-secondary));
+  font-weight: 600;
+}
+
+.winter-calendar-meta--success {
+  color: var(--winter-accent-primary, #34d399);
+  font-weight: 700;
+}
+
+.winter-calendar-tile[data-state='locked'] {
+  border-color: color-mix(in oklch, var(--template-secondary, #a855f7) 60%, transparent);
+  background: color-mix(in oklch, var(--template-secondary, #a855f7) 12%, transparent);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+}
+
+.winter-calendar-tile[data-state='unlocked'] {
+  border-color: color-mix(in oklch, var(--winter-accent-primary, #34d399) 60%, transparent);
+  background: color-mix(in oklch, var(--winter-accent-primary, #34d399) 10%, rgba(255, 255, 255, 0.05));
+  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.25);
+}
+
+.winter-calendar-tile[data-state='empty'] {
+  opacity: 0.85;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.winter-calendar-tile[data-highlighted='true'] {
+  transform: scale(1.05);
+  border-color: color-mix(in oklch, var(--template-primary, #34d399) 75%, var(--winter-accent-primary, #34d399));
+  box-shadow: 0 0 25px color-mix(in oklch, var(--template-primary, #34d399) 40%, transparent),
+    0 25px 45px rgba(0, 0, 0, 0.25);
+}
+
+.winter-calendar-tile:hover {
+  transform: var(--tile-hover-transform, scale(1.03));
+  filter: var(--tile-hover-filter, brightness(1.05));
+}
+
+.winter-calendar-tile:active {
+  transform: var(--tile-active-transform, scale(0.97));
+  transition: var(--tile-active-transition, transform 0.2s ease);
+}
+
+.winter-calendar-tile:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.winter-calendar-tile.winter-calendar-tile--hexagon {
+  clip-path: polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+}
+
+.winter-calendar-tile.winter-calendar-tile--square {
+  border-radius: 0.75rem;
+  clip-path: none;
+}
+
+.winter-calendar-tile.winter-calendar-tile--circle {
+  border-radius: 9999px;
+  clip-path: none;
+}
+
+@media (max-width: 640px) {
+  .winter-calendar-grid {
+    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+    gap: clamp(0.5rem, 2vw, 0.75rem);
+  }
+
+  .winter-calendar-tile {
+    max-width: 8.5rem;
+    padding: 0.5rem;
+  }
 }
 
 /* Emotional State Variants */

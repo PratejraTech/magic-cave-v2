@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Snowflake, Gift, Star, TreePine, Sparkles } from 'lucide-react';
 
-import { Button } from './ui/button';
+import { Button } from './ui/WonderButton';
 import { Card } from './ui/card';
 
 interface SnowflakeProps {

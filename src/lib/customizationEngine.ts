@@ -166,11 +166,25 @@ class CustomizationEngine {
   private applyAnimations(animations: AnimationPreset): void {
     const root = document.documentElement;
 
-    // Set animation CSS variables
+    // Preserve raw declarations for backward compatibility
     root.style.setProperty('--tile-hover-animation', animations.tileHover);
     root.style.setProperty('--tile-click-animation', animations.tileClick);
-    root.style.setProperty('--tile-enter-animation', animations.tileEnter);
-    root.style.setProperty('--tile-exit-animation', animations.tileExit);
+    root.style.setProperty('--tile-enter-tokens', animations.tileEnter);
+    root.style.setProperty('--tile-exit-tokens', animations.tileExit);
+
+    // Parse individual declarations so CSS can apply granular tokens
+    const hoverStyles = this.parseDeclarationBlock(animations.tileHover);
+    const clickStyles = this.parseDeclarationBlock(animations.tileClick);
+    const enterStyles = this.parseDeclarationBlock(animations.tileEnter);
+    const exitStyles = this.parseDeclarationBlock(animations.tileExit);
+
+    root.style.setProperty('--tile-hover-transform', hoverStyles.transform || 'scale(1.03)');
+    root.style.setProperty('--tile-hover-filter', hoverStyles.filter || 'brightness(1.05)');
+    root.style.setProperty('--tile-hover-transition', hoverStyles.transition || 'transform 0.3s ease');
+    root.style.setProperty('--tile-active-transform', clickStyles.transform || 'scale(0.97)');
+    root.style.setProperty('--tile-active-transition', clickStyles.transition || 'transform 0.2s ease');
+    root.style.setProperty('--tile-enter-animation', enterStyles.animation || 'none');
+    root.style.setProperty('--tile-exit-animation', exitStyles.animation || 'none');
 
     // Inject keyframe animations if needed
     this.injectAnimationKeyframes();
@@ -184,6 +198,10 @@ class CustomizationEngine {
     root.style.setProperty('--tile-shape', layout.tileShape);
     root.style.setProperty('--tile-spacing', this.getSpacingValue(layout.spacing));
     root.style.setProperty('--tile-size', this.getSizeValue(layout.tileSize));
+
+    const shapeStyles = this.getShapeStyles(layout.tileShape);
+    root.style.setProperty('--tile-border-radius', shapeStyles.borderRadius);
+    root.style.setProperty('--tile-clip-path', shapeStyles.clipPath);
   }
 
   private applyEffects(effects: CustomizationOptions['effects']): void {
@@ -321,12 +339,21 @@ class CustomizationEngine {
     const propertiesToRemove = [
       '--tile-hover-animation',
       '--tile-click-animation',
+      '--tile-enter-tokens',
+      '--tile-exit-tokens',
       '--tile-enter-animation',
       '--tile-exit-animation',
+      '--tile-hover-transform',
+      '--tile-hover-filter',
+      '--tile-hover-transition',
+      '--tile-active-transform',
+      '--tile-active-transition',
       '--grid-columns',
       '--tile-shape',
       '--tile-spacing',
       '--tile-size',
+      '--tile-border-radius',
+      '--tile-clip-path',
       '--show-snow',
       '--show-sparkles',
       '--show-floating-elements',
@@ -350,6 +377,47 @@ class CustomizationEngine {
     if (existingStyle) {
       existingStyle.remove();
     }
+  }
+
+  private getShapeStyles(shape: LayoutPreset['tileShape']): { borderRadius: string; clipPath: string } {
+    switch (shape) {
+      case 'hexagon':
+        return {
+          borderRadius: '1rem',
+          clipPath: 'polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%)'
+        };
+      case 'circle':
+        return {
+          borderRadius: '9999px',
+          clipPath: 'none'
+        };
+      case 'square':
+        return {
+          borderRadius: '0.75rem',
+          clipPath: 'none'
+        };
+      default:
+        return {
+          borderRadius: '1.5rem',
+          clipPath: 'none'
+        };
+    }
+  }
+
+  private parseDeclarationBlock(block: string): Record<string, string> {
+    if (!block) return {};
+
+    return block
+      .split(';')
+      .map((declaration) => declaration.trim())
+      .filter(Boolean)
+      .reduce((acc, declaration) => {
+        const [property, value] = declaration.split(':');
+        if (property && value) {
+          acc[property.trim()] = value.trim();
+        }
+        return acc;
+      }, {} as Record<string, string>);
   }
 
   // Utility methods for getting presets

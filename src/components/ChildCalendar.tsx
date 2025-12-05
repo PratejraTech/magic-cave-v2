@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CalendarTile, Gift } from '../types/calendar';
 import { analytics } from '../lib/analytics';
 import { useWinterEffects } from '../contexts/WinterEffectsContext';
+import { Button } from './ui/WonderButton';
 
 interface ChildCalendarProps {
   tiles: CalendarTile[];
@@ -32,6 +33,16 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
   const [unlockedGift, setUnlockedGift] = useState<Gift | null>(null);
   const [note, setNote] = useState('');
   const [showNotePrompt, setShowNotePrompt] = useState(false);
+  const tileCssOverrides = React.useMemo<React.CSSProperties>(() => {
+    const vars: React.CSSProperties = {};
+    if (animations?.tileHover) {
+      (vars as any)['--tile-hover-transform'] = animations.tileHover;
+    }
+    if (animations?.tileClick) {
+      (vars as any)['--tile-active-transform'] = animations.tileClick;
+    }
+    return vars;
+  }, [animations]);
 
   // TODO: Phase 2 - Gesture navigation state (will be used when gesture handlers are connected)
   // const [currentTileIndex, setCurrentTileIndex] = useState<number>(-1);
@@ -39,27 +50,21 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
   // const [previewTile, setPreviewTile] = useState<CalendarTile | null>(null);
   // const calendarRef = useRef<HTMLDivElement>(null);
 
-  const getTileClasses = () => {
-    const baseClasses = 'aspect-square border-2 p-2 sm:p-4 cursor-pointer transition-all flex flex-col items-center justify-center touch-manipulation';
+  const getTileClassName = () => {
+    const classes = ['winter-calendar-tile', 'cursor-pointer', 'winter-magic-sparkle'];
 
     switch (layout) {
       case 'square_tiles':
-        return `${baseClasses} rounded-none`;
+        classes.push('winter-calendar-tile--square');
+        break;
       case 'hexagon_tiles':
-        return `${baseClasses} rounded-none`; // Hexagon will be handled with CSS clip-path
-      case 'rounded_tiles':
+        classes.push('winter-calendar-tile--hexagon');
+        break;
       default:
-        return `${baseClasses} rounded-xl hover-lift focus-ring-modern`;
+        break;
     }
-  };
 
-  const getTileStyle = () => {
-    if (layout === 'hexagon_tiles') {
-      return {
-        clipPath: 'polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%)'
-      };
-    }
-    return {};
+    return classes.join(' ');
   };
 
   const handleTileClick = (tile: CalendarTile) => {
@@ -249,59 +254,76 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
 
   return (
     <div>
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4 max-w-4xl mx-auto">
-        {tiles.map((tile) => (
-          <div
-            key={tile.tile_id}
-            onClick={() => handleTileClick(tile)}
-            className={`${getTileClasses()} ${
-              highlightedTile && highlightedTile.tile_id === tile.tile_id
-                ? 'border-yellow-400 bg-yellow-100 shadow-lg shadow-yellow-300/50 animate-pulse'
-                : tile.gift && !tile.gift_unlocked
-                ? `border-purple-300 bg-purple-50 hover:border-purple-400 active:bg-purple-100 ${animations?.tileHover || ''}`
-                : tile.gift_unlocked
-                ? 'border-green-300 bg-green-50'
-                : 'border-gray-200 bg-gray-50'
-            }`}
-            style={{
-              ...getTileStyle(),
-              background: tile.gift && !tile.gift_unlocked && gradients?.tileBackground
-                ? gradients.tileBackground
-                : undefined
-            }}
-            role="button"
-            tabIndex={tile.gift && !tile.gift_unlocked ? 0 : -1}
-            aria-label={`Day ${tile.day}${tile.title ? `: ${tile.title}` : ''}${tile.gift ? (tile.gift_unlocked ? ' - Gift unlocked' : ' - Click to unlock gift') : ' - No gift available'}`}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleTileClick(tile);
-              }
-            }}
-          >
-            <div className="text-sm sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2">Day {tile.day}</div>
+      <div className="winter-calendar-grid">
+        {tiles.map((tile) => {
+          const tileState = tile.gift_unlocked ? 'unlocked' : tile.gift ? 'locked' : 'empty';
+          const isHighlighted = highlightedTile?.tile_id === tile.tile_id;
+          const statusCopy = tileState === 'unlocked'
+            ? 'Gift opened'
+            : tileState === 'locked'
+              ? 'Tap to unlock'
+              : 'Awaiting surprise';
 
-            {tile.title && (
-              <div className="text-xs sm:text-sm text-gray-600 text-center mb-1 sm:mb-2 leading-tight">{tile.title}</div>
-            )}
+          return (
+            <div
+              key={tile.tile_id}
+              onClick={() => handleTileClick(tile)}
+              className={getTileClassName()}
+              style={{
+                ...tileCssOverrides,
+                background: tileState === 'locked' && gradients?.tileBackground
+                  ? gradients.tileBackground
+                  : undefined
+              }}
+              data-state={tileState}
+              data-highlighted={isHighlighted ? 'true' : 'false'}
+              data-has-gift={tile.gift ? 'true' : 'false'}
+              data-has-media={tile.media_url ? 'true' : 'false'}
+              role="button"
+              tabIndex={tile.gift && !tile.gift_unlocked ? 0 : -1}
+              aria-label={`Day ${tile.day}${tile.title ? `: ${tile.title}` : ''} — ${statusCopy}`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleTileClick(tile);
+                }
+              }}
+            >
+              <div className="winter-calendar-day-label">Day {tile.day}</div>
 
-            {tile.media_url && (
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded mb-1 sm:mb-2 flex items-center justify-center text-sm sm:text-base">
-                📷
-              </div>
-            )}
+              {tile.title && (
+                <div className="winter-calendar-title" title={tile.title}>
+                  {tile.title}
+                </div>
+              )}
 
-            {tile.gift ? (
-              tile.gift_unlocked ? (
-                <div className="text-green-600 font-semibold text-xs sm:text-sm" aria-label="Gift unlocked">✅ Unlocked!</div>
+              {tile.media_url && (
+                <div
+                  className="winter-calendar-badge winter-calendar-badge--media"
+                  aria-label="Media surprise attached"
+                >
+                  📷
+                </div>
+              )}
+
+              {tile.gift ? (
+                tile.gift_unlocked ? (
+                  <div className="winter-calendar-meta winter-calendar-meta--success" aria-label="Gift unlocked">
+                    ✅ Gift opened
+                  </div>
+                ) : (
+                  <div className="winter-calendar-meta winter-calendar-meta--gift" aria-label="Tap to unlock gift">
+                    🎁 Tap to unlock
+                  </div>
+                )
               ) : (
-                <div className="text-purple-600 font-semibold text-xs sm:text-sm" aria-label="Click to unlock gift">🎁 Gift!</div>
-              )
-            ) : (
-              <div className="text-gray-400 text-xs sm:text-sm">No gift yet</div>
-            )}
-          </div>
-        ))}
+                <div className="winter-calendar-meta" aria-label="No gift set yet">
+                  No gift yet
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Note Prompt Modal */}
@@ -334,21 +356,23 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
             </div>
 
             <div className="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-4">
-              <button
+              <Button
+                variant="outline"
                 onClick={handleCloseModal}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 order-2 sm:order-1"
+                className="order-2 sm:order-1"
                 aria-label="Cancel unlocking gift"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="primary"
+                className="order-1 sm:order-2 bg-gradient-to-r from-purple-500 to-pink-500"
                 onClick={handleUnlock}
-                disabled={unlocking}
-                className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 disabled:opacity-50 order-1 sm:order-2"
+                loading={unlocking}
                 aria-label={unlocking ? 'Unlocking gift' : 'Unlock gift'}
               >
                 {unlocking ? 'Unlocking...' : 'Unlock Gift! 🎁'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -366,13 +390,13 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
             {renderGift(unlockedGift)}
 
             <div className="flex justify-center mt-4 sm:mt-6">
-              <button
+              <Button
+                variant="primary"
                 onClick={handleCloseModal}
-                className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base"
                 aria-label="Close gift reveal"
               >
                 Yay! 🎉
-              </button>
+              </Button>
             </div>
           </div>
         </div>

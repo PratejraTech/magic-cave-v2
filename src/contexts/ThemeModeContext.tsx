@@ -31,11 +31,14 @@ export const ThemeModeProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (typeof window === 'undefined') return;
 
     const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
+    const body = document.body;
+
+    root.classList.toggle('dark', isDarkMode);
+    if (body) {
+      body.classList.toggle('dark-mode', isDarkMode);
+      body.classList.toggle('light-mode', !isDarkMode);
     }
+
     window.localStorage.setItem('wonderland-dark-mode', String(isDarkMode));
   }, [isDarkMode]);
 

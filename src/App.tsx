@@ -1,512 +1,383 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './lib/AuthContext';
-import ParentDashboard from './components/ParentDashboard';
-import ChildCalendarView from './components/ChildCalendarView';
-import AuthModal from './components/AuthModal';
-import ChildLoginModal from './components/ChildLoginModal';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { ThemeIntegrationService } from './lib/themeIntegration';
-import { EmotionalBackgroundProvider } from './lib/EmotionalBackground';
-import { ThemeModeProvider } from './contexts/ThemeModeContext';
-import { WinterThemeProvider, useWinterTheme } from './contexts/WinterThemeContext';
-import { WinterEffectsProvider, useWinterEffects } from './contexts/WinterEffectsContext';
-import WinterEffects from './components/winter/WinterEffects';
-import ChristmasShowcase from './components/ChristmasShowcase';
-import { BackgroundGradientAnimation } from './components/ui/background-gradient-animation';
-import { Parent, Child, Calendar } from './types/calendar';
-import type { Session } from '@supabase/supabase-js';
-import { authService } from './lib/auth';
-import WonderlandLayout from './components/layout/WonderlandLayout';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Sparkles,
+  Snowflake,
+  Cpu,
+  Satellite,
+  Shield,
+  Mail,
+  Phone,
+  MapPin,
+  ArrowRight
+} from 'lucide-react';
 
-// Protected Route Component
-const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedUserTypes: string[] }> = ({
-  children,
-  allowedUserTypes
-}) => {
-  const { userType, isAuthenticated, isLoading } = useAuth();
+type Route = 'Home' | 'About' | 'Features' | 'Contact';
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  if (!allowedUserTypes.includes(userType || '')) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-800 mb-4">Access Denied</h1>
-          <p className="text-red-600">You don't have permission to access this page.</p>
-        </div>
-      </div>
-    );
-  }
-
-  return <>{children}</>;
+type NavLink = {
+  label: string;
+  value: Route;
 };
 
-// Auth Page Component
-const AuthPage: React.FC = () => {
-  const { isAuthenticated, userType, login, refreshProfile } = useAuth();
-  const { variant } = useWinterTheme();
-  const [showAuthModal, setShowAuthModal] = React.useState(false);
-  const [showChildLogin, setShowChildLogin] = React.useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+type Feature = {
+  title: string;
+  desc: string;
+  icon: JSX.Element;
+};
 
-  // Theme integration - Enable Winter Wonderland
-  React.useEffect(() => {
-    // Apply Winter Wonderland theme for magical Christmas experience
-    ThemeIntegrationService.applyWinterWonderlandTheme({
-      enabled: true,
-      genderVariant: 'neutral', // Start with neutral, can be customized per user
-      enhancedEffects: true
-    });
+type LayoutProps = {
+  activeRoute: Route;
+  onNav: (value: Route) => void;
+};
 
-    // Fallback seasonal theme if Winter Wonderland fails
-    const theme = ThemeIntegrationService.getSeasonalTheme();
-    ThemeIntegrationService.applyThemeToPage(theme);
+type GlassProps = {
+  className?: string;
+  children: React.ReactNode;
+};
+
+const navLinks: NavLink[] = ['Home', 'About', 'Features', 'Contact'].map(route => ({
+  label: route,
+  value: route as Route
+}));
+
+const featureTiles: Feature[] = [
+  {
+    title: 'Naughty/Nice Algo',
+    desc: 'Ethically routed sentiment detection keeps every list perfectly balanced.',
+    icon: <Shield className="h-5 w-5 text-emerald-300" />
+  },
+  {
+    title: 'Reindeer Velocity Tracking',
+    desc: 'Monitor sleigh telemetry with AI-powered trajectory optimization.',
+    icon: <Satellite className="h-5 w-5 text-rose-300" />
+  },
+  {
+    title: 'Magic Cave Calendars',
+    desc: 'Infinite customizable cyber-advent journeys for families worldwide.',
+    icon: <Cpu className="h-5 w-5 text-cyan-300" />
+  },
+  {
+    title: 'Aurora Forecasting',
+    desc: 'Predict atmospheric sparkle for cinematic doorstep arrivals.',
+    icon: <Snowflake className="h-5 w-5 text-blue-300" />
+  }
+];
+
+const bentoLayout = [
+  { span: 'md:col-span-2', featureIndex: 0 },
+  { span: 'md:col-span-1', featureIndex: 1 },
+  { span: 'md:col-span-1', featureIndex: 2 },
+  { span: 'md:col-span-2', featureIndex: 3 }
+];
+
+const GlassCard: React.FC<GlassProps> = ({ children, className = '' }) => (
+  <div className={`rounded-3xl border border-white/20 bg-white/10 p-8 text-white shadow-[0_20px_80px_rgba(0,0,0,0.5)] backdrop-blur-2xl ${className}`}>
+    {children}
+  </div>
+);
+
+const Layout: React.FC<LayoutProps> = ({ activeRoute, onNav }) => (
+  <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-900/70 backdrop-blur-xl">
+    <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-6 py-4">
+      <div className="flex items-center gap-3 text-white">
+        <motion.div
+          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400/80 to-rose-500/90 shadow-lg"
+          whileHover={{ rotate: 6 }}
+          transition={{ type: 'spring', stiffness: 200 }}
+        >
+          <Sparkles className="h-5 w-5 text-white" />
+        </motion.div>
+        <div>
+          <p className="text-sm uppercase tracking-[0.25em] text-emerald-200">Magic Cave</p>
+          <p className="text-lg font-semibold">Cyber Calendars</p>
+        </div>
+      </div>
+      <nav className="flex flex-wrap items-center gap-4 text-sm font-semibold text-white">
+        {navLinks.map(link => (
+          <button
+            key={link.value}
+            onClick={() => onNav(link.value)}
+            className={`px-3 py-1 transition ${
+              activeRoute === link.value ? 'border-b border-emerald-300 text-emerald-300' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            {link.label}
+          </button>
+        ))}
+      </nav>
+    </div>
+  </header>
+);
+
+const Footer = () => (
+  <footer className="border-t border-white/10 bg-slate-900/60 py-6 text-center text-sm text-white/70">
+    © {new Date().getFullYear()} Magic Cave Calendars · Cyber-Christmas Intelligence
+  </footer>
+);
+
+const Hero = () => (
+  <GlassCard className="space-y-6">
+    <p className="text-xs uppercase tracking-[0.4em] text-white/70">Project NorthPole-AI</p>
+    <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl">
+      Intelligence <span className="text-emerald-300">for the Holidays</span>
+    </h1>
+    <p className="text-lg text-white/80">
+      Magic Cave Calendars fuses Iron Man diagnostics with Santa’s workshop. Design, track, and deliver personalized wonder
+      from one cyber-snowfield console.
+    </p>
+    <motion.button
+      whileHover={{ scale: 1.04, boxShadow: '0px 0px 35px rgba(16, 185, 129, 0.5)' }}
+      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 via-rose-500 to-cyan-400 px-6 py-3 font-semibold text-slate-900"
+    >
+      Launch Sleigh <ArrowRight className="h-4 w-4" />
+    </motion.button>
+  </GlassCard>
+);
+
+const FeaturesGrid = () => (
+  <div className="grid gap-4 md:grid-cols-3">
+    {bentoLayout.map(({ span, featureIndex }) => {
+      const feature = featureTiles[featureIndex];
+      return (
+        <GlassCard key={feature.title} className={span}>
+          <div className="flex flex-col gap-3">
+            <div>{feature.icon}</div>
+            <h3 className="text-xl font-semibold">{feature.title}</h3>
+            <p className="text-sm text-white/80">{feature.desc}</p>
+          </div>
+        </GlassCard>
+      );
+    })}
+  </div>
+);
+
+const AboutPanel = () => (
+  <GlassCard>
+    <p className="text-sm uppercase tracking-[0.3em] text-white/70">About Magic Cave</p>
+    <h2 className="mt-3 text-3xl font-bold">Mission Control for Santa’s AI Era</h2>
+    <p className="mt-4 text-white/80">
+      Project NorthPole-AI orchestrates supply chains of wonder. From routing candy drones to calibrating aurora holograms,
+      our neural network of elves keeps every holiday beat perfectly synced.
+    </p>
+  </GlassCard>
+);
+
+const ContactPanel = () => (
+  <GlassCard className="space-y-6">
+    <h2 className="text-2xl font-semibold">Contact HQ</h2>
+    <div className="grid gap-4 sm:grid-cols-2">
+      {[
+        { icon: <Mail className="h-4 w-4" />, label: 'Mission Comms', value: 'santa@magiccave.ai' },
+        { icon: <Phone className="h-4 w-4" />, label: 'Direct Line', value: '+1 (555) 12-SLEIGH' },
+        { icon: <MapPin className="h-4 w-4" />, label: 'Aurora Hub', value: 'Hidden Polar Coordinates' }
+      ].map(info => (
+        <div key={info.label} className="rounded-2xl border border-white/10 bg-white/5 p-3 text-sm">
+          <span className="flex items-center gap-2 text-white/70">
+            {info.icon} {info.label}
+          </span>
+          <p className="mt-2 font-semibold text-white">{info.value}</p>
+        </div>
+      ))}
+    </div>
+    <form className="grid gap-4">
+      <input className="rounded-2xl border border-white/30 bg-transparent px-4 py-3 text-white placeholder:text-white/50" placeholder="Codename" />
+      <input className="rounded-2xl border border-white/30 bg-transparent px-4 py-3 text-white placeholder:text-white/50" placeholder="Secure Email" />
+      <textarea className="rounded-2xl border border-white/30 bg-transparent px-4 py-3 text-white placeholder:text-white/50" rows={3} placeholder="Mission Brief" />
+      <button className="rounded-full border border-white/40 bg-white/20 px-5 py-2 font-semibold text-white transition hover:bg-white/30">
+        Dispatch
+      </button>
+    </form>
+  </GlassCard>
+);
+
+// Neon holographic shader inspired by 21st.dev shader patterns
+const NeonShaderCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const gl = canvas.getContext('webgl');
+    if (!gl) return;
+
+    const vertexSource = `
+      attribute vec2 a_position;
+      void main(){
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fragmentSource = `
+      precision highp float;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+
+      vec2 hash(vec2 p){
+        p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+        return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+      }
+
+      float noise(vec2 p){
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f*f*(3.0-2.0*f);
+        return mix(mix(dot(hash(i + vec2(0.0,0.0)), f - vec2(0.0,0.0)),
+                       dot(hash(i + vec2(1.0,0.0)), f - vec2(1.0,0.0)), u.x),
+                   mix(dot(hash(i + vec2(0.0,1.0)), f - vec2(0.0,1.0)),
+                       dot(hash(i + vec2(1.0,1.0)), f - vec2(1.0,1.0)), u.x), u.y);
+      }
+
+      void main(){
+        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+        vec2 st = (uv - 0.5) * vec2(u_resolution.x / u_resolution.y, 1.0);
+        float t = u_time * 0.25;
+
+        float grid = abs(sin(st.x * 12.0 + t)) + abs(sin(st.y * 12.0 - t));
+        float glow = smoothstep(1.2, 0.0, grid);
+        float holo = noise(st * 4.0 + t);
+
+        vec3 color = vec3(0.05, 0.12, 0.18);
+        color += vec3(0.0, 0.8, 0.6) * glow;
+        color += vec3(1.0, 0.2, 0.4) * holo * 0.35;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    const compile = (type: number, source: string) => {
+      const shader = gl.createShader(type);
+      if (!shader) throw new Error('shader creation failed');
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        const info = gl.getShaderInfoLog(shader);
+        gl.deleteShader(shader);
+        throw new Error(info || 'shader error');
+      }
+      return shader;
+    };
+
+    const vertex = compile(gl.VERTEX_SHADER, vertexSource);
+    const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
+    const program = gl.createProgram();
+    if (!program) return;
+    gl.attachShader(program, vertex);
+    gl.attachShader(program, fragment);
+    gl.linkProgram(program);
+
+    const resolutionUniform = gl.getUniformLocation(program, 'u_resolution');
+    const timeUniform = gl.getUniformLocation(program, 'u_time');
+    const positionLocation = gl.getAttribLocation(program, 'a_position');
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    let raf: number;
+    const render = (time: number) => {
+      gl.useProgram(program);
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+      gl.uniform2f(resolutionUniform, canvas.width, canvas.height);
+      gl.uniform1f(timeUniform, time * 0.001);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      raf = requestAnimationFrame(render);
+    };
+    raf = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      gl.deleteShader(vertex);
+      gl.deleteShader(fragment);
+      gl.deleteProgram(program);
+    };
   }, []);
 
-  // Check if this is an OAuth callback
-  useEffect(() => {
-    const handleOAuthCallback = async () => {
-      // Supabase handles OAuth callbacks automatically via detectSessionInUrl
-      // Just refresh the profile after a short delay to allow session to be established
-      if (location.search.includes('code=') || location.hash.includes('access_token=')) {
-        setTimeout(async () => {
-          await refreshProfile();
-        }, 1000);
-      }
-    };
-
-    handleOAuthCallback();
-  }, [location, refreshProfile]);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      if (userType === 'parent') {
-        window.location.href = '/parent/dashboard';
-      } else if (userType === 'child') {
-        window.location.href = '/child/calendar';
-      }
-    }
-  }, [isAuthenticated, userType]);
-
-  const handleParentAuthSuccess = async (user: Parent, child?: Child) => {
-    try {
-      // Wait for session to be established
-      let session = null;
-      let attempts = 0;
-      const maxAttempts = 10;
-
-      while (!session && attempts < maxAttempts) {
-        session = await authService.getCurrentSession();
-        if (!session) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          attempts++;
-        }
-      }
-
-      if (session) {
-        await login('parent', session, user as Parent, child);
-        // Use React Router navigation instead of window.location.href
-        navigate('/parent/dashboard');
-      } else {
-        console.error('Failed to establish session after signup');
-        // Show error to user
-        alert('Authentication failed. Please try logging in manually.');
-      }
-    } catch (error) {
-      console.error('Error in parent auth success:', error);
-      alert('Authentication failed. Please try again.');
-    }
-  };
-
-  const handleChildLoginSuccess = async (child: Child, calendar: Calendar) => {
-    // Store child session in localStorage
-    localStorage.setItem('child_session', JSON.stringify({ child, calendar }));
-    await login('child', null as unknown as Session, undefined, child);
-    navigate('/child/calendar');
-  };
-
-  const handleGuestLogin = async () => {
-    try {
-      // Create a guest session with demo data
-      const guestChild: Child = {
-        child_uuid: 'guest-' + Date.now(),
-        parent_uuid: 'guest-parent',
-        name: 'Guest Explorer',
-        birthdate: '2018-01-01', // 6 years old
-        gender: 'unspecified',
-        interests: { butterflies: true, books: true },
-        selected_template: 'pastel-dreams',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-
-      const guestCalendar: Calendar = {
-        calendar_id: 'guest-calendar',
-        child_uuid: guestChild.child_uuid,
-        parent_uuid: 'guest-parent',
-        template_id: '550e8400-e29b-41d4-a716-446655440000', // pastel-dreams
-        share_uuid: undefined,
-        is_published: false,
-        year: new Date().getFullYear(),
-        version: 1,
-        last_tile_opened: 0,
-        settings: { theme: 'pastel-dreams', isGuest: true },
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-
-      // Store guest session in localStorage
-      localStorage.setItem('guest_session', JSON.stringify({
-        child: guestChild,
-        calendar: guestCalendar,
-        isGuest: true
-      }));
-
-      await login('child', null as unknown as Session, undefined, guestChild);
-      navigate('/child/calendar');
-    } catch (error) {
-      console.error('Guest login error:', error);
-      alert('Failed to start guest session. Please try again.');
-    }
-  };
-
-  const [authStep, setAuthStep] = React.useState<'welcome' | 'parent-options' | 'child-options'>('welcome');
-
-  const layoutMood = variant === 'masculine' ? 'frost' : variant === 'neutral' ? 'aurora' : 'ember';
-
-  return (
-    <WonderlandLayout
-      title="Welcome to the Family Advent Portal"
-      subtitle="A Christmas wonderland filled with snow, butterflies, and heartfelt surprises for every child."
-      actions={
-        <button
-          onClick={() => setAuthStep('welcome')}
-          className="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-        >
-          Reset Journey
-        </button>
-      }
-      mood={layoutMood}
-      showSnow
-      showButterflies
-      contentClassName="mx-auto flex w-full max-w-6xl flex-col items-center justify-center"
-    >
-      <div className="relative mb-10 h-72 w-full max-w-4xl overflow-hidden rounded-[2.5rem] border border-white/20 bg-white/10 shadow-2xl backdrop-blur-2xl">
-        <BackgroundGradientAnimation
-          gradientBackgroundStart="rgb(15, 23, 42)"
-          gradientBackgroundEnd="rgb(30, 58, 138)"
-          firstColor="255, 215, 0"
-          secondColor="220, 38, 38"
-          thirdColor="16, 185, 129"
-          fourthColor="147, 51, 234"
-          fifthColor="245, 158, 11"
-          sixthColor="236, 72, 153"
-          pointerColor="255, 215, 0"
-          size="85%"
-          blendingValue="hard-light"
-          interactive
-          containerClassName="absolute inset-0 opacity-50"
-        />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 text-center text-white">
-          <p className="text-lg uppercase tracking-[0.2em] text-white/80">Holiday Stories</p>
-          <h2 className="text-4xl font-bold md:text-5xl">Create Memories Together</h2>
-          <p className="max-w-2xl text-base text-white/80">
-            Invite your little ones into a handcrafted journey of kindness, surprises, and shimmering snow.
-          </p>
-        </div>
-      </div>
-
-      <div id="main-content" className="relative z-10 w-full max-w-3xl text-center">
-        {/* Welcome Step */}
-        {authStep === 'welcome' && (
-          <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
-            <div className="mb-6">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 shadow-2xl shadow-emerald-500/30">
-                <span className="text-4xl">🎄</span>
-              </div>
-              <h1 className="display-1 mb-3 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400 bg-clip-text text-transparent">
-                Welcome to Christmas Magic
-              </h1>
-              <p className="body-large text-emerald-100/80">
-                Let's create unforgettable holiday memories together
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <button
-                onClick={handleGuestLogin}
-                className="winter-wonderland-button frosted w-full text-xl py-4 hover:scale-105 transition-all duration-300"
-              >
-                ✨ Start Exploring ✨
-              </button>
-
-              <button
-                onClick={() => setAuthStep('parent-options')}
-                className="winter-wonderland-button frosted w-full text-lg py-3 hover:scale-105 transition-all duration-300"
-              >
-                I'm a Parent → Create Custom Calendar
-              </button>
-
-              <button
-                onClick={() => setAuthStep('child-options')}
-                className="w-full py-3 px-6 rounded-2xl font-medium text-lg transition-all hover:scale-105 shadow-xl bg-gradient-to-r from-rose-500/20 to-pink-500/20 text-rose-200 border border-rose-400/30 hover:border-rose-400/50 backdrop-blur-sm"
-              >
-                I'm a Child → Open My Calendar 🎁
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Parent Options Step */}
-        {authStep === 'parent-options' && (
-          <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
-            <button
-              onClick={() => setAuthStep('welcome')}
-              className="absolute top-4 left-4 text-emerald-200/70 hover:text-emerald-100 transition-colors"
-              aria-label="Go back"
-            >
-              ← Back
-            </button>
-
-            <div className="mb-6">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-500 shadow-2xl shadow-blue-500/30">
-                <span className="text-2xl">👨‍👩‍👧‍👦</span>
-              </div>
-              <h2 className="headline-1 mb-2 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
-                Create Family Magic
-              </h2>
-              <p className="body text-blue-100/80">
-                Sign up to customize personalized advent calendars for your children
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className="winter-wonderland-button frosted w-full text-lg py-3 hover:scale-105 transition-all duration-300"
-              >
-                Sign Up as Parent
-              </button>
-
-              <div className="text-center">
-                <span className="text-sm text-blue-200/60">Already have an account?</span>
-                <button
-                  onClick={() => setShowAuthModal(true)}
-                  className="ml-1 text-blue-300 hover:text-blue-200 underline transition-colors"
-                >
-                  Sign In
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Child Options Step */}
-        {authStep === 'child-options' && (
-          <div className="winter-wonderland-card frosted p-8 mb-4 winter-ornamentation winter-magic-sparkle">
-            <button
-              onClick={() => setAuthStep('welcome')}
-              className="absolute top-4 left-4 text-rose-200/70 hover:text-rose-100 transition-colors"
-              aria-label="Go back"
-            >
-              ← Back
-            </button>
-
-            <div className="mb-6">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-gradient-to-br from-rose-400 to-pink-500 shadow-2xl shadow-rose-500/30">
-                <span className="text-2xl">🎁</span>
-              </div>
-              <h2 className="headline-1 mb-2 bg-gradient-to-r from-rose-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent">
-                Your Daily Surprise Awaits!
-              </h2>
-              <p className="body text-rose-100/80">
-                Enter your family code to discover today's magical surprise
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <button
-                onClick={() => setShowChildLogin(true)}
-                className="winter-wonderland-button frosted w-full text-lg py-3 hover:scale-105 transition-all duration-300 bg-gradient-to-r from-rose-500/20 to-pink-500/20"
-              >
-                Open My Calendar 🎄
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Winter Wonderland Seasonal Message */}
-        <div className="text-center mt-6 p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-          <p className="text-emerald-200/80 font-medium text-sm">
-            {new Date().getMonth() === 11 && new Date().getDate() <= 25
-              ? "🎄 Every day brings a new moment of holiday magic in our Winter Wonderland 🎄"
-              : "❄️ Creating traditions that warm the heart forever in our magical wonderland ❄️"
-            }
-          </p>
-          <div className="flex justify-center items-center mt-2 space-x-2">
-            <span className="text-xs text-emerald-300/60">✨</span>
-            <span className="text-xs text-teal-300/60">Powered by Winter Wonderland</span>
-            <span className="text-xs text-cyan-300/60">✨</span>
-          </div>
-        </div>
-      </div>
-
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleParentAuthSuccess}
-      />
-
-      <ChildLoginModal
-        isOpen={showChildLogin}
-        onClose={() => setShowChildLogin(false)}
-        onSuccess={handleChildLoginSuccess}
-      />
-    </WonderlandLayout>
-  );
+  return <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 opacity-80" />;
 };
 
-// OAuth Callback Handler
-const OAuthCallback: React.FC = () => {
-  const { refreshProfile, userType } = useAuth();
-  const location = useLocation();
+const Background = () => (
+  <>
+    <div className="fixed inset-0 bg-slate-950" aria-hidden />
+    <NeonShaderCanvas />
+    <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,_rgba(248,113,113,0.25),_transparent_45%)]" aria-hidden />
+    <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(16,185,129,0.3),_transparent_45%)]" aria-hidden />
+    <style>{`
+      @keyframes snowfall {
+        0% { transform: translateY(-10%); opacity: 0; }
+        30% { opacity: 0.8; }
+        100% { transform: translateY(110%); opacity: 0; }
+      }
+    `}</style>
+    <div className="pointer-events-none fixed inset-0 overflow-hidden">
+      {Array.from({ length: 80 }).map((_, idx) => (
+        <span
+          key={idx}
+          className="absolute text-white/40"
+          style={{
+            left: `${Math.random() * 100}%`,
+            animation: `snowfall ${7 + Math.random() * 7}s linear ${Math.random() * 4}s infinite`,
+            fontSize: `${6 + Math.random() * 10}px`
+          }}
+        >
+          ❆
+        </span>
+      ))}
+    </div>
+  </>
+);
 
-  useEffect(() => {
-    const handleCallback = async () => {
-      // Wait a moment for Supabase to process the callback
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await refreshProfile();
-      
-      // Wait a bit more for state to update, then redirect
-      setTimeout(() => {
-        if (userType === 'parent') {
-          window.location.href = '/parent/dashboard';
-        } else if (userType === 'child') {
-          window.location.href = '/child/calendar';
-        } else {
-          window.location.href = '/auth';
-        }
-      }, 500);
-    };
+export default function App() {
+  const [activeRoute, setActiveRoute] = useState<Route>('Home');
 
-    if (location.search.includes('code=') || location.hash.includes('access_token=')) {
-      handleCallback();
-    } else {
-      // No OAuth callback detected, redirect to auth
-      setTimeout(() => {
-        window.location.href = '/auth';
-      }, 1000);
+  const content = useMemo(() => {
+    switch (activeRoute) {
+      case 'About':
+        return (
+          <div className="grid gap-8">
+            <AboutPanel />
+            <Hero />
+          </div>
+        );
+      case 'Features':
+        return (
+          <div className="grid gap-8">
+            <Hero />
+            <FeaturesGrid />
+          </div>
+        );
+      case 'Contact':
+        return (
+          <div className="grid gap-8">
+            <Hero />
+            <ContactPanel />
+          </div>
+        );
+      default:
+        return (
+          <div className="grid gap-8">
+            <Hero />
+            <FeaturesGrid />
+            <AboutPanel />
+            <ContactPanel />
+          </div>
+        );
     }
-  }, [location, refreshProfile, userType]);
+  }, [activeRoute]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-        <p className="text-gray-600">Completing sign in...</p>
-      </div>
+    <div className="min-h-screen text-white">
+      <Background />
+      <Layout activeRoute={activeRoute} onNav={setActiveRoute} />
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10">{content}</main>
+      <Footer />
     </div>
   );
-};
-
-// App Router Component
-const AppRouter: React.FC = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/auth/callback" element={<OAuthCallback />} />
-        <Route path="/holiday/showcase" element={<ChristmasShowcase />} />
-         <Route
-           path="/parent/dashboard"
-           element={
-             <ProtectedRoute allowedUserTypes={['parent']}>
-               <ParentDashboard />
-             </ProtectedRoute>
-           }
-         />
-         <Route
-           path="/test/parent/dashboard"
-           element={<ParentDashboard testMode={true} />}
-         />
-         <Route
-           path="/child/calendar"
-           element={
-             <ProtectedRoute allowedUserTypes={['child']}>
-               <ChildCalendarView />
-             </ProtectedRoute>
-           }
-         />
-         <Route
-           path="/test/child/calendar"
-           element={<ChildCalendarView testMode={true} />}
-         />
-        <Route path="/" element={<Navigate to="/auth" replace />} />
-        <Route path="*" element={<Navigate to="/auth" replace />} />
-      </Routes>
-    </Router>
-  );
-};
-
-// Winter Effects Wrapper Component
-const WinterEffectsWrapper: React.FC = () => {
-  const {
-    handleGestureMagic,
-    handleVoiceCommand,
-    handlePersonalizationUpdate,
-    handleAdaptiveEffect,
-    state
-  } = useWinterEffects();
-
-  return (
-    <WinterEffects
-      celebrationTrigger={state.celebrationTrigger?.type}
-      celebrationPosition={state.celebrationTrigger?.position}
-      onGestureMagic={handleGestureMagic}
-      onVoiceCommand={handleVoiceCommand}
-      onPersonalizationUpdate={handlePersonalizationUpdate}
-      onAdaptiveEffect={handleAdaptiveEffect}
-    />
-  );
-};
-
-// Main App Component
-function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeModeProvider>
-        <WinterThemeProvider>
-          <WinterEffectsProvider>
-            <EmotionalBackgroundProvider>
-              <AuthProvider>
-                {/* Skip Link for Accessibility */}
-                <a href="#main-content" className="skip-link">
-                  Skip to main content
-                </a>
-                <AppRouter />
-
-                {/* Winter Wonderland Effects */}
-                <WinterEffectsWrapper />
-              </AuthProvider>
-            </EmotionalBackgroundProvider>
-          </WinterEffectsProvider>
-        </WinterThemeProvider>
-      </ThemeModeProvider>
-    </ErrorBoundary>
-  );
 }
-
-export default App;

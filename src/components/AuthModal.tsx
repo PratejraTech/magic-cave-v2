@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authService, AuthUtils } from '../lib/auth';
 import TemplateSelector from './TemplateSelector';
+import { Button } from './ui/WonderButton';
 import { analytics } from '../lib/analytics';
 import { motion } from 'framer-motion';
 
@@ -433,32 +434,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 disabled:opacity-50"
-                >
+                <Button type="submit" fullWidth size="lg" loading={loading}>
                   {loading ? 'Creating Account...' : 'Create Account'}
-                </button>
+                </Button>
               </form>
             )}
           </>
         ) : (
           /* OAuth Login */
           <div className="space-y-4">
-            <button
+            <Button
+              fullWidth
+              size="lg"
               onClick={() => handleOAuthLogin(authMethod as 'google' | 'facebook')}
-              disabled={loading}
-              className="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 disabled:opacity-50 flex items-center justify-center"
+              loading={loading}
+              variant="primary"
             >
-              {loading ? (
-                'Connecting...'
-              ) : (
-                <>
-                  Continue with {authMethod === 'google' ? 'Google' : 'Facebook'}
-                </>
-              )}
-            </button>
+              {loading ? 'Connecting…' : `Continue with ${authMethod === 'google' ? 'Google' : 'Facebook'}`}
+            </Button>
           </div>
         )}
 
@@ -467,22 +460,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
           {mode === 'login' ? (
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <button
-                onClick={() => handleModeSwitch('register')}
+              <Button
+                variant="ghost"
+                size="sm"
                 className="text-blue-500 hover:text-blue-700 font-medium"
+                onClick={() => handleModeSwitch('register')}
               >
                 Sign up
-              </button>
+              </Button>
             </p>
           ) : (
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <button
-                onClick={() => handleModeSwitch('login')}
+              <Button
+                variant="ghost"
+                size="sm"
                 className="text-blue-500 hover:text-blue-700 font-medium"
+                onClick={() => handleModeSwitch('login')}
               >
                 Sign in
-              </button>
+              </Button>
             </p>
           )}
         </div>

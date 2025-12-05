@@ -8,11 +8,12 @@ import { useAuth } from '../lib/AuthContext';
 import { CalendarTile } from '../types/calendar';
 import { analytics } from '../lib/analytics';
 import { applyTemplateStyling } from '../lib/templateStyling';
-import { DEFAULT_TEMPLATES } from '../types/calendar';
+import { getTemplateDefinition } from '../data/templates';
 import { motion } from 'framer-motion';
 import WinterThemeToggle from './WinterThemeToggle';
 import { useWinterTheme } from '../contexts/WinterThemeContext';
 import WonderlandLayout from './layout/WonderlandLayout';
+import { Button } from './ui/WonderButton';
 
 // Import system prompt templates
 const SYSTEM_PROMPT_TEMPLATES = [
@@ -36,42 +37,6 @@ const SYSTEM_PROMPT_TEMPLATES = [
     name: 'Grandma',
     description: 'Caring, baking grandmother figure',
   },
-];
-
-const AVAILABLE_TEMPLATES = [
-  {
-    id: DEFAULT_TEMPLATES.PASTEL_DREAMS,
-    name: 'Pastel Dreams',
-    description: 'Soft pastel colors with dreamy illustrations perfect for little dreamers',
-    metadata: {
-      colors: { primary: '#FFB3BA', secondary: '#BAFFC9', accent: '#BAE1FF' },
-      fonts: { heading: 'Comic Sans MS', body: 'Arial' },
-      icons: ['butterfly', 'star', 'heart'],
-      layout: 'rounded_tiles' as const
-    }
-  },
-  {
-    id: DEFAULT_TEMPLATES.ADVENTURE_THEME,
-    name: 'Adventure Boy',
-    description: 'Bold colors with adventure-themed graphics for brave explorers',
-    metadata: {
-      colors: { primary: '#FF6B35', secondary: '#F7931E', accent: '#FFD23F' },
-      fonts: { heading: 'Impact', body: 'Verdana' },
-      icons: ['mountain', 'compass', 'telescope'],
-      layout: 'square_tiles' as const
-    }
-  },
-  {
-    id: DEFAULT_TEMPLATES.CELEBRATION_THEME,
-    name: 'Rainbow Fantasy',
-    description: 'Bright rainbow colors with magical elements and unicorns',
-    metadata: {
-      colors: { primary: '#FF0080', secondary: '#8000FF', accent: '#00FF80' },
-      fonts: { heading: 'Fantasy', body: 'Georgia' },
-      icons: ['unicorn', 'rainbow', 'castle'],
-      layout: 'hexagon_tiles' as const
-    }
-  }
 ];
 
 interface ParentDashboardProps {
@@ -114,12 +79,14 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
       >
         <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
           <p className="text-lg text-white/90">This dashboard is only accessible to parents.</p>
-          <button
+          <Button
+            fullWidth
+            variant="frosted"
+            size="lg"
             onClick={() => (window.location.href = '/auth')}
-            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
             Return to Login
-          </button>
+          </Button>
         </div>
       </WonderlandLayout>
     );
@@ -154,12 +121,14 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
       >
         <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
           <p className="text-lg text-white/90">{error}</p>
-          <button
+          <Button
+            fullWidth
+            variant="frosted"
+            size="lg"
             onClick={() => window.location.reload()}
-            className="mt-6 w-full rounded-2xl bg-white/20 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/30"
           >
             Try Again
-          </button>
+          </Button>
         </div>
       </WonderlandLayout>
     );
@@ -235,97 +204,101 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
         <div className="winter-wonderland-card frosted p-4 sm:p-6 mb-4 sm:mb-6 winter-ornamentation">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
             <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">Calendar Overview</h2>
-              <div className="flex gap-2 flex-wrap">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowProfileSettings(true)}
-                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300"
-                  aria-label="Profile and settings"
-                >
-                  Profile & Settings
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowTileEditor(true)}
-                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-blue-500/20 to-indigo-500/20"
-                  aria-label="Edit calendar tiles"
-                >
-                  Edit Tiles
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowCustomization(true)}
-                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-indigo-500/20 to-purple-500/20"
-                  aria-label="Advanced customization options"
-                >
-                  🎨 Customize
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowAnalytics(true)}
-                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-purple-500/20 to-pink-500/20"
-                  aria-label="View analytics"
-                >
-                  Analytics
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleExportPDF}
-                  className="winter-wonderland-button frosted px-4 py-2 text-sm sm:text-base hover:scale-105 transition-all duration-300 bg-gradient-to-r from-emerald-500/20 to-teal-500/20"
-                  aria-label="Export calendar as PDF"
-                >
-                  Export PDF
-                </motion.button>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  {
+                    label: 'Profile & Settings',
+                    gradient: '',
+                    action: () => setShowProfileSettings(true),
+                    aria: 'Profile and settings'
+                  },
+                  {
+                    label: 'Edit Tiles',
+                    gradient: 'from-blue-500/20 to-indigo-500/20',
+                    action: () => setShowTileEditor(true),
+                    aria: 'Edit calendar tiles'
+                  },
+                  {
+                    label: '🎨 Customize',
+                    gradient: 'from-indigo-500/20 to-purple-500/20',
+                    action: () => setShowCustomization(true),
+                    aria: 'Advanced customization options'
+                  },
+                  {
+                    label: 'Analytics',
+                    gradient: 'from-purple-500/20 to-pink-500/20',
+                    action: () => setShowAnalytics(true),
+                    aria: 'View analytics'
+                  },
+                  {
+                    label: 'Export PDF',
+                    gradient: 'from-emerald-500/20 to-teal-500/20',
+                    action: handleExportPDF,
+                    aria: 'Export calendar as PDF'
+                  }
+                ].map(button => (
+                  <motion.div key={button.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="frosted"
+                      size="md"
+                      className={button.gradient ? `bg-gradient-to-r ${button.gradient}` : ''}
+                      onClick={button.action}
+                      aria-label={button.aria}
+                    >
+                      {button.label}
+                    </Button>
+                  </motion.div>
+                ))}
               </div>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-4">
-            {Array.from({ length: 25 }, (_, i) => i + 1).map((day, index) => {
+          <div className="winter-calendar-grid">
+            {Array.from({ length: 25 }, (_, i) => i + 1).map((day) => {
               const tile = tiles.find(t => t.day === day);
               return (
-                <motion.div
+                <div
                   key={day}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    delay: index * 0.02,
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20
-                  }}
-                  whileHover={{
-                    scale: 1.05,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                   className="aspect-square winter-wonderland-card frosted p-1 sm:p-2 flex flex-col items-center justify-center hover:scale-105 transition-all duration-300 cursor-pointer winter-magic-sparkle"
+                   className="winter-calendar-tile cursor-pointer winter-magic-sparkle"
                    role="button"
                    tabIndex={0}
                    aria-label={`Day ${day} tile${tile?.title ? `: ${tile.title}` : ''}`}
                  >
-                   <div className="text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent mb-1">Day {day}</div>
+                   <div className="winter-calendar-day-label">Day {day}</div>
                    {tile?.title && (
-                     <div className="text-xs text-emerald-100/80 text-center mb-1 truncate w-full leading-tight">
+                     <div className="winter-calendar-title" title={tile.title}>
                        {tile.title}
                      </div>
                    )}
                    {tile?.media_url && (
-                     <div className="w-4 h-4 sm:w-6 sm:h-6 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-lg flex items-center justify-center mb-1 text-xs sm:text-sm border border-blue-400/30">
+                     <div
+                       className="winter-calendar-badge winter-calendar-badge--media"
+                       aria-label="Tile has media attachment"
+                     >
                        📷
                      </div>
                    )}
-                   {tile?.gift && (
-                     <div className="text-xs text-purple-300/80" aria-label="Has gift">🎁</div>
+                   {tile?.gift ? (
+                     tile.gift_unlocked ? (
+                       <div
+                         className="winter-calendar-meta winter-calendar-meta--success"
+                         aria-label="Gift unlocked"
+                       >
+                         ✅ Unlocked
+                       </div>
+                     ) : (
+                       <div
+                         className="winter-calendar-meta winter-calendar-meta--gift"
+                         aria-label="Gift assigned"
+                       >
+                         🎁 Gift ready
+                       </div>
+                     )
+                   ) : (
+                     <div className="winter-calendar-meta" aria-label="No gift configured">
+                       No gift yet
+                     </div>
                    )}
-                   {tile?.gift_unlocked && (
-                     <div className="text-xs text-emerald-300/80 mt-1" aria-label="Gift unlocked">✅</div>
-                   )}
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -549,13 +522,15 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
               </div>
 
               <div className="flex gap-3 mt-6">
-                <button
+                <Button
+                  variant="outline"
+                  className="flex-1"
                   onClick={() => setShowProfileSettings(false)}
-                  className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
                   onClick={async () => {
                     // Basic validation
                     if (!profileForm.parentName.trim()) {
@@ -594,33 +569,32 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
                     // For now, just close the modal
                     setShowProfileSettings(false);
                   }}
-                  className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
                   Save Changes
-                </button>
+                </Button>
               </div>
 
               <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
-                <button
-                  onClick={() => {
-                    // Switch to child view
-                    window.location.href = '/child/calendar';
-                  }}
-                  className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                <Button
+                  fullWidth
+                  variant="primary"
+                  className="bg-gradient-to-r from-emerald-400 to-teal-500"
+                  onClick={() => (window.location.href = '/child/calendar')}
                 >
                   Switch to Child View
-                </button>
-                <button
+                </Button>
+                <Button
+                  fullWidth
+                  variant="danger"
                   onClick={async () => {
                     if (confirm('Are you sure you want to log out?')) {
                       await logout();
                       window.location.href = '/auth';
                     }
                   }}
-                  className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
                   Log Out
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -634,13 +608,15 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold text-gray-800">Choose Calendar Theme</h2>
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xl text-slate-600 hover:text-slate-900"
                   onClick={() => setShowTemplateSelector(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
                   aria-label="Close template selector"
                 >
                   ×
-                </button>
+                </Button>
               </div>
 
               <TemplateErrorBoundary>
@@ -679,10 +655,9 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
                      setCurrentTemplate(templateId);
                      setShowTemplateSelector(false);
 
-                     // Apply template styling dynamically without page reload
-                     const template = AVAILABLE_TEMPLATES.find(t => t.id === templateId);
-                     if (template) {
-                       applyTemplateStyling(template.metadata, template.id);
+                     const templateDefinition = getTemplateDefinition(templateId);
+                     if (templateDefinition) {
+                       applyTemplateStyling(templateDefinition.metadata, templateDefinition.id);
                      }
                   } catch (error) {
                     console.error('Failed to update template:', error);
@@ -693,12 +668,12 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
               </TemplateErrorBoundary>
 
               <div className="flex justify-end mt-6">
-                <button
+                <Button
+                  variant="outline"
                   onClick={() => setShowTemplateSelector(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           </div>
