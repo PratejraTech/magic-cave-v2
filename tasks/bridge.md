@@ -182,3 +182,8 @@ Atlassian
 2025-12-05T05:50:12Z — UI.CYBER_LANDING — FINISHED — Replaced App.tsx with the Cyber-Christmas SPA (sticky glass header, routed sections, neon hero, bento features, contact form, snow background) and verified via npm run build.
 2025-12-05T06:16:48Z — UI.CYBER_LANDING_ITERATION — NEXT_TO_WORK_ON — Iterating on the Cyber landing with modern AI-brand cues and integrating a 21st.dev shader background.
 2025-12-05T06:18:11Z — UI.CYBER_LANDING_ITERATION — FINISHED — Added the 21st.dev-inspired neon shader canvas, refreshed the background gradients, and revalidated the AI landing page via npm run build.
+2025-12-05T06:20:56Z — UI.FAMILY_CALENDAR_LANDING — NEXT_TO_WORK_ON — Adjusting landing layout spacing, translucent-black panels, and family-focused copy for the calendar experience.
+2025-12-05T06:21:46Z — UI.FAMILY_CALENDAR_LANDING — FINISHED — Increased layout spacing, switched panels to translucent black glass, refocused copy on family calendars, and confirmed via npm run build.
+2025-12-05T06:26:37Z — UI.FAMILY_CALENDAR_LANDING — FINISHED — Removed cyber language, rethemed copy/background for a friendly Christmas village, and revalidated via npm run build.
+2025-12-05T06:37:42Z — UI.FAMILY_CALENDAR_FLOWS — NEXT_TO_WORK_ON — Ensuring the “Start Your Calendar” CTA routes users into the auth/setup workflow.
+2025-12-05T06:38:16Z — UI.FAMILY_CALENDAR_FLOWS — FINISHED — Wired the hero CTA to the auth route so families can start calendars immediately and confirmed via npm run build.
