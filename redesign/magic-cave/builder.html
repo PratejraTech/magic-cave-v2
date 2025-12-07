@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Magic Cave Calendars · Builder</title>
+  <link rel="stylesheet" href="styles/core.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="wrapper nav-bar">
+      <div class="brand">Magic Cave Calendars</div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="home.html">Home</a>
+        <a href="builder.html" aria-current="page">Builder</a>
+        <a href="preview.html">Preview</a>
+        <a href="account.html">Account</a>
+        <a href="help.html">Help</a>
+      </nav>
+      <a class="btn btn-primary" href="preview.html">Preview calendar</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrapper stack-lg">
+      <header class="stack-md">
+        <p class="brand">Builder</p>
+        <h1 class="hero-title">Shape each day’s surprise</h1>
+        <p class="lead">Fill out the template, customize tiles, and schedule gift drops. Everything saves instantly.</p>
+      </header>
+
+      <section class="card stack-md" aria-labelledby="profile">
+        <h2 id="profile" class="section-title">Family & calendar details</h2>
+        <form class="form-grid">
+          <div class="form-field">
+            <label for="family-name">Family name</label>
+            <input id="family-name" type="text" placeholder="The Winters" />
+          </div>
+          <div class="form-field">
+            <label for="child-name">Child name</label>
+            <input id="child-name" type="text" placeholder="Lyra" />
+          </div>
+          <div class="form-field">
+            <label for="timezone">Time zone</label>
+            <select id="timezone">
+              <option value="">Select…</option>
+              <option>UTC-8 · Pacific</option>
+              <option>UTC-5 · Eastern</option>
+              <option>UTC+1 · Central Europe</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="template">Template</label>
+            <select id="template">
+              <option>Snowy Village</option>
+              <option>Neon Starport</option>
+              <option>Gingerbread Lab</option>
+            </select>
+          </div>
+        </form>
+        <div>
+          <button class="btn btn-primary" type="button">Save profile</button>
+        </div>
+      </section>
+
+      <section class="card stack-md" aria-labelledby="calendar-grid">
+        <div class="stack-md">
+          <h2 id="calendar-grid" class="section-title">Calendar tiles</h2>
+          <p class="lead">Tap a tile to edit the message, gift attachment, or unlock animation.</p>
+        </div>
+        <div class="calendar-grid">
+          <!-- sample tiles -->
+          <article class="calendar-cell is-selected">
+            <div>
+              <p class="cell-date">Day 1</p>
+              <p>Welcome letter + photo set</p>
+            </div>
+            <button class="btn btn-tertiary" type="button">Edit</button>
+          </article>
+          <article class="calendar-cell">
+            <div>
+              <p class="cell-date">Day 2</p>
+              <p>Grandma’s bedtime story</p>
+            </div>
+            <button class="btn btn-tertiary" type="button">Edit</button>
+          </article>
+          <article class="calendar-cell">
+            <div>
+              <p class="cell-date">Day 3</p>
+              <p>Hologram treasure map</p>
+            </div>
+            <button class="btn btn-tertiary" type="button">Edit</button>
+          </article>
+          <article class="calendar-cell">
+            <div>
+              <p class="cell-date">Day 4</p>
+              <p>Cozy cocoa mix instructions</p>
+            </div>
+            <button class="btn btn-tertiary" type="button">Edit</button>
+          </article>
+        </div>
+      </section>
+
+      <section id="vault" class="card stack-md" aria-labelledby="gift-vault">
+        <h2 id="gift-vault" class="section-title">Gift & media vault</h2>
+        <div class="grid-2">
+          <article>
+            <div class="form-field">
+              <label for="gift-title">Gift title</label>
+              <input id="gift-title" type="text" placeholder="Snow scavenger hunt" />
+            </div>
+            <div class="form-field">
+              <label for="gift-day">Attach to day</label>
+              <select id="gift-day">
+                <option>Day 1</option>
+                <option>Day 2</option>
+                <option>Day 3</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="gift-type">Gift type</label>
+              <select id="gift-type">
+                <option>Voice note</option>
+                <option>Video</option>
+                <option>Download link</option>
+                <option>Experience instructions</option>
+              </select>
+            </div>
+          </article>
+          <article>
+            <div class="form-field">
+              <label for="gift-notes">Notes for caregivers</label>
+              <textarea id="gift-notes" rows="6" placeholder="Hide the snowflakes under the tree…"></textarea>
+            </div>
+            <button class="btn btn-primary" type="button">Save gift</button>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 Magic Cave Calendars · Builder workspace</p>
+  </footer>
+</body>
+
+</html>
