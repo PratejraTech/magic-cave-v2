@@ -1,57 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Nunito:wght@500;600;700&display=swap');
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Import Design System */
+@import './styles/design-system.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Legacy token mapping for backward compatibility */
   :root {
-    /* Typography */
-    --font-display: 'Nunito', 'Inter', 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-body: 'Nunito', 'Inter', 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --type-display-xl: 80px;
-    --type-display-l: 64px;
-    --type-h1: 48px;
-    --type-h2: 36px;
-    --type-h3: 28px;
-    --type-body-lg: 18px;
-    --type-body-md: 16px;
-    --type-body-sm: 14px;
-    --type-caption: 12px;
-
-    /* Core palette */
-    --color-primary: #4EFFD0;
-    --color-secondary: #8A77FF;
-    --color-accent: #A0E8FF;
-    --color-warm-glow: #FCDCA9;
-    --color-deep-bg: #0B0F1A;
-
-    /* Surface palette */
-    --color-surface-1: #111827;
-    --color-surface-2: #1F2937;
-    --color-frost-overlay: rgba(255, 255, 255, 0.05);
-
-    /* Semantic states */
-    --color-success: #11C48F;
-    --color-warning: #F9B44D;
-    --color-danger: #FF4876;
-    --color-info: #4FB9FF;
-
-    /* Magical accents */
-    --color-snow-white: #F2F7FF;
-    --color-fairy-glow: #E0C3FF;
-
-    /* Effects */
-    --shadow-primary: 0px 4px 12px rgba(0, 0, 0, 0.45);
-    --shadow-sheen: 0px 1px 4px rgba(255, 255, 255, 0.05);
-    --glass-border: #ffffff0f;
-    --glass-blur: 22px;
-    --glow-soft: 0 0 45px rgba(142, 119, 255, 0.25);
-
-    --radius-card: 20px;
-    --radius-modal: 32px;
-
+    /* Map old tokens to new design system */
+    --color-deep-bg: var(--color-bg-light);
+    --color-snow-white: var(--color-text-primary);
+    --glass-blur: 12px;
+    --radius-card: var(--radius-xl);
+    --radius-modal: var(--radius-2xl);
     --space-unit: 8px;
+  }
+
+  /* Child theme overrides (refined whimsy) */
+  [data-theme="child"] {
+    --color-deep-bg: #FFF5F8;
+    --color-snow-white: var(--color-text-primary);
   }
 
   * {
@@ -62,15 +34,23 @@
     margin: 0;
     min-height: 100vh;
     font-family: var(--font-body);
-    background-color: var(--color-deep-bg);
-    color: var(--color-snow-white);
-    letter-spacing: -0.01em;
+    background-color: var(--color-bg-light);
+    color: var(--color-text-primary);
+    letter-spacing: var(--tracking-tight);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Selection styles */
   ::selection {
-    background: rgba(78, 255, 208, 0.3);
-    color: var(--color-deep-bg);
+    background: var(--color-accent-peach);
+    color: var(--color-text-primary);
+  }
+
+  /* Focus visible for accessibility */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-rose);
+    outline-offset: 2px;
   }
 }
 
@@ -84,54 +64,64 @@
   --layer-snow-front: 6;
 }
 
+/* Glass Panel - Updated for light theme */
 .glass-panel {
   backdrop-filter: blur(var(--glass-blur));
-  background: rgba(15, 22, 35, 0.75);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-primary), var(--shadow-sheen);
+  box-shadow: var(--shadow-md);
 }
 
 .glass-panel[data-variant='card'] {
-  padding: calc(var(--space-unit) * 3);
+  padding: var(--card-padding);
 }
 
 .glass-panel[data-variant='modal'] {
   border-radius: var(--radius-modal);
+  background: var(--color-bg-light);
 }
 
+/* Legacy dark glass for child theme */
+[data-theme="child"] .glass-panel {
+  backdrop-filter: blur(var(--glass-blur));
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(253, 180, 216, 0.3);
+  box-shadow: var(--shadow-magical);
+}
+
+/* Button with gradient - Updated */
 .button-glow {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-  border-radius: 999px;
-  color: #0A0F1A;
-  padding: 14px 28px;
-  font-weight: 600;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  color: var(--color-bg-light);
+  padding: var(--button-padding-md);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-body);
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   position: relative;
-  box-shadow: 0 0 35px rgba(74, 255, 214, 0.35);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.button-glow::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: inherit;
-  background: radial-gradient(circle, rgba(78, 255, 208, 0.35), transparent 60%);
-  opacity: 0.6;
-  filter: blur(10px);
-  z-index: -1;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-gradient);
+  transition: transform var(--duration-fast) var(--ease-smooth),
+              box-shadow var(--duration-fast) var(--ease-smooth);
 }
 
 .button-glow:hover {
-  box-shadow: 0 0 55px rgba(138, 119, 255, 0.45);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-xl);
 }
 
 .button-glow:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
+}
+
+.button-glow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .glow-stroke {
@@ -170,33 +160,37 @@
   background: linear-gradient(90deg, transparent, rgba(78, 255, 208, 0.7), rgba(138, 119, 255, 0.7), transparent);
 }
 
+/* Snowfall - Refined and reduced */
 .snow-layer span {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(160, 232, 255, 0.4));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(180, 228, 255, 0.3));
   animation: snowfall linear infinite;
+  pointer-events: none;
 }
 
 .snow-layer[data-depth='background'] span {
   width: 2px;
   height: 2px;
-  opacity: 0.15;
-  animation-duration: 18s;
+  opacity: 0.08;
+  animation-duration: 20s;
+  filter: blur(0.2px);
 }
 
 .snow-layer[data-depth='midground'] span {
-  width: 3px;
-  height: 3px;
-  opacity: 0.2;
-  animation-duration: 12s;
+  width: 2.5px;
+  height: 2.5px;
+  opacity: 0.12;
+  animation-duration: 16s;
+  filter: blur(0.2px);
 }
 
 .snow-layer[data-depth='foreground'] span {
-  width: 4px;
-  height: 4px;
-  filter: blur(0.4px);
-  opacity: 0.25;
-  animation-duration: 8s;
+  width: 3px;
+  height: 3px;
+  filter: blur(0.2px);
+  opacity: 0.15;
+  animation-duration: 12s;
 }
 
 @keyframes snowfall {
@@ -208,52 +202,62 @@
     opacity: 1;
   }
   100% {
-    transform: translate3d(-20px, 110vh, 0);
+    transform: translate3d(-15px, 110vh, 0);
     opacity: 0;
   }
 }
 
+/* Butterfly - Refined with pastel colors and slower animation */
 .butterfly {
-  width: 38px;
-  height: 28px;
+  width: 34px;
+  height: 26px;
   border-radius: 50% 50% 40% 40%;
   position: absolute;
-  background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.4), transparent 55%),
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 55%);
-  box-shadow: 0 0 18px rgba(160, 232, 255, 0.65);
-  animation: flutter 12s ease-in-out infinite;
-  mix-blend-mode: screen;
+  background: radial-gradient(circle at 70% 30%, rgba(253, 180, 216, 0.5), transparent 55%),
+    radial-gradient(circle at 30% 30%, rgba(180, 228, 255, 0.5), transparent 55%);
+  box-shadow: 0 0 16px rgba(253, 180, 216, 0.4);
+  animation: flutter 18s ease-in-out infinite;
+  mix-blend-mode: normal;
+  pointer-events: none;
 }
 
-.butterfly[data-variant='glow'] {
-  box-shadow: 0 0 25px rgba(166, 181, 255, 0.9);
+.butterfly[data-variant='soft-blue'] {
+  background: radial-gradient(circle at 70% 30%, rgba(180, 228, 255, 0.5), transparent 55%),
+    radial-gradient(circle at 30% 30%, rgba(233, 213, 255, 0.5), transparent 55%);
+  box-shadow: 0 0 16px rgba(180, 228, 255, 0.4);
 }
 
-.butterfly[data-variant='flutter'] {
-  animation-duration: 9s;
+.butterfly[data-variant='peach'] {
+  background: radial-gradient(circle at 70% 30%, rgba(255, 228, 181, 0.5), transparent 55%),
+    radial-gradient(circle at 30% 30%, rgba(255, 207, 170, 0.5), transparent 55%);
+  box-shadow: 0 0 16px rgba(255, 228, 181, 0.4);
+}
+
+.butterfly[data-variant='slower'] {
+  animation-duration: 20s;
 }
 
 .butterfly::before,
 .butterfly::after {
   content: '';
   position: absolute;
-  width: 40px;
-  height: 26px;
+  width: 36px;
+  height: 24px;
   border-radius: 50%;
   background: inherit;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .butterfly::before {
-  left: -18px;
+  left: -16px;
   transform-origin: right center;
-  animation: wing 2.8s ease-in-out infinite;
+  animation: wing 3.2s ease-in-out infinite;
 }
 
 .butterfly::after {
-  right: -18px;
+  right: -16px;
   transform-origin: left center;
-  animation: wing 2.8s ease-in-out infinite reverse;
+  animation: wing 3.2s ease-in-out infinite reverse;
 }
 
 @keyframes flutter {
@@ -261,10 +265,10 @@
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(40px, -30px, 0) scale(1.1);
+    transform: translate3d(30px, -20px, 0) scale(1.05);
   }
   100% {
-    transform: translate3d(-20px, 50px, 0) scale(0.95);
+    transform: translate3d(-15px, 40px, 0) scale(0.98);
   }
 }
 
@@ -274,6 +278,6 @@
     transform: rotateX(0deg);
   }
   50% {
-    transform: rotateX(25deg);
+    transform: rotateX(20deg);
   }
 }

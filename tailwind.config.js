@@ -4,38 +4,81 @@ export default {
   theme: {
     extend: {
       colors: {
-        border: 'var(--border)',
-        input: 'var(--input)',
-        ring: 'var(--ring)',
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
+        // New Design System Colors
+        'primary-peach': 'var(--color-primary-peach)',
+        'primary-rose': 'var(--color-primary-rose)',
+        'primary-purple': 'var(--color-primary-purple)',
+        'secondary-blue': 'var(--color-secondary-blue)',
+        'secondary-indigo': 'var(--color-secondary-indigo)',
+        'secondary-pink': 'var(--color-secondary-pink)',
+
+        // Neutrals
+        'bg-light': 'var(--color-bg-light)',
+        'bg-soft': 'var(--color-bg-soft)',
+        'bg-subtle': 'var(--color-bg-subtle)',
+        'bg-muted': 'var(--color-bg-muted)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        'text-tertiary': 'var(--color-text-tertiary)',
+        'text-inverse': 'var(--color-text-inverse)',
+
+        // Pastel Accents
+        'accent-mint': 'var(--color-accent-mint)',
+        'accent-lavender': 'var(--color-accent-lavender)',
+        'accent-peach': 'var(--color-accent-peach)',
+        'accent-sky': 'var(--color-accent-sky)',
+        'accent-rose': 'var(--color-accent-rose)',
+
+        // Semantic
+        'success': 'var(--color-success)',
+        'success-light': 'var(--color-success-light)',
+        'warning': 'var(--color-warning)',
+        'warning-light': 'var(--color-warning-light)',
+        'error': 'var(--color-error)',
+        'error-light': 'var(--color-error-light)',
+        'info': 'var(--color-info)',
+        'info-light': 'var(--color-info-light)',
+
+        // Magic Colors (Child UI)
+        'magic-primary': 'var(--color-magic-primary)',
+        'magic-secondary': 'var(--color-magic-secondary)',
+        'magic-accent': 'var(--color-magic-accent)',
+        'magic-success': 'var(--color-magic-success)',
+        'magic-purple': 'var(--color-magic-purple)',
+
+        // Shadcn UI Compatibility
+        border: 'var(--color-bg-muted)',
+        input: 'var(--color-bg-muted)',
+        ring: 'var(--color-primary-rose)',
+        background: 'var(--color-bg-light)',
+        foreground: 'var(--color-text-primary)',
         card: {
-          DEFAULT: 'var(--card)',
-          foreground: 'var(--card-foreground)',
+          DEFAULT: 'var(--color-bg-light)',
+          foreground: 'var(--color-text-primary)',
         },
         popover: {
-          DEFAULT: 'var(--popover)',
-          foreground: 'var(--popover-foreground)',
+          DEFAULT: 'var(--color-bg-light)',
+          foreground: 'var(--color-text-primary)',
         },
         primary: {
-          DEFAULT: 'var(--primary)',
-          foreground: 'var(--primary-foreground)',
+          DEFAULT: 'var(--color-primary-rose)',
+          foreground: 'var(--color-text-inverse)',
         },
         secondary: {
-          DEFAULT: 'var(--secondary)',
-          foreground: 'var(--secondary-foreground)',
+          DEFAULT: 'var(--color-secondary-blue)',
+          foreground: 'var(--color-text-inverse)',
         },
         muted: {
-          DEFAULT: 'var(--muted)',
-          foreground: 'var(--muted-foreground)',
+          DEFAULT: 'var(--color-bg-muted)',
+          foreground: 'var(--color-text-tertiary)',
         },
         accent: {
-          DEFAULT: 'var(--accent)',
-          foreground: 'var(--accent-foreground)',
+          DEFAULT: 'var(--color-accent-peach)',
+          foreground: 'var(--color-text-primary)',
         },
         destructive: {
-          DEFAULT: 'var(--destructive)',
-          foreground: 'var(--destructive-foreground)',
+          DEFAULT: 'var(--color-error)',
+          foreground: 'var(--color-text-inverse)',
         },
         sidebar: {
           DEFAULT: 'var(--sidebar)',
@@ -138,20 +181,43 @@ export default {
         'dt-xxl': 'var(--dt-spacing-xxl)',
       },
       borderRadius: {
-        lg: 'var(--radius-lg, 0.5rem)',
-        md: 'var(--radius-md, 0.375rem)',
-        sm: 'var(--radius-sm, 0.25rem)',
+        'sm': 'var(--radius-sm)',
+        'md': 'var(--radius-md)',
+        'lg': 'var(--radius-lg)',
+        'xl': 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+        '3xl': 'var(--radius-3xl)',
+        'full': 'var(--radius-full)',
+        // Legacy design tokens
         'dt-sm': 'var(--dt-radius-sm)',
         'dt-md': 'var(--dt-radius-md)',
         'dt-lg': 'var(--dt-radius-lg)',
         'dt-pill': 'var(--dt-radius-pill)',
       },
       boxShadow: {
+        'xs': 'var(--shadow-xs)',
+        'sm': 'var(--shadow-sm)',
+        'md': 'var(--shadow-md)',
+        'lg': 'var(--shadow-lg)',
+        'xl': 'var(--shadow-xl)',
+        '2xl': 'var(--shadow-2xl)',
+        'gradient': 'var(--shadow-gradient)',
+        'magical': 'var(--shadow-magical)',
+        'primary': 'var(--shadow-primary)',
+        'secondary': 'var(--shadow-secondary)',
+        // Legacy
         'dt-card': 'var(--dt-shadow-card)',
         'dt-modal': 'var(--dt-shadow-modal)',
         'dt-elevated-dark': 'var(--dt-shadow-elevated-dark)',
+        'frost': '0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08)',
+        'ice-glow': '0 0 20px rgba(16, 185, 129, 0.3)',
+        'arctic': '0 8px 32px rgba(30, 58, 138, 0.15)',
       },
       fontFamily: {
+        'display': 'var(--font-display)',
+        'body': 'var(--font-body)',
+        'mono': 'var(--font-mono)',
+        // Legacy
         'inter': ['Inter', 'system-ui', 'sans-serif'],
         'nunito': ['Nunito', 'system-ui', 'sans-serif'],
         christmas: ['Fredoka', 'cursive'],

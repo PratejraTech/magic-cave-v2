@@ -1,5 +1,7 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
+import { Button } from './ui';
 
 type HeaderLink = {
   label: string;
@@ -12,43 +14,129 @@ type HeaderProps = {
   onSelect: (value: string) => void;
   onCtaClick?: () => void;
   ctaLabel?: string;
+  variant?: 'light' | 'dark';
 };
 
-const Header: React.FC<HeaderProps> = ({ links, active, onSelect, onCtaClick, ctaLabel = 'Launch' }) => (
-  <header className="sticky top-4 z-40 px-6 pt-4" style={{ zIndex: 'var(--layer-ui)' }}>
-    <div className="mx-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-white/15 bg-[rgba(15,23,42,0.9)] px-6 py-3 shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
-      <div className="flex items-center gap-3">
-        <motion.div
-          className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[rgba(78,255,208,0.8)] to-[rgba(138,119,255,0.85)] shadow-lg"
-          whileHover={{ rotate: 6 }}
-          transition={{ type: 'spring', stiffness: 200 }}
-        >
-          <Sparkles className="h-5 w-5 text-white" />
-        </motion.div>
-        <div>
-          <p className="text-xs uppercase tracking-[0.45em] text-white/60">Magic Cave Calendars</p>
-          <p className="text-sm font-semibold text-white">Family Mission Control</p>
+const Header: React.FC<HeaderProps> = ({
+  links,
+  active,
+  onSelect,
+  onCtaClick,
+  ctaLabel = 'Start Calendar',
+  variant = 'light'
+}) => {
+  const isDark = variant === 'dark';
+
+  return (
+    <header
+      className="sticky top-0 z-40 w-full border-b backdrop-blur-md transition-colors"
+      style={{
+        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.8)',
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-bg-muted)'
+      }}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <motion.div
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-peach to-primary-purple shadow-sm"
+            whileHover={{ scale: 1.05, rotate: 3 }}
+            transition={{ type: 'spring', stiffness: 400 }}
+          >
+            <Sparkles className="h-5 w-5 text-white" />
+          </motion.div>
+          <div>
+            <p
+              className="text-sm font-bold gradient-text"
+              style={{ backgroundImage: 'var(--gradient-primary)' }}
+            >
+              Magic Cave Calendars
+            </p>
+            <p className={isDark ? 'text-xs text-white/60' : 'text-xs text-text-tertiary'}>
+              Family Mission Control
+            </p>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center gap-1">
+          {links.map((link) => (
+            <button
+              key={link.value}
+              onClick={() => onSelect(link.value)}
+              className="relative px-4 py-2 text-sm font-medium transition-colors rounded-lg"
+              style={{
+                color: active === link.value
+                  ? isDark ? '#fff' : 'var(--color-text-primary)'
+                  : isDark ? 'rgba(255, 255, 255, 0.7)' : 'var(--color-text-secondary)'
+              }}
+            >
+              {link.label}
+
+              {/* Active Indicator */}
+              {active === link.value && (
+                <motion.span
+                  layoutId="activeTab"
+                  className="absolute inset-x-2 -bottom-0.5 h-0.5 rounded-full"
+                  style={{
+                    background: isDark
+                      ? 'linear-gradient(90deg, #4EFFD0, #8A77FF)'
+                      : 'var(--gradient-primary)'
+                  }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+          ))}
+        </nav>
+
+        {/* CTA */}
+        <div className="flex items-center gap-3">
+          <Button
+            variant="primary"
+            size="md"
+            onClick={onCtaClick}
+            className="hidden sm:inline-flex"
+          >
+            {ctaLabel}
+          </Button>
+
+          {/* Mobile CTA */}
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={onCtaClick}
+            className="sm:hidden"
+          >
+            {ctaLabel}
+          </Button>
         </div>
       </div>
-      <nav className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-white/80">
-        {links.map(link => (
-          <button
-            key={link.value}
-            onClick={() => onSelect(link.value)}
-            className="relative px-3 py-2 text-white/70 transition hover:text-white"
-          >
-            {link.label}
-            {active === link.value && (
-              <span className="absolute inset-x-1 -bottom-1 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #4EFFD0, #8A77FF)' }} />
-            )}
-          </button>
-        ))}
-      </nav>
-      <a href="/auth" onClick={onCtaClick} className="button-glow text-xs uppercase tracking-[0.3em]">
-        {ctaLabel}
-      </a>
-    </div>
-  </header>
-);
+
+      {/* Mobile Navigation */}
+      <div className="md:hidden border-t" style={{ borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-bg-muted)' }}>
+        <nav className="flex overflow-x-auto px-6 py-2 gap-2">
+          {links.map((link) => (
+            <button
+              key={link.value}
+              onClick={() => onSelect(link.value)}
+              className="flex-shrink-0 px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+              style={{
+                backgroundColor: active === link.value
+                  ? isDark ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-bg-soft)'
+                  : 'transparent',
+                color: active === link.value
+                  ? isDark ? '#fff' : 'var(--color-text-primary)'
+                  : isDark ? 'rgba(255, 255, 255, 0.7)' : 'var(--color-text-secondary)'
+              }}
+            >
+              {link.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+};
 
 export default Header;

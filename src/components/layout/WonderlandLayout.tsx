@@ -29,19 +29,16 @@ const gradientMap: Record<WonderlandMood, string> = {
 
 const glowMap: Record<WonderlandMood, { color: string; size: string }[]> = {
   aurora: [
-    { color: 'bg-fuchsia-500/30', size: 'size-[28rem]' },
-    { color: 'bg-sky-400/20', size: 'size-[22rem]' },
-    { color: 'bg-emerald-400/30', size: 'size-[30rem]' }
+    { color: 'bg-fuchsia-500/20', size: 'size-[20rem]' },
+    { color: 'bg-sky-400/15', size: 'size-[18rem]' }
   ],
   frost: [
-    { color: 'bg-cyan-400/30', size: 'size-[28rem]' },
-    { color: 'bg-indigo-400/20', size: 'size-[22rem]' },
-    { color: 'bg-emerald-300/30', size: 'size-[30rem]' }
+    { color: 'bg-cyan-400/20', size: 'size-[20rem]' },
+    { color: 'bg-emerald-300/15', size: 'size-[18rem]' }
   ],
   ember: [
-    { color: 'bg-amber-400/30', size: 'size-[28rem]' },
-    { color: 'bg-rose-500/20', size: 'size-[22rem]' },
-    { color: 'bg-purple-500/30', size: 'size-[30rem]' }
+    { color: 'bg-amber-400/20', size: 'size-[20rem]' },
+    { color: 'bg-rose-500/15', size: 'size-[18rem]' }
   ]
 };
 
@@ -63,28 +60,28 @@ const ButterflyIcon: React.FC<{ size?: number }> = ({ size = 34 }) => (
   </svg>
 );
 
-const SnowLayer: React.FC<{ count?: number }> = ({ count = 32 }) => {
+const SnowLayer: React.FC<{ count?: number }> = ({ count = 20 }) => {
   const flakes = React.useMemo(
     () =>
       Array.from({ length: count }, (_, idx) => ({
         id: idx,
         delay: Math.random() * 4,
-        duration: 8 + Math.random() * 6,
+        duration: 12 + Math.random() * 8,
         left: Math.random() * 100,
-        size: Math.random() * 12 + 6
+        size: Math.random() * 8 + 4
       })),
     [count]
   );
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {flakes.map((flake) => (
         <motion.span
           key={flake.id}
-          className="absolute text-white/70"
+          className="absolute text-white/40"
           style={{ left: `${flake.left}%`, fontSize: flake.size }}
           initial={{ y: '-5%', opacity: 0 }}
-          animate={{ y: '105%', opacity: [0, 1, 0.6, 0] }}
+          animate={{ y: '105%', opacity: [0, 0.4, 0.3, 0] }}
           transition={{ duration: flake.duration, delay: flake.delay, repeat: Infinity, ease: 'linear' }}
         >
           <Snowflake size={flake.size} />
@@ -94,35 +91,35 @@ const SnowLayer: React.FC<{ count?: number }> = ({ count = 32 }) => {
   );
 };
 
-const ButterflyLayer: React.FC<{ count?: number }> = ({ count = 8 }) => {
+const ButterflyLayer: React.FC<{ count?: number }> = ({ count = 3 }) => {
   const butterflies = React.useMemo(
     () =>
       Array.from({ length: count }, (_, idx) => ({
         id: idx,
-        delay: Math.random() * 1.5,
-        duration: 14 + Math.random() * 12,
-        startX: Math.random() * 80,
-        startY: Math.random() * 60,
-        scale: 0.9 + Math.random() * 0.5,
-        color: Math.random() > 0.5 ? 'text-rose-200' : 'text-amber-200'
+        delay: idx * 6,
+        duration: 18 + Math.random() * 8,
+        startX: 10 + Math.random() * 80,
+        startY: 20 + Math.random() * 40,
+        scale: 0.8 + Math.random() * 0.3,
+        // Pastel colors: soft pink and soft blue
+        color: idx % 2 === 0 ? 'text-[#FDB4D8]' : 'text-[#B4E4FF]'
       })),
     [count]
   );
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {butterflies.map((butterfly) => (
         <motion.div
           key={butterfly.id}
-          className={cn('absolute drop-shadow-[0_0_12px_rgba(244,114,182,0.65)]', butterfly.color)}
+          className={cn('absolute opacity-60', butterfly.color)}
           style={{ left: `${butterfly.startX}%`, top: `${butterfly.startY}%` }}
           initial={{ opacity: 0, y: 20, scale: butterfly.scale }}
           animate={{
-            opacity: [0, 1, 0],
-            x: [0, 50, -30, 0],
-            y: [0, -40, 20, 0],
-            rotate: [0, 14, -12, 0],
-            filter: ['blur(0px)', 'blur(0.5px)', 'blur(0px)']
+            opacity: [0, 0.6, 0],
+            x: [0, 40, -20, 0],
+            y: [0, -30, 15, 0],
+            rotate: [0, 10, -8, 0],
           }}
           transition={{
             duration: butterfly.duration,
@@ -131,39 +128,39 @@ const ButterflyLayer: React.FC<{ count?: number }> = ({ count = 8 }) => {
             ease: 'easeInOut'
           }}
         >
-          <ButterflyIcon size={34} />
+          <ButterflyIcon size={30} />
         </motion.div>
       ))}
     </div>
   );
 };
 
-const LoveLayer: React.FC<{ count?: number }> = ({ count = 10 }) => {
+const LoveLayer: React.FC<{ count?: number }> = ({ count = 6 }) => {
   const hearts = React.useMemo(
     () =>
       Array.from({ length: count }, (_, idx) => ({
         id: idx,
         delay: Math.random() * 3,
-        duration: 10 + Math.random() * 6,
+        duration: 12 + Math.random() * 6,
         left: 10 + Math.random() * 80,
         bottom: Math.random() * 40,
-        scale: 0.6 + Math.random() * 0.8
+        scale: 0.6 + Math.random() * 0.5
       })),
     [count]
   );
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {hearts.map((heart) => (
         <motion.div
           key={heart.id}
-          className="absolute text-rose-200/80"
+          className="absolute text-rose-200/50"
           style={{ left: `${heart.left}%`, bottom: `${heart.bottom}%` }}
           initial={{ opacity: 0, scale: heart.scale, y: 0 }}
           animate={{
-            opacity: [0, 0.85, 0],
-            y: [-10, -60],
-            rotate: [0, 8, -8, 0]
+            opacity: [0, 0.5, 0],
+            y: [-10, -50],
+            rotate: [0, 6, -6, 0]
           }}
           transition={{
             duration: heart.duration,
@@ -172,203 +169,8 @@ const LoveLayer: React.FC<{ count?: number }> = ({ count = 10 }) => {
             ease: 'easeOut'
           }}
         >
-          <Heart size={22} fill="currentColor" />
+          <Heart size={18} fill="currentColor" />
         </motion.div>
-      ))}
-    </div>
-  );
-};
-
-const SnowShaderCanvas: React.FC = () => {
-  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const animationRef = React.useRef<number>();
-
-  React.useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const gl = canvas.getContext('webgl');
-    if (!gl) return;
-
-    const vertexShaderSource = `
-      attribute vec2 a_position;
-      void main() {
-        gl_Position = vec4(a_position, 0.0, 1.0);
-      }
-    `;
-
-    const fragmentShaderSource = `
-      precision mediump float;
-      uniform vec2 u_resolution;
-      uniform float u_time;
-
-      float hash(vec2 p) {
-        p = vec2(dot(p, vec2(127.1, 311.7)),
-                 dot(p, vec2(269.5, 183.3)));
-        return -1.0 + 2.0 * fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453123);
-      }
-
-      float snowfall(vec2 uv, float scale) {
-        float t = u_time * 0.2 + scale * 40.0;
-        vec2 gv = fract(uv * scale) - 0.5;
-        vec2 id = floor(uv * scale);
-        float n = hash(id);
-        float glow = smoothstep(0.0, 0.4, 0.5 - length(gv - vec2(n * 0.1, fract(t))));
-        return glow;
-      }
-
-      void main() {
-        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-        vec2 centred = uv * vec2(u_resolution.x / u_resolution.y, 1.0);
-
-        float c = 0.0;
-        c += snowfall(centred + 0.02 * u_time, 6.0) * 0.2;
-        c += snowfall(centred + vec2(0.3, 0.1) + 0.04 * u_time, 12.0) * 0.4;
-        c += snowfall(centred - vec2(0.1, 0.3) + 0.08 * u_time, 24.0) * 0.8;
-
-        vec3 color = vec3(0.8, 0.9, 1.0) * c;
-        gl_FragColor = vec4(color, c);
-      }
-    `;
-
-    const compileShader = (type: number, source: string) => {
-      const shader = gl.createShader(type);
-      if (!shader) {
-        throw new Error('Unable to create shader');
-      }
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        const info = gl.getShaderInfoLog(shader);
-        gl.deleteShader(shader);
-        throw new Error(`Could not compile shader: ${info}`);
-      }
-      return shader;
-    };
-
-    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
-
-    const program = gl.createProgram();
-    if (!program) return;
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      const info = gl.getProgramInfoLog(program);
-      gl.deleteProgram(program);
-      throw new Error(`Could not link program: ${info}`);
-    }
-
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
-      gl.STATIC_DRAW
-    );
-
-    const positionLocation = gl.getAttribLocation(program, 'a_position');
-    const resolutionUniform = gl.getUniformLocation(program, 'u_resolution');
-    const timeUniform = gl.getUniformLocation(program, 'u_time');
-
-    const resize = () => {
-      const { innerWidth, innerHeight } = window;
-      canvas.width = innerWidth;
-      canvas.height = innerHeight;
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-
-    const render = (time: number) => {
-      gl.useProgram(program);
-      gl.enableVertexAttribArray(positionLocation);
-      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-      gl.uniform2f(resolutionUniform, canvas.width, canvas.height);
-      gl.uniform1f(timeUniform, time * 0.001);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      animationRef.current = requestAnimationFrame(render);
-    };
-
-    animationRef.current = requestAnimationFrame(render);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      gl.deleteShader(vertexShader);
-      gl.deleteShader(fragmentShader);
-      gl.deleteProgram(program);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 opacity-60" style={{ filter: 'blur(0.5px)' }} />;
-};
-
-const GarlandLayer: React.FC = () => {
-  const strands = React.useMemo(
-    () =>
-      Array.from({ length: 3 }, (_, index) => ({
-        id: index,
-        y: 10 + index * 20,
-        colors: ['#fbbf24', '#f472b6', '#34d399', '#60a5fa']
-      })),
-    []
-  );
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {strands.map((strand) => (
-        <motion.div
-          key={strand.id}
-          className="absolute flex w-full justify-between px-6"
-          style={{ top: `${strand.y}%` }}
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 6 + strand.id * 2, repeat: Infinity }}
-        >
-          {strand.colors.map((color, idx) => (
-            <motion.span
-              key={`${strand.id}-${idx}`}
-              className="size-3 rounded-full shadow-lg"
-              style={{ backgroundColor: color }}
-              animate={{ opacity: [0.4, 1, 0.4], scale: [0.8, 1.1, 0.8] }}
-              transition={{ duration: 2 + idx * 0.4, repeat: Infinity }}
-            />
-          ))}
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-const CandyLayer: React.FC = () => {
-  const candies = React.useMemo(
-    () =>
-      Array.from({ length: 12 }, (_, idx) => ({
-        id: idx,
-        left: Math.random() * 100,
-        top: Math.random() * 80,
-        rotation: Math.random() * 360
-      })),
-    []
-  );
-
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {candies.map((candy) => (
-        <motion.span
-          key={candy.id}
-          className="absolute text-white/80 drop-shadow-xl"
-          style={{ left: `${candy.left}%`, top: `${candy.top}%` }}
-          initial={{ rotate: candy.rotation, opacity: 0 }}
-          animate={{ rotate: candy.rotation + 20, opacity: [0, 0.5, 0] }}
-          transition={{ duration: 14, delay: candy.id * 0.4, repeat: Infinity }}
-        >
-          🍬
-        </motion.span>
       ))}
     </div>
   );
@@ -391,35 +193,39 @@ const WonderlandLayout: React.FC<WonderlandLayoutProps> = ({
 
   return (
     <div className={cn('wonderland-layout relative min-h-screen w-full overflow-hidden', className)}>
+      {/* Gradient Background */}
       <div className={cn('absolute inset-0 bg-gradient-to-br', gradientMap[mood])} />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_45%)]" />
-      <SnowShaderCanvas />
-      <GarlandLayer />
-      <CandyLayer />
 
+      {/* Soft Radial Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_45%)]" />
+
+      {/* Soft Glows - Reduced from 3 to 2 */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {glows.map((glow, index) => (
           <motion.div
             key={index}
             className={cn('absolute rounded-full blur-3xl', glow.color, glow.size)}
-            style={{ top: `${10 + index * 25}%`, left: index % 2 === 0 ? '10%' : '60%' }}
-            animate={{ scale: [0.8, 1.05, 0.95], opacity: [0.4, 0.8, 0.5] }}
-            transition={{ duration: 10 + index * 3, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ top: `${15 + index * 30}%`, left: index % 2 === 0 ? '15%' : '65%' }}
+            animate={{ scale: [0.9, 1.05, 0.95], opacity: [0.3, 0.6, 0.4] }}
+            transition={{ duration: 12 + index * 3, repeat: Infinity, ease: 'easeInOut' }}
           />
         ))}
       </div>
 
-      {showSnow && <SnowLayer />}
-      {showButterflies && <ButterflyLayer />}
-      {showHearts && <LoveLayer />}
+      {/* Refined Animations - No heavy shader */}
+      {showSnow && <SnowLayer count={20} />}
+      {showButterflies && <ButterflyLayer count={3} />}
+      {showHearts && <LoveLayer count={6} />}
 
+      {/* Soft Bottom Gradient */}
       <motion.div
-        className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/10 via-white/5 to-transparent"
+        className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/8 via-white/4 to-transparent"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
       />
 
+      {/* Content */}
       <div className="relative z-10 flex min-h-screen flex-col gap-6 px-4 py-10 text-white sm:px-6 lg:px-12">
         {(title || subtitle || actions || showDarkToggle) && (
           <div className="flex flex-col gap-4 rounded-3xl border border-white/20 bg-white/10 p-6 backdrop-blur-lg lg:flex-row lg:items-center lg:justify-between">

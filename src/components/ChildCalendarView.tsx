@@ -4,7 +4,6 @@ import TemplateErrorBoundary from './TemplateErrorBoundary';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
 import { useEmotionalResponse } from '../lib/EmotionalBackground';
-import { useWinterTheme } from '../contexts/WinterThemeContext';
 import { useWinterEffects } from '../contexts/WinterEffectsContext';
 import { Gift, CalendarTile, GiftType, TemplateMetadata } from '../types/calendar';
 import { applyTemplateStyling } from '../lib/templateStyling';
@@ -19,7 +18,6 @@ interface ChildCalendarViewProps {
 
 const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false }) => {
   const { userType, isAuthenticated, child } = useAuth();
-  const { variant } = useWinterTheme();
   const { triggerJoy, triggerCelebration, triggerAnticipation } = useEmotionalResponse();
   const { triggerCelebration: triggerWinterEffectsCelebration } = useWinterEffects();
   const [showCelebration, setShowCelebration] = React.useState(false);
@@ -135,72 +133,52 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
     childData ||
     localStorage.getItem('guest_session') !== null;
 
-  const layoutMood = variant === 'masculine' ? 'frost' : variant === 'neutral' ? 'aurora' : 'ember';
-
   if (!hasAccess) {
     return (
-      <WonderlandLayout
-        title="Only For Little Explorers"
-        subtitle="Ask a grown-up for help or jump back to the welcome page."
-        mood={layoutMood}
-        showSnow
-        showButterflies
-        contentClassName="flex items-center justify-center"
-      >
-        <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
-          <p className="text-lg text-white/90">This page is only accessible to children.</p>
+      <div className="min-h-screen bg-gradient-to-br from-magic-primary/20 via-magic-secondary/20 to-magic-accent/20 flex items-center justify-center p-6">
+        <div className="max-w-lg rounded-3xl border border-bg-muted bg-white p-8 text-center shadow-lg">
+          <p className="text-lg text-text-primary">This page is only accessible to children.</p>
           <Button
             fullWidth
-            variant="frosted"
+            variant="primary"
             size="lg"
             onClick={() => (window.location.href = '/auth')}
+            className="mt-4"
           >
             Return to Login
           </Button>
         </div>
-      </WonderlandLayout>
+      </div>
     );
   }
 
   if (loading) {
     return (
-      <WonderlandLayout
-        title="Preparing Your Calendar"
-        subtitle="Gathering butterflies, snowflakes, and tiny gifts..."
-        mood={layoutMood}
-        showSnow
-        contentClassName="flex items-center justify-center"
-      >
-        <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/20 bg-white/10 px-10 py-8 text-white shadow-2xl backdrop-blur-xl">
-          <div className="h-12 w-12 animate-spin rounded-full border-2 border-white border-t-transparent" />
-          <p className="text-white/90">Loading your calendar...</p>
+      <div className="min-h-screen bg-gradient-to-br from-magic-primary/20 via-magic-secondary/20 to-magic-accent/20 flex items-center justify-center p-6">
+        <div className="flex flex-col items-center gap-4 rounded-3xl border border-bg-muted bg-white px-10 py-8 shadow-lg">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-bg-muted border-t-primary-rose" />
+          <p className="text-text-secondary">Loading your calendar...</p>
         </div>
-      </WonderlandLayout>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <WonderlandLayout
-        title="Something Sparkly Went Wrong"
-        subtitle="A snow sprite got tangled. Please try again."
-        mood="ember"
-        showSnow
-        showButterflies={false}
-        contentClassName="flex items-center justify-center"
-      >
-        <div className="max-w-lg rounded-3xl border border-white/20 bg-white/10 p-8 text-center text-white shadow-2xl backdrop-blur-xl">
-          <p className="text-lg text-white/90">{error}</p>
+      <div className="min-h-screen bg-gradient-to-br from-magic-primary/20 via-magic-secondary/20 to-magic-accent/20 flex items-center justify-center p-6">
+        <div className="max-w-lg rounded-3xl border border-bg-muted bg-white p-8 text-center shadow-lg">
+          <p className="text-lg text-text-primary">{error}</p>
           <Button
             fullWidth
-            variant="frosted"
+            variant="primary"
             size="lg"
             onClick={() => window.location.reload()}
+            className="mt-4"
           >
             Try Again
           </Button>
         </div>
-      </WonderlandLayout>
+      </div>
     );
   }
 
@@ -344,7 +322,7 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
       <WonderlandLayout
         title={childData?.name ? `${childData.name}'s Enchanted Calendar` : 'Welcome, Little Explorer'}
         subtitle="Unlock a new memory filled with love, snow, and sparkle each day."
-        mood={layoutMood}
+        mood="aurora"
         showSnow
         showButterflies
         contentClassName="mx-auto flex w-full max-w-5xl flex-col gap-8"

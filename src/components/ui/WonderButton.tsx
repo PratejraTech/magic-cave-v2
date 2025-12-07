@@ -1,8 +1,9 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger' | 'frosted';
-type ButtonSize = 'sm' | 'md' | 'lg' | 'pill';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'soft' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -14,25 +15,35 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
+  // Primary: Gradient fill with warm colors (OpenAI/Anthropic style)
   primary:
-    'bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 text-white shadow-[0_20px_40px_rgba(16,185,129,0.35)] hover:shadow-[0_25px_55px_rgba(16,185,129,0.45)]',
+    'bg-gradient-to-r from-primary-peach via-primary-rose to-primary-purple text-white shadow-gradient hover:shadow-xl font-semibold',
+
+  // Secondary: Outline with gradient on hover
   secondary:
-    'bg-white/10 text-white border border-white/30 shadow-[0_10px_40px_rgba(255,255,255,0.12)] hover:bg-white/20',
+    'border-2 border-primary-rose text-primary-rose bg-transparent hover:bg-primary-rose hover:text-white shadow-sm',
+
+  // Ghost: Transparent with subtle hover
   ghost:
-    'bg-transparent text-white hover:bg-white/10 border border-transparent',
+    'bg-transparent text-text-primary hover:bg-bg-subtle',
+
+  // Outline: Neutral outlined button
   outline:
-    'border border-slate-300 text-slate-800 bg-white hover:bg-slate-50 dark:border-white/30 dark:text-white dark:bg-transparent dark:hover:bg-white/10',
+    'border border-bg-muted text-text-primary bg-white hover:bg-bg-soft shadow-sm',
+
+  // Soft: Light background with subtle gradient accent
+  soft:
+    'bg-gradient-to-br from-accent-peach/20 to-accent-lavender/20 text-text-primary hover:from-accent-peach/30 hover:to-accent-lavender/30 shadow-sm',
+
+  // Danger: Error state with gradient
   danger:
-    'bg-gradient-to-r from-rose-500 to-red-600 text-white shadow-[0_20px_40px_rgba(244,63,94,0.35)] hover:shadow-[0_25px_55px_rgba(244,63,94,0.45)]',
-  frosted:
-    'bg-white/15 text-white border border-white/30 backdrop-blur-xl hover:bg-white/25'
+    'bg-gradient-to-r from-error to-error text-white shadow-error hover:shadow-lg'
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'text-xs h-9 px-4',
-  md: 'text-sm h-11 px-5',
-  lg: 'text-base h-12 px-6',
-  pill: 'text-sm h-12 px-8 rounded-full'
+  sm: 'text-sm h-9 px-4 gap-2',
+  md: 'text-base h-11 px-6 gap-3',
+  lg: 'text-lg h-12 px-8 gap-3'
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -50,31 +61,79 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ...rest
     },
     ref
-  ) => (
-    <button
-      ref={ref}
-      className={cn(
-        'relative inline-flex items-center justify-center rounded-2xl font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus-visible:ring-white/70 disabled:opacity-60 disabled:cursor-not-allowed',
-        variantClasses[variant],
-        sizeClasses[size],
-        fullWidth && 'w-full',
-        loading && 'pointer-events-none',
-        className
-      )}
-      disabled={disabled || loading}
-      {...rest}
-    >
-      {loading && (
-        <span className="absolute inset-y-0 left-4 flex items-center">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        </span>
-      )}
-      {!loading && leftIcon && <span className="mr-2 flex items-center">{leftIcon}</span>}
-      <span>{children}</span>
-      {!loading && rightIcon && <span className="ml-2 flex items-center">{rightIcon}</span>}
-    </button>
-  )
+  ) => {
+    return (
+      <motion.button
+        ref={ref}
+        type={rest.type || 'button'}
+        whileHover={disabled || loading ? {} : { scale: 1.02, y: -2 }}
+        whileTap={disabled || loading ? {} : { scale: 0.98, y: 0 }}
+        transition={{
+          duration: 0.2,
+          ease: [0.4, 0, 0.2, 1] // --ease-smooth
+        }}
+        className={cn(
+          'relative inline-flex items-center justify-center rounded-lg font-medium transition-all',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+          'focus-visible:ring-primary-rose disabled:opacity-50 disabled:cursor-not-allowed',
+          variantClasses[variant],
+          sizeClasses[size],
+          fullWidth && 'w-full',
+          loading && 'pointer-events-none',
+          className
+        )}
+        disabled={disabled || loading}
+        {...rest}
+      >
+        {/* Loading Spinner */}
+        {loading && (
+          <span className="absolute inset-y-0 left-4 flex items-center">
+            <svg
+              className="h-4 w-4 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+          </span>
+        )}
+
+        {/* Left Icon */}
+        {!loading && leftIcon && (
+          <span className="flex items-center">
+            {leftIcon}
+          </span>
+        )}
+
+        {/* Button Content */}
+        <span className={loading ? 'opacity-0' : ''}>{children}</span>
+
+        {/* Right Icon */}
+        {!loading && rightIcon && (
+          <span className="flex items-center">
+            {rightIcon}
+          </span>
+        )}
+      </motion.button>
+    );
+  }
 );
 
-Button.displayName = 'Button';
+Button.displayName = 'WonderButton';
 
+// Export as WonderButton for backward compatibility
+export const WonderButton = Button;
+export default Button;

@@ -1,0 +1,352 @@
+/**
+ * Design System
+ * Modern AI Tech Company Aesthetic (OpenAI/Anthropic Style)
+ * Soft gradients, warm colors, approachable, professional
+ */
+
+:root {
+  /* ========================================
+     COLOR PALETTE - Parent UI (Professional)
+     ======================================== */
+
+  /* Primary Colors - Warm Gradients */
+  --color-primary-peach: #FF9A76;
+  --color-primary-rose: #FF6B9D;
+  --color-primary-purple: #C250E8;
+  --color-secondary-blue: #4FB5FF;
+  --color-secondary-indigo: #8B5CF6;
+  --color-secondary-pink: #EC4899;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FF9A76 0%, #FF6B9D 50%, #C250E8 100%);
+  --gradient-secondary: linear-gradient(135deg, #4FB5FF 0%, #8B5CF6 50%, #EC4899 100%);
+  --gradient-neutral: linear-gradient(135deg, #F0F9FF 0%, #E0E7FF 100%);
+  --gradient-soft-peach: linear-gradient(135deg, #FFF5F0 0%, #FFE4F0 100%);
+
+  /* Neutrals - Light Theme */
+  --color-bg-light: #FFFFFF;
+  --color-bg-soft: #F8FAFC;
+  --color-bg-subtle: #F1F5F9;
+  --color-bg-muted: #E2E8F0;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+
+  /* Pastel Accents */
+  --color-accent-mint: #A7F3D0;
+  --color-accent-lavender: #DDD6FE;
+  --color-accent-peach: #FED7AA;
+  --color-accent-sky: #BAE6FD;
+  --color-accent-rose: #FBCFE8;
+
+  /* Semantic Colors */
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-error: #EF4444;
+  --color-error-light: #FEE2E2;
+  --color-info: #3B82F6;
+  --color-info-light: #DBEAFE;
+
+  /* ========================================
+     COLOR PALETTE - Child UI (Refined Whimsy)
+     ======================================== */
+
+  /* Soft Magical Colors */
+  --color-magic-primary: #FDB4D8;
+  --color-magic-secondary: #B4E4FF;
+  --color-magic-accent: #FFE4B5;
+  --color-magic-success: #98E4C8;
+  --color-magic-purple: #E9D5FF;
+
+  /* Magical Gradients */
+  --gradient-magic: linear-gradient(135deg, #FDB4D8 0%, #B4E4FF 50%, #FFE4B5 100%);
+  --gradient-magical-glow: linear-gradient(135deg, rgba(253,180,216,0.3) 0%, rgba(180,228,255,0.3) 100%);
+  --gradient-magical-soft: linear-gradient(135deg, #FFF0F8 0%, #F0F9FF 50%, #FFFBF0 100%);
+
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+
+  /* Font Families */
+  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+  /* Parent UI Type Scale */
+  --type-display-xl: clamp(56px, 6vw, 72px);
+  --type-display-l: clamp(40px, 4.5vw, 56px);
+  --type-h1: clamp(32px, 3.5vw, 40px);
+  --type-h2: clamp(24px, 2.5vw, 32px);
+  --type-h3: clamp(20px, 2vw, 24px);
+  --type-h4: 20px;
+  --type-body-lg: 18px;
+  --type-body: 16px;
+  --type-body-sm: 14px;
+  --type-caption: 12px;
+
+  /* Child UI Type Scale (Slightly Larger) */
+  --type-child-display: clamp(48px, 5vw, 64px);
+  --type-child-h1: clamp(36px, 4vw, 48px);
+  --type-child-h2: clamp(28px, 3vw, 36px);
+  --type-child-body: 18px;
+
+  /* Font Weights */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Line Heights */
+  --leading-tight: 1.2;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+
+  /* ========================================
+     SPACING & SIZING (8pt Grid)
+     ======================================== */
+
+  --space-1: 4px;    /* 0.5 unit */
+  --space-2: 8px;    /* 1 unit */
+  --space-3: 12px;   /* 1.5 units */
+  --space-4: 16px;   /* 2 units */
+  --space-5: 20px;   /* 2.5 units */
+  --space-6: 24px;   /* 3 units */
+  --space-8: 32px;   /* 4 units */
+  --space-10: 40px;  /* 5 units */
+  --space-12: 48px;  /* 6 units */
+  --space-16: 64px;  /* 8 units */
+  --space-20: 80px;  /* 10 units */
+  --space-24: 96px;  /* 12 units */
+  --space-32: 128px; /* 16 units */
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-full: 9999px;
+
+  /* ========================================
+     SHADOWS & DEPTH (OpenAI/Anthropic Style)
+     ======================================== */
+
+  /* Soft Shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 2px 4px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 8px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 8px 16px rgba(15, 23, 42, 0.1), 0 4px 8px rgba(15, 23, 42, 0.08);
+  --shadow-xl: 0 16px 32px rgba(15, 23, 42, 0.12), 0 8px 16px rgba(15, 23, 42, 0.1);
+  --shadow-2xl: 0 24px 48px rgba(15, 23, 42, 0.16), 0 12px 24px rgba(15, 23, 42, 0.12);
+
+  /* Gradient Shadows (For Hero Elements) */
+  --shadow-gradient: 0 8px 32px rgba(255, 107, 157, 0.2), 0 4px 16px rgba(139, 92, 246, 0.15);
+  --shadow-magical: 0 8px 32px rgba(253, 180, 216, 0.3), 0 4px 16px rgba(180, 228, 255, 0.2);
+
+  /* Colored Shadows */
+  --shadow-primary: 0 4px 16px rgba(255, 154, 118, 0.3);
+  --shadow-secondary: 0 4px 16px rgba(79, 181, 255, 0.3);
+  --shadow-success: 0 4px 16px rgba(16, 185, 129, 0.3);
+  --shadow-error: 0 4px 16px rgba(239, 68, 68, 0.3);
+
+  /* ========================================
+     ANIMATION & MOTION
+     ======================================== */
+
+  /* Timing Functions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+  /* Durations */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 800ms;
+
+  /* ========================================
+     Z-INDEX LAYERS
+     ======================================== */
+
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-popover: 50;
+  --z-toast: 60;
+  --z-tooltip: 70;
+
+  /* ========================================
+     COMPONENT-SPECIFIC TOKENS
+     ======================================== */
+
+  /* Buttons */
+  --button-padding-sm: var(--space-2) var(--space-4);
+  --button-padding-md: var(--space-3) var(--space-6);
+  --button-padding-lg: var(--space-4) var(--space-8);
+  --button-radius: var(--radius-lg);
+
+  /* Inputs */
+  --input-padding: var(--space-3) var(--space-4);
+  --input-radius: var(--radius-md);
+  --input-border: 1px solid var(--color-bg-muted);
+  --input-focus-ring: 0 0 0 4px rgba(255, 154, 118, 0.1);
+
+  /* Cards */
+  --card-padding: var(--space-6);
+  --card-radius: var(--radius-xl);
+  --card-border: 1px solid var(--color-bg-muted);
+
+  /* Modals */
+  --modal-max-width: 640px;
+  --modal-padding: var(--space-8);
+  --modal-radius: var(--radius-2xl);
+  --modal-backdrop: rgba(15, 23, 42, 0.4);
+
+  /* Sidebar */
+  --sidebar-width: 240px;
+  --sidebar-padding: var(--space-4);
+  --sidebar-item-height: 40px;
+
+  /* ========================================
+     BREAKPOINTS (for reference in JS)
+     ======================================== */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Gradient Text */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-secondary {
+  background: var(--gradient-secondary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-magic {
+  background: var(--gradient-magic);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Gradient Borders */
+.gradient-border {
+  position: relative;
+  background: var(--color-bg-light);
+  border-radius: var(--radius-lg);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  padding: 2px;
+  background: var(--gradient-primary);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.transition-fast {
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+/* Focus Styles */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: var(--input-focus-ring);
+}
+
+.focus-ring-secondary:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(79, 181, 255, 0.1);
+}
+
+/* Backdrop Blur */
+.backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Skeleton Loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-soft) 0%,
+    var(--color-bg-subtle) 50%,
+    var(--color-bg-soft) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* Reduce Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+}

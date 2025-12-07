@@ -4,6 +4,9 @@ import { TemplatePreview } from './TemplatePreview';
 import { TEMPLATE_LIBRARY, TemplateDefinition } from '../data/templates';
 import { cn } from '../lib/utils';
 
+// Simple dark mode detection (can be enhanced with context if needed)
+const isDarkMode = false;
+
 interface TemplateSelectorProps {
   selectedTemplate: string | null;
   onSelectTemplate: (templateId: string) => void;

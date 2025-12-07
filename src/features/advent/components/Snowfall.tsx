@@ -26,15 +26,20 @@ export function Snowfall() {
     const createSnowflakes = () => {
       const { width, height } = getViewport();
       const flakes: Snowflake[] = [];
-      for (let i = 0; i < 50; i++) {
+      // Reduced from 50 to 30 particles
+      for (let i = 0; i < 30; i++) {
         flakes.push({
           id: i,
           x: Math.random() * width,
           y: Math.random() * height,
-          size: Math.random() * 4 + 2,
-          speed: Math.random() * 2 + 1,
-          opacity: Math.random() * 0.8 + 0.2,
-          duration: Math.random() * 5 + 5,
+          // Smaller size: 1-3px instead of 2-6px
+          size: Math.random() * 2 + 1,
+          // Slower speed
+          speed: Math.random() * 1 + 0.5,
+          // Much lower opacity: 0.08-0.15 instead of 0.2-1.0
+          opacity: Math.random() * 0.07 + 0.08,
+          // Longer duration for slower movement
+          duration: Math.random() * 8 + 16,
         });
       }
       setSnowflakes(flakes);
@@ -48,7 +53,8 @@ export function Snowfall() {
         return prev.map((flake) => ({
           ...flake,
           y: flake.y + flake.speed,
-          x: flake.x + Math.sin(flake.y * 0.01) * 0.5,
+          // Gentler horizontal drift
+          x: flake.x + Math.sin(flake.y * 0.005) * 0.3,
           ...(flake.y > height && {
             y: -10,
             x: Math.random() * width,
@@ -57,14 +63,15 @@ export function Snowfall() {
       });
     };
 
-    const interval = setInterval(animate, 50);
+    // Slower animation updates: 50ms -> 100ms
+    const interval = setInterval(animate, 100);
     return () => clearInterval(interval);
   }, []);
 
   const viewport = getViewport();
 
   return (
-    <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
       {snowflakes.map((flake) => (
         <motion.div
           key={flake.id}
@@ -75,11 +82,13 @@ export function Snowfall() {
             width: flake.size,
             height: flake.size,
             opacity: flake.opacity,
-            boxShadow: `0 0 ${flake.size}px rgba(255,255,255,0.8)`,
+            // Softer glow: reduced blur
+            boxShadow: `0 0 ${flake.size * 0.5}px rgba(255,255,255,0.3)`,
           }}
           animate={{
             y: viewport.height + 20,
-            rotate: 360,
+            // Slower rotation
+            rotate: 180,
           }}
           transition={{
             duration: flake.duration,
