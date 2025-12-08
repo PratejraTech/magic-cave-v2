@@ -197,7 +197,6 @@ const Scene = {
       {harperShapes.map((shape, idx) =>
         shape.type === 'orb' ? (
           <div
-            // eslint-disable-next-line react/no-array-index-key
             key={`orb-${idx}`}
             className="absolute rounded-full blur-3xl"
             style={{
@@ -211,7 +210,6 @@ const Scene = {
           />
         ) : (
           <div
-            // eslint-disable-next-line react/no-array-index-key
             key={`ring-${idx}`}
             className="absolute rounded-full opacity-70"
             style={{
@@ -240,7 +238,6 @@ const Scene = {
               <div className="absolute inset-x-4 bottom-6 flex flex-wrap justify-between gap-2">
                 {Array.from({ length: home.windows }).map((_, idx) => (
                   <span
-                    // eslint-disable-next-line react/no-array-index-key
                     key={idx}
                     className="h-4 w-6 rounded-sm"
                     style={{
@@ -315,7 +312,6 @@ const Butterflies = () => {
     <div className="pointer-events-none fixed inset-0" style={{ zIndex: 'var(--layer-butterflies)' }} aria-hidden>
       {butterflies.map((butterfly, idx) => (
         <Decor.Butterfly
-          // eslint-disable-next-line react/no-array-index-key
           key={idx}
           variant={butterfly.variant}
           delay={butterfly.delay}

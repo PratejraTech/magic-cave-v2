@@ -52,7 +52,7 @@ export interface Child {
   name: string;
   birthdate: string;
   gender: 'male' | 'female' | 'other' | 'unspecified';
-  interests: Record<string, any>;
+  interests: Record<string, boolean>;
   selected_template?: string;
   created_at: string;
   updated_at: string;
@@ -100,7 +100,7 @@ export interface Calendar {
   year: number;
   version: number;
   last_tile_opened: number;
-  settings: Record<string, any>;
+  settings: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }

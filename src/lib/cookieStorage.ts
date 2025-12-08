@@ -6,7 +6,7 @@
 
 // Get app version from package.json (injected at build time via Vite)
 // Falls back to '1.0.0' if not available (should not happen in production)
-const APP_VERSION = ((import.meta.env as any).VITE_APP_VERSION as string) || '1.0.0';
+const APP_VERSION = ((import.meta.env as Record<string, unknown>).VITE_APP_VERSION as string) || '1.0.0';
 
 const COOKIE_PREFIX = 'harper-advent-';
 const SESSION_COOKIE = `${COOKIE_PREFIX}session`;
@@ -103,7 +103,7 @@ function setVersionedCookie<T>(name: string, data: T, days: number): void {
 /**
  * Get versioned cookie data with migration support
  */
-function getVersionedCookie<T>(name: string, defaultValue: T, migrate?: (oldData: any) => T): T {
+function getVersionedCookie<T>(name: string, defaultValue: T, migrate?: (oldData: unknown) => T): T {
   try {
     const json = getCookie(name);
     if (!json) {

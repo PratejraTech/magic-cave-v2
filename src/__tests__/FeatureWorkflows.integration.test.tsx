@@ -306,7 +306,7 @@ describe('Feature Workflows - Tile Editor', () => {
 
 describe('Feature Workflows - End-to-End Parent Flow', () => {
   it('should complete parent workflow: login → marketplace → apply template → edit tiles', async () => {
-    const { rerender } = render(<ParentDashboard testMode />);
+    render(<ParentDashboard testMode />);
 
     // Step 1: Start at overview
     expect(screen.getByText(/Calendar Overview/i)).toBeInTheDocument();

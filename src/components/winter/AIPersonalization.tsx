@@ -49,7 +49,7 @@ export interface AdaptiveEffect {
   trigger: string;
   intensity: number;
   position?: { x: number; y: number };
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 const AIPersonalization: React.FC<AIPersonalizationProps> = ({
@@ -297,12 +297,17 @@ const AIPersonalization: React.FC<AIPersonalizationProps> = ({
   // Expose handlers for external use
   useEffect(() => {
     // Attach to window for external access (gesture and voice components will call these)
-    (window as any).aiPersonalizationGestureHandler = handleGesture;
-    (window as any).aiPersonalizationVoiceHandler = handleVoiceCommand;
+    interface WindowWithHandlers extends Window {
+      aiPersonalizationGestureHandler?: typeof handleGesture;
+      aiPersonalizationVoiceHandler?: typeof handleVoiceCommand;
+    }
+    const w = window as WindowWithHandlers;
+    w.aiPersonalizationGestureHandler = handleGesture;
+    w.aiPersonalizationVoiceHandler = handleVoiceCommand;
 
     return () => {
-      delete (window as any).aiPersonalizationGestureHandler;
-      delete (window as any).aiPersonalizationVoiceHandler;
+      delete w.aiPersonalizationGestureHandler;
+      delete w.aiPersonalizationVoiceHandler;
     };
   }, [handleGesture, handleVoiceCommand]);
 

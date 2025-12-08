@@ -220,12 +220,12 @@ export class CronScheduler implements NotificationScheduler {
 
 // Notification delivery interfaces
 export interface NotificationDeliveryService {
-  sendPushNotification(userId: string, title: string, body: string, data?: any): Promise<boolean>;
+  sendPushNotification(userId: string, title: string, body: string, data?: Record<string, unknown>): Promise<boolean>;
   sendEmail(email: string, subject: string, htmlBody: string): Promise<boolean>;
 }
 
 export class FirebaseNotificationService implements NotificationDeliveryService {
-  async sendPushNotification(userId: string, title: string, body: string, data?: any): Promise<boolean> {
+  async sendPushNotification(userId: string, title: string, body: string, data?: Record<string, unknown>): Promise<boolean> {
     try {
       // Get user's FCM token from database
       const { data: tokenData, error } = await supabase
@@ -449,8 +449,10 @@ export class NotificationService {
           }
 
           const parentId = calendar.parent_uuid;
-          const parentEmail = (calendar.parents as any)?.email;
-          const childName = (calendar.children as any)?.name;
+          const parents = calendar.parents as Record<string, unknown> | undefined;
+          const children = calendar.children as Record<string, unknown> | undefined;
+          const parentEmail = parents?.email as string | undefined;
+          const childName = children?.name as string | undefined;
 
           // Send the notification
           await this.sendTileAvailableNotification(

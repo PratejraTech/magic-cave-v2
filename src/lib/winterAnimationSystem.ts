@@ -36,8 +36,9 @@ export class WinterAnimationSystem {
 
   constructor() {
     // Listen for performance adjustments
-    window.addEventListener('winter-performance-adjustment', (event: any) => {
-      this.handlePerformanceAdjustment(event.detail.newTier);
+    window.addEventListener('winter-performance-adjustment', (event: Event) => {
+      const customEvent = event as CustomEvent<{ newTier: string }>;
+      this.handlePerformanceAdjustment(customEvent.detail.newTier);
     });
 
     // Start performance monitoring

@@ -18,6 +18,7 @@ function getSessionId(): string | null {
   // Use getStoredSessionId from cookieStorage
   try {
     // Import at runtime to avoid circular dependency issues
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const cookieStorage = require('./cookieStorage');
     return cookieStorage.getStoredSessionId();
   } catch (error) {
@@ -31,7 +32,7 @@ function getSessionId(): string | null {
  * @param eventType - Type of event (e.g., 'tile_open', 'chat', 'video', 'surprise')
  * @param eventData - Additional event data (object)
  */
-export async function logSessionEvent(eventType: string, eventData: Record<string, any> = {}): Promise<void> {
+export async function logSessionEvent(eventType: string, eventData: Record<string, unknown> = {}): Promise<void> {
   const sessionId = getSessionId();
   
   if (!sessionId) {

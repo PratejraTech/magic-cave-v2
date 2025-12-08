@@ -5,7 +5,7 @@ interface HealthStatus {
   status: string;
   timestamp: string;
   version: string;
-  checks: Record<string, any>;
+  checks: Record<string, unknown>;
   response_time_ms?: number;
 }
 

@@ -13,15 +13,15 @@ function getEmbedUrl(url: string): string {
   // Handle different YouTube URL formats
   const patterns = [
     // Standard watch URLs: youtube.com/watch?v=VIDEO_ID
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^"&?/\s]{11})/,
     // Short URLs: youtu.be/VIDEO_ID
-    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^"&?\/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^"&?/\s]{11})/,
     // Shorts URLs: youtube.com/shorts/VIDEO_ID
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^"&?\/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^"&?/\s]{11})/,
     // Already embed URLs: youtube.com/embed/VIDEO_ID
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^"&?\/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^"&?/\s]{11})/,
     // Invalid shorts/embed format: youtube.com/shorts/embed/VIDEO_ID (extract ID and convert)
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/embed\/([^"&?\/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/embed\/([^"&?/\s]{11})/,
   ];
 
   for (const pattern of patterns) {

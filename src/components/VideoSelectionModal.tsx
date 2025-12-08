@@ -24,11 +24,11 @@ function getVideoId(url: string): string | null {
   
   // Handle different YouTube URL formats
   const patterns = [
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^"&?\/\s]{11})/,
-    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^"&?\/\s]{11})/,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^"&?\/\s]{11})/,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^"&?\/\s]{11})/,
-    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/embed\/([^"&?\/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^"&?/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^"&?/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([^"&?/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^"&?/\s]{11})/,
+    /(?:https?:\/\/)?(?:www\.)?youtube\.com\/shorts\/embed\/([^"&?/\s]{11})/,
   ];
   
   for (const pattern of patterns) {

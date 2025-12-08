@@ -10,7 +10,8 @@ export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
 
 const Toggle = React.forwardRef<HTMLInputElement, ToggleProps>(
   ({ className, label, description, id, checked, onChange, disabled, ...props }, ref) => {
-    const toggleId = id || `toggle-${React.useId()}`;
+    const generatedId = React.useId();
+    const toggleId = id || `toggle-${generatedId}`;
     const [isChecked, setIsChecked] = React.useState(checked || false);
 
     React.useEffect(() => {

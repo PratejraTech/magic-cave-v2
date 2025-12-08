@@ -14,13 +14,13 @@ export interface DataExport {
     last_login?: string;
   };
   profile: {
-    parent: any;
-    child: any;
+    parent: Record<string, unknown>;
+    child: Record<string, unknown>;
   };
-  calendars: any[];
-  tiles: any[];
-  analytics: any[];
-  security_events: any[];
+  calendars: Record<string, unknown>[];
+  tiles: Record<string, unknown>[];
+  analytics: Record<string, unknown>[];
+  security_events: Record<string, unknown>[];
   export_date: string;
   compliance_version: string;
 }
@@ -28,7 +28,7 @@ export interface DataExport {
 export interface ComplianceResult {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
   errors?: string[];
 }
 
@@ -85,7 +85,7 @@ export class GDPRCompliance {
         .eq('parent_uuid', userId);
 
       // Get calendar tiles
-      let tiles: any[] = [];
+      let tiles: Record<string, unknown>[] = [];
       if (calendars && calendars.length > 0) {
         const calendarIds = calendars.map(c => c.calendar_id);
         const { data: tilesData, error: tilesError } = await supabase

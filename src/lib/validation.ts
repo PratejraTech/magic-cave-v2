@@ -16,6 +16,7 @@ export class Sanitizer {
     return input
       .trim()
       // Remove null bytes and other control characters
+      // eslint-disable-next-line no-control-regex
       .replace(/[\x00-\x1F\x7F-\x9F]/g, '')
       // Remove potential script injection patterns
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
@@ -293,8 +294,8 @@ export class ValidationUtils {
       });
 
       return { success: true, value: validatedValue };
-    } catch (error: any) {
-      const errors = error.details?.map((detail: any) => detail.message) || ['Validation failed'];
+    } catch (error: unknown) {
+      const errors = (error as { details?: Array<{ message: string }> }).details?.map((detail: { message: string }) => detail.message) || ['Validation failed'];
       return { success: false, errors };
     }
   }
@@ -307,7 +308,7 @@ export class ValidationUtils {
     schema: Joi.ObjectSchema<T>
   ): Promise<{ success: true; value: T } | { success: false; errors: string[] }> {
     // Pre-sanitize common fields
-    const inputData = data as Record<string, any>;
+    const inputData = data as Record<string, unknown>;
     const sanitizedData = { ...inputData };
 
     if (sanitizedData.email) {

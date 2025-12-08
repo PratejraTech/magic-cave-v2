@@ -45,15 +45,15 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
     onApply(options);
   };
 
-  const updateOption = (path: string, value: any) => {
+  const updateOption = (path: string, value: unknown) => {
     setOptions(prev => {
       const newOptions = { ...prev };
       const keys = path.split('.');
-      let current: any = newOptions;
+      let current: Record<string, unknown> = newOptions as unknown as Record<string, unknown>;
 
       for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) current[keys[i]] = {};
-        current = current[keys[i]];
+        current = current[keys[i]] as Record<string, unknown>;
       }
 
       current[keys[keys.length - 1]] = value;
@@ -87,7 +87,7 @@ const CustomizationPanel: React.FC<CustomizationPanelProps> = ({
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'animations' | 'layout' | 'effects' | 'accessibility')}
               className={`px-4 py-2 font-medium text-sm flex items-center gap-2 ${
                 activeTab === tab.id
                   ? 'border-b-2 border-purple-500 text-purple-600'

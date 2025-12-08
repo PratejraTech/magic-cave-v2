@@ -76,7 +76,7 @@ export const BackgroundGradientAnimation: React.FC<BackgroundGradientAnimationPr
           {
             background: `radial-gradient(${size} circle at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(${pointerColor}, 0.8), transparent 50%)`,
             filter: `blur(80px)`,
-            mixBlendMode: blendingValue as any,
+            mixBlendMode: blendingValue as React.CSSProperties['mixBlendMode'],
           } as React.CSSProperties
         }
       />
@@ -91,7 +91,7 @@ export const BackgroundGradientAnimation: React.FC<BackgroundGradientAnimationPr
           {
             background: `conic-gradient(from 0deg at 50% 50%, rgba(${firstColor}, 0.6), rgba(${secondColor}, 0.6), rgba(${thirdColor}, 0.6), rgba(${firstColor}, 0.6))`,
             filter: `blur(100px)`,
-            mixBlendMode: 'screen' as any,
+            mixBlendMode: 'screen' as React.CSSProperties['mixBlendMode'],
           } as React.CSSProperties
         }
       />
@@ -148,7 +148,7 @@ export const BackgroundGradientAnimation: React.FC<BackgroundGradientAnimationPr
           {
             background: `radial-gradient(${size} circle at var(--mouse-x, 100px) var(--mouse-y, 100px), ${pointerColor}, transparent 40%)`,
             filter: `blur(60px)`,
-            mixBlendMode: blendingValue as any,
+            mixBlendMode: blendingValue as React.CSSProperties['mixBlendMode'],
           } as React.CSSProperties
         }
       />

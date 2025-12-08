@@ -4,7 +4,7 @@ import { preloadTemplateFonts, preloadGoogleFonts } from './fontLoader';
 /**
  * Validates template metadata structure and values
  */
-export function validateTemplateMetadata(metadata: any): metadata is TemplateMetadata {
+export function validateTemplateMetadata(metadata: unknown): metadata is TemplateMetadata {
   if (!metadata || typeof metadata !== 'object') {
     console.warn('Template metadata is not an object');
     return false;
@@ -74,7 +74,7 @@ export function validateTemplateMetadata(metadata: any): metadata is TemplateMet
 /**
  * Checks if a string is a valid CSS color
  */
-function isValidColor(color: any): boolean {
+function isValidColor(color: unknown): boolean {
   if (typeof color !== 'string') return false;
 
   // Check for hex colors

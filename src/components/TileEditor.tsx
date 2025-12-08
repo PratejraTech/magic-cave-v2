@@ -18,7 +18,7 @@ interface TileEditorProps {
   childName?: string;
   childAge?: number;
   parentType?: string;
-  childInterests?: Record<string, any>;
+  childInterests?: Record<string, boolean>;
 }
 
 const giftTypeOptions = [

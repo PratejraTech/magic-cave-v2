@@ -1,4 +1,4 @@
-// @ts-ignore - Supabase types will be available at runtime
+// @ts-expect-error - Supabase types will be available at runtime
 import { createClient } from '@supabase/supabase-js';
 
 // Storage configuration for media assets
@@ -162,7 +162,7 @@ export async function initializeStorageBucket(): Promise<void> {
   try {
     // Create bucket if it doesn't exist
     const { data: buckets } = await supabase.storage.listBuckets();
-    const bucketExists = buckets?.some((bucket: any) => bucket.name === STORAGE_CONFIG.BUCKET_NAME);
+    const bucketExists = buckets?.some((bucket: { name: string }) => bucket.name === STORAGE_CONFIG.BUCKET_NAME);
 
     if (!bucketExists) {
       const { error } = await supabase.storage.createBucket(STORAGE_CONFIG.BUCKET_NAME, {

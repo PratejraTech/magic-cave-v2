@@ -4,7 +4,7 @@ import { analytics } from '../lib/analytics';
 interface ChildLoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (child: any, calendar: any) => void;
+  onSuccess: (child: Record<string, unknown>, calendar: Record<string, unknown>) => void;
 }
 
 const ChildLoginModal: React.FC<ChildLoginModalProps> = ({ isOpen, onClose, onSuccess }) => {

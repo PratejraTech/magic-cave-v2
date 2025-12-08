@@ -34,7 +34,7 @@ export const useCalendarData = (): UseCalendarDataReturn => {
   const CACHE_KEY = 'calendar_tiles_cache';
   const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-  const API_BASE = (import.meta as any).env?.VITE_CHAT_API_URL || (import.meta as any).env?.CHAT_API_URL || ((import.meta as any).env?.PROD ? '' : 'https://toharper.dad');
+  const API_BASE = (import.meta as { env?: { VITE_CHAT_API_URL?: string; CHAT_API_URL?: string; PROD?: boolean } }).env?.VITE_CHAT_API_URL || (import.meta as { env?: { VITE_CHAT_API_URL?: string; CHAT_API_URL?: string; PROD?: boolean } }).env?.CHAT_API_URL || ((import.meta as { env?: { VITE_CHAT_API_URL?: string; CHAT_API_URL?: string; PROD?: boolean } }).env?.PROD ? '' : 'https://toharper.dad');
 
   const fetchTiles = useCallback(async () => {
     // Check if this is a guest session
@@ -146,7 +146,7 @@ export const useCalendarData = (): UseCalendarDataReturn => {
             const parsed = JSON.parse(cached);
             setTiles(parsed.tiles || []);
             setError('Using cached data - network unavailable');
-          } catch (e) {
+          } catch {
             throw new Error(`Failed to fetch tiles: ${response.statusText}`);
           }
         } else {
@@ -200,7 +200,7 @@ export const useCalendarData = (): UseCalendarDataReturn => {
           const parsed = JSON.parse(cached);
           setTiles(parsed.tiles || []);
           setError('Using cached data - network error');
-        } catch (cacheErr) {
+        } catch {
           setError(err instanceof Error ? err.message : 'Failed to fetch tiles');
         }
       } else {

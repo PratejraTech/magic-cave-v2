@@ -34,14 +34,14 @@ const ChildCalendar: React.FC<ChildCalendarProps> = ({
   const [note, setNote] = useState('');
   const [showNotePrompt, setShowNotePrompt] = useState(false);
   const tileCssOverrides = React.useMemo<React.CSSProperties>(() => {
-    const vars: React.CSSProperties = {};
+    const vars: Record<string, string> = {};
     if (animations?.tileHover) {
-      (vars as any)['--tile-hover-transform'] = animations.tileHover;
+      vars['--tile-hover-transform'] = animations.tileHover;
     }
     if (animations?.tileClick) {
-      (vars as any)['--tile-active-transform'] = animations.tileClick;
+      vars['--tile-active-transform'] = animations.tileClick;
     }
-    return vars;
+    return vars as React.CSSProperties;
   }, [animations]);
 
   // TODO: Phase 2 - Gesture navigation state (will be used when gesture handlers are connected)

@@ -3,7 +3,7 @@ import { contentLibrary, ContentItem } from '../lib/contentLibrary';
 
 interface ContentLibraryBrowserProps {
   childAge: number;
-  childInterests?: Record<string, any>;
+  childInterests?: Record<string, boolean>;
   onSelectContent: (content: string) => void;
   onClose: () => void;
 }
@@ -14,7 +14,7 @@ const ContentLibraryBrowser: React.FC<ContentLibraryBrowserProps> = ({
   onSelectContent,
   onClose
 }) => {
-  const [library, setLibrary] = useState<any>(null);
+  const [library, setLibrary] = useState<Record<string, unknown> | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string>('');
   const [availableThemes, setAvailableThemes] = useState<string[]>([]);
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);

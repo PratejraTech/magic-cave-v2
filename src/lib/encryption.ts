@@ -94,7 +94,7 @@ export class ChildDataEncryption {
   /**
    * Encrypt sensitive child data before storage
    */
-  static encryptChildData(childData: Record<string, any>): Record<string, any> {
+  static encryptChildData(childData: Record<string, unknown>): Record<string, unknown> {
     const encrypted = { ...childData };
 
     for (const field of this.SENSITIVE_FIELDS) {
@@ -115,7 +115,7 @@ export class ChildDataEncryption {
   /**
    * Decrypt sensitive child data after retrieval
    */
-  static decryptChildData(encryptedData: Record<string, any>): Record<string, any> {
+  static decryptChildData(encryptedData: Record<string, unknown>): Record<string, unknown> {
     const decrypted = { ...encryptedData };
 
     for (const field of this.SENSITIVE_FIELDS) {
@@ -137,7 +137,7 @@ export class ChildDataEncryption {
   /**
    * Check if child data contains encrypted fields
    */
-  static hasEncryptedFields(childData: Record<string, any>): boolean {
+  static hasEncryptedFields(childData: Record<string, unknown>): boolean {
     return this.SENSITIVE_FIELDS.some(field =>
       childData[`${field}_encrypted`] === true
     );
@@ -152,6 +152,7 @@ export class SecureAuditLogger {
    * Log security event with sensitive data masked/encrypted
    */
   static async logSecurityEvent(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     supabase: any,
     event: {
       userId?: string;
@@ -160,7 +161,7 @@ export class SecureAuditLogger {
       resourceId?: string;
       ipAddress?: string;
       userAgent?: string;
-      metadata?: Record<string, any>;
+      metadata?: Record<string, unknown>;
       success: boolean;
     }
   ): Promise<void> {
@@ -186,7 +187,7 @@ export class SecureAuditLogger {
   /**
    * Sanitize metadata to remove or mask sensitive information
    */
-  private static sanitizeMetadata(metadata: Record<string, any> = {}): Record<string, any> {
+  private static sanitizeMetadata(metadata: Record<string, unknown> = {}): Record<string, unknown> {
     const sanitized = { ...metadata };
 
     // Fields that should be masked

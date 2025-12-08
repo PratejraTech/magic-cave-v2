@@ -33,11 +33,15 @@ export class DeviceCapabilityDetector {
   async detectCapabilities(): Promise<DeviceCapabilities> {
     if (this.capabilities) return this.capabilities;
 
+    interface NavigatorWithMemory extends Navigator {
+      deviceMemory?: number;
+    }
+
     const capabilities: DeviceCapabilities = {
       gpuAcceleration: this.detectGPUAcceleration(),
       highRefreshRate: window.devicePixelRatio > 1,
       connectionSpeed: this.detectConnectionSpeed(),
-      memoryAvailable: (navigator as any).deviceMemory,
+      memoryAvailable: (navigator as NavigatorWithMemory).deviceMemory,
       screenSize: this.detectScreenSize(),
       touchEnabled: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
       prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -48,9 +52,12 @@ export class DeviceCapabilityDetector {
     // Detect battery level if available
     if ('getBattery' in navigator) {
       try {
-        const battery = await (navigator as any).getBattery();
+        interface NavigatorWithBattery extends Navigator {
+          getBattery: () => Promise<{ level: number }>;
+        }
+        const battery = await (navigator as NavigatorWithBattery).getBattery();
         capabilities.batteryLevel = battery.level;
-      } catch (error) {
+      } catch {
         // Battery API not available or failed
       }
     }
@@ -79,7 +86,12 @@ export class DeviceCapabilityDetector {
   }
 
   private detectConnectionSpeed(): 'slow' | 'fast' | 'unknown' {
-    const connection = (navigator as any).connection;
+    interface NavigatorWithConnection extends Navigator {
+      connection?: {
+        effectiveType?: string;
+      };
+    }
+    const connection = (navigator as NavigatorWithConnection).connection;
     if (!connection) return 'unknown';
 
     const effectiveType = connection.effectiveType;
@@ -105,7 +117,7 @@ export class DeviceCapabilityDetector {
     try {
       const canvas = document.createElement('canvas');
       return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
-    } catch (e) {
+    } catch {
       return false;
     }
   }

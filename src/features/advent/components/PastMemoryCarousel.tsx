@@ -53,7 +53,7 @@ const cacheMemory = (memory: CalendarDay, position: { top: string; left: string 
 };
 
 // Generate random position that avoids collision with open day
-const generateRandomPosition = (_currentOpenDayId: number | null | undefined): { top: string; left: string } => {
+const generateRandomPosition = (): { top: string; left: string } => {
   // Safe zones: avoid center area where calendar tiles are
   // Grid is roughly: 2-3 cols on mobile, 3-4 on tablet, 4-6 on desktop
   // Avoid center 40% of screen where tiles are most likely

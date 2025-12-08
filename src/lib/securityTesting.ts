@@ -10,7 +10,7 @@ export interface SecurityTestResult {
   passed: boolean;
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
-  details?: any;
+  details?: unknown;
   recommendations?: string[];
 }
 

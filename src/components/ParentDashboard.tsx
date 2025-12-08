@@ -151,13 +151,14 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ testMode = false }) =
   const handleExportPDF = async () => {
     try {
       // Get the API base URL
-      const API_BASE = (import.meta as any).env?.VITE_CHAT_API_URL || (import.meta as any).env?.CHAT_API_URL || ((import.meta as any).env?.PROD ? '' : 'https://toharper.dad');
+      const importMetaEnv = import.meta as { env?: { VITE_CHAT_API_URL?: string; CHAT_API_URL?: string; PROD?: boolean; VITE_SUPABASE_ANON_KEY?: string } };
+      const API_BASE = importMetaEnv.env?.VITE_CHAT_API_URL || importMetaEnv.env?.CHAT_API_URL || (importMetaEnv.env?.PROD ? '' : 'https://toharper.dad');
 
       // Make request to export endpoint
       const response = await fetch(`${API_BASE}/api/export/pdf`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${(import.meta as any).env?.VITE_SUPABASE_ANON_KEY || ''}`,
+          'Authorization': `Bearer ${importMetaEnv.env?.VITE_SUPABASE_ANON_KEY || ''}`,
         },
       });
 
@@ -473,7 +474,7 @@ const EditorView: React.FC<{
   childName?: string;
   childAge?: number;
   parentType?: string;
-  childInterests?: any;
+  childInterests?: Record<string, boolean>;
 }> = ({ tiles, onUpdateTile, onUploadMedia, childName, childAge, parentType, childInterests }) => {
   return (
     <div className="space-y-8">
@@ -551,9 +552,9 @@ const AnalyticsView: React.FC<{ tiles: CalendarTile[]; onExportPDF: () => void }
 
 // Settings View Component
 const SettingsView: React.FC<{
-  profileForm: any;
-  setProfileForm: (form: any) => void;
-  parent: any;
+  profileForm: Record<string, unknown>;
+  setProfileForm: (form: Record<string, unknown>) => void;
+  parent: Record<string, unknown>;
   logout: () => void;
 }> = ({ profileForm, setProfileForm, parent, logout }) => {
   return (

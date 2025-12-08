@@ -67,7 +67,13 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
       }
     : calendarData;
   const [lastUnlockedGift, setLastUnlockedGift] = useState<Gift | null>(null);
-  const [childData, setChildData] = useState<any>(null);
+  const [childData, setChildData] = useState<Record<string, unknown> | null>(null);
+
+  // Check if user has access (authenticated child, guest, or test mode)
+  const hasAccess = testMode ||
+    (isAuthenticated && userType === 'child') ||
+    childData ||
+    localStorage.getItem('guest_session') !== null;
 
   // Apply template styling when template changes
   useEffect(() => {
@@ -125,13 +131,143 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
     }
   }, [tiles, lastUnlockedGift]);
 
+  // Define handleUnlockTile early so it can be used in useCallback
+  const handleUnlockTile = React.useCallback(async (tileId: string, note?: string): Promise<Gift> => {
+    try {
+      const gift = await unlockTile(tileId, note);
+      setLastUnlockedGift(gift);
 
+      // Trigger emotional responses based on unlock
+      const newUnlockedCount = tiles.filter(t => t.gift_unlocked).length + 1;
+      setUnlockedCount(newUnlockedCount);
 
-  // Check if user has access (authenticated child, guest, or test mode)
-  const hasAccess = testMode ||
-    (isAuthenticated && userType === 'child') ||
-    childData ||
-    localStorage.getItem('guest_session') !== null;
+      // Emotional celebration based on progress
+      if (newUnlockedCount === 1) {
+        // First unlock - pure joy
+        triggerJoy(2000);
+        setCelebrationMessage("🎉 Your first surprise! The magic begins!");
+        setShowCelebration(true);
+      } else if (newUnlockedCount === tiles.length) {
+        // All unlocked - celebration
+        triggerCelebration(5000);
+        setCelebrationMessage("🎊 Congratulations! You've unlocked all 25 days of magic!");
+        setShowCelebration(true);
+      } else if (newUnlockedCount % 5 === 0) {
+        // Milestone every 5 unlocks
+        triggerJoy(3000);
+        setCelebrationMessage(`🌟 Amazing! ${newUnlockedCount} magical surprises unlocked!`);
+        setShowCelebration(true);
+      } else {
+        // Regular unlock - anticipation for next
+        triggerAnticipation(1500);
+      }
+
+      // Auto-hide celebration after 4 seconds
+      if (showCelebration) {
+        setTimeout(() => setShowCelebration(false), 4000);
+      }
+
+      return gift;
+    } catch (err) {
+      console.error('Failed to unlock tile:', err);
+      throw err;
+    }
+  }, [unlockTile, tiles, triggerJoy, triggerCelebration, triggerAnticipation, showCelebration]);
+
+  // Voice command handler (defined after handleUnlockTile to avoid hoisting issues)
+  const handleVoiceCommand = React.useCallback(async (command: Record<string, unknown>) => {
+    if (!voiceCommandProcessor) return;
+
+    const result = voiceCommandProcessor.processCommand(command);
+    if (!result) return;
+
+    console.log('🎤 Processed voice command:', result);
+
+    // Show voice feedback
+    setVoiceFeedback(result.response);
+
+    // Handle different actions
+    switch (result.action) {
+      case 'unlock_tile':
+        if (result.target && typeof result.target === 'object' && 'tile_id' in result.target) {
+          try {
+            await handleUnlockTile((result.target as CalendarTile).tile_id);
+            setVoiceFeedback('🎁 Gift unlocked successfully!');
+          } catch {
+            setVoiceFeedback('❌ Sorry, couldn\'t unlock that gift right now.');
+          }
+        }
+        break;
+
+      case 'highlight_tile':
+        if (result.target && typeof result.target === 'object' && 'tile_id' in result.target) {
+          setHighlightedTile(result.target as CalendarTile);
+          // Auto-clear highlight after 3 seconds
+          setTimeout(() => setHighlightedTile(null), 3000);
+        }
+        break;
+
+      case 'show_unlocked_gifts':
+        // Trigger celebration for showing gifts
+        triggerWinterEffectsCelebration(result.celebration || 'gift_show_magic');
+        break;
+
+      case 'show_calendar':
+        // Scroll to top to show calendar
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        triggerWinterEffectsCelebration(result.celebration || 'calendar_show_magic');
+        break;
+
+      case 'show_progress':
+      case 'show_status': {
+        // Update progress display
+        const unlocked = tiles.filter(t => t.gift_unlocked).length;
+        setUnlockedCount(unlocked);
+        triggerWinterEffectsCelebration(result.celebration || 'progress_magic');
+        break;
+      }
+
+      case 'show_help': {
+        // Show available commands
+        const commands = voiceCommandProcessor.getAvailableCommands();
+        setVoiceFeedback(`Try saying: ${commands.slice(0, 3).join(', ')}... 🎤`);
+        triggerWinterEffectsCelebration(result.celebration || 'help_magic');
+        break;
+      }
+
+      case 'celebrate':
+        triggerCelebration(2000);
+        setCelebrationMessage(result.response);
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 3000);
+        break;
+
+      case 'no_action':
+        // Just show the response
+        break;
+    }
+
+    // Trigger celebration if specified
+    if (result.celebration) {
+      triggerWinterEffectsCelebration(result.celebration);
+    }
+
+    // Auto-clear voice feedback after 4 seconds
+    setTimeout(() => setVoiceFeedback(null), 4000);
+  }, [voiceCommandProcessor, handleUnlockTile, tiles, triggerWinterEffectsCelebration, triggerCelebration]);
+
+  // Connect voice command handler to WinterEffects context
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as Record<string, unknown>).calendarVoiceHandler = handleVoiceCommand;
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as Record<string, unknown>).calendarVoiceHandler;
+      }
+    };
+  }, [handleVoiceCommand]);
 
   if (!hasAccess) {
     return (
@@ -181,141 +317,6 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
       </div>
     );
   }
-
-  const handleUnlockTile = async (tileId: string, note?: string): Promise<Gift> => {
-    try {
-      const gift = await unlockTile(tileId, note);
-      setLastUnlockedGift(gift);
-
-      // Trigger emotional responses based on unlock
-      const newUnlockedCount = tiles.filter(t => t.gift_unlocked).length + 1;
-      setUnlockedCount(newUnlockedCount);
-
-      // Emotional celebration based on progress
-      if (newUnlockedCount === 1) {
-        // First unlock - pure joy
-        triggerJoy(2000);
-        setCelebrationMessage("🎉 Your first surprise! The magic begins!");
-        setShowCelebration(true);
-      } else if (newUnlockedCount === tiles.length) {
-        // All unlocked - celebration
-        triggerCelebration(5000);
-        setCelebrationMessage("🎊 Congratulations! You've unlocked all 25 days of magic!");
-        setShowCelebration(true);
-      } else if (newUnlockedCount % 5 === 0) {
-        // Milestone every 5 unlocks
-        triggerJoy(3000);
-        setCelebrationMessage(`🌟 Amazing! ${newUnlockedCount} magical surprises unlocked!`);
-        setShowCelebration(true);
-      } else {
-        // Regular unlock - anticipation for next
-        triggerAnticipation(1500);
-      }
-
-      // Auto-hide celebration after 4 seconds
-      if (showCelebration) {
-        setTimeout(() => setShowCelebration(false), 4000);
-      }
-
-      return gift;
-    } catch (err) {
-      console.error('Failed to unlock tile:', err);
-      throw err;
-    }
-  };
-
-  // Voice command handler (defined after handleUnlockTile to avoid hoisting issues)
-  const handleVoiceCommand = React.useCallback(async (command: any) => {
-    if (!voiceCommandProcessor) return;
-
-    const result = voiceCommandProcessor.processCommand(command);
-    if (!result) return;
-
-    console.log('🎤 Processed voice command:', result);
-
-    // Show voice feedback
-    setVoiceFeedback(result.response);
-
-    // Handle different actions
-    switch (result.action) {
-      case 'unlock_tile':
-        if (result.target && typeof result.target === 'object' && 'tile_id' in result.target) {
-          try {
-            await handleUnlockTile((result.target as CalendarTile).tile_id);
-            setVoiceFeedback('🎁 Gift unlocked successfully!');
-          } catch (error) {
-            setVoiceFeedback('❌ Sorry, couldn\'t unlock that gift right now.');
-          }
-        }
-        break;
-
-      case 'highlight_tile':
-        if (result.target && typeof result.target === 'object' && 'tile_id' in result.target) {
-          setHighlightedTile(result.target as CalendarTile);
-          // Auto-clear highlight after 3 seconds
-          setTimeout(() => setHighlightedTile(null), 3000);
-        }
-        break;
-
-      case 'show_unlocked_gifts':
-        // Trigger celebration for showing gifts
-        triggerWinterEffectsCelebration(result.celebration || 'gift_show_magic');
-        break;
-
-      case 'show_calendar':
-        // Scroll to top to show calendar
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        triggerWinterEffectsCelebration(result.celebration || 'calendar_show_magic');
-        break;
-
-      case 'show_progress':
-      case 'show_status':
-        // Update progress display
-        const unlocked = tiles.filter(t => t.gift_unlocked).length;
-        setUnlockedCount(unlocked);
-        triggerWinterEffectsCelebration(result.celebration || 'progress_magic');
-        break;
-
-      case 'show_help':
-        // Show available commands
-        const commands = voiceCommandProcessor.getAvailableCommands();
-        setVoiceFeedback(`Try saying: ${commands.slice(0, 3).join(', ')}... 🎤`);
-        triggerWinterEffectsCelebration(result.celebration || 'help_magic');
-        break;
-
-      case 'celebrate':
-        triggerCelebration(2000);
-        setCelebrationMessage(result.response);
-        setShowCelebration(true);
-        setTimeout(() => setShowCelebration(false), 3000);
-        break;
-
-      case 'no_action':
-        // Just show the response
-        break;
-    }
-
-    // Trigger celebration if specified
-    if (result.celebration) {
-      triggerWinterEffectsCelebration(result.celebration);
-    }
-
-    // Auto-clear voice feedback after 4 seconds
-    setTimeout(() => setVoiceFeedback(null), 4000);
-  }, [voiceCommandProcessor, handleUnlockTile, tiles, triggerWinterEffectsCelebration, triggerCelebration]);
-
-  // Connect voice command handler to WinterEffects context
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      (window as any).calendarVoiceHandler = handleVoiceCommand;
-    }
-
-    return () => {
-      if (typeof window !== 'undefined') {
-        delete (window as any).calendarVoiceHandler;
-      }
-    };
-  }, [handleVoiceCommand]);
 
   return (
     <TemplateErrorBoundary>

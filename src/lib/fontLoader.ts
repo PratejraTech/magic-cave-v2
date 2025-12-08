@@ -64,7 +64,7 @@ class FontLoader {
         if (document.fonts.check(`12px ${fontFamily}`)) {
           return;
         }
-      } catch (error) {
+      } catch {
         // Continue to fallback methods
       }
     }
@@ -76,7 +76,7 @@ class FontLoader {
         await fontFace.load();
         document.fonts.add(fontFace);
         return;
-      } catch (error) {
+      } catch {
         // Font not available locally, continue to network loading
       }
     }

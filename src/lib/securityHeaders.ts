@@ -140,7 +140,7 @@ export class SecurityHeaders {
    * Create a new Response with security headers
    */
   createSecureResponse(
-    body: any,
+    body: unknown,
     options: ResponseInit = {},
     contentType: string = 'application/json'
   ): Response {
@@ -162,7 +162,7 @@ export class SecurityHeaders {
    * Middleware function for Cloudflare Workers
    */
   middleware() {
-    return async (request: Request, _env: any, _ctx: any) => {
+    return async (request: Request) => {
       // Handle preflight requests
       if (request.method === 'OPTIONS') {
         const corsHeaders = {
@@ -194,7 +194,7 @@ export const securityHeaders = new SecurityHeaders();
  * Utility function to create secure JSON responses
  */
 export function createSecureJsonResponse(
-  data: any,
+  data: unknown,
   status: number = 200,
   additionalHeaders: Record<string, string> = {}
 ): Response {
@@ -210,7 +210,7 @@ export function createSecureJsonResponse(
 export function createSecureErrorResponse(
   message: string,
   status: number = 500,
-  details?: any
+  details?: unknown
 ): Response {
   const errorResponse = {
     error: message,

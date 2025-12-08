@@ -16,7 +16,7 @@ export interface PerformanceIssue {
   type: 'low_fps' | 'high_memory' | 'long_frames';
   severity: 'low' | 'medium' | 'high';
   timestamp: number;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 export class PerformanceMonitor {
@@ -104,16 +104,18 @@ export class PerformanceMonitor {
 
     // Memory usage (if available)
     if ('memory' in performance) {
-      const memory = (performance as any).memory;
-      const memoryUsageMB = memory.usedJSHeapSize / 1024 / 1024;
+      const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
+      if (memory) {
+        const memoryUsageMB = memory.usedJSHeapSize / 1024 / 1024;
 
-      if (memoryUsageMB > 100) { // Over 100MB
-        this.reportIssue({
-          type: 'high_memory',
-          severity: memoryUsageMB > 200 ? 'high' : 'medium',
-          timestamp: Date.now(),
-          details: { memoryUsageMB, totalHeapSize: memory.totalJSHeapSize / 1024 / 1024 }
-        });
+        if (memoryUsageMB > 100) { // Over 100MB
+          this.reportIssue({
+            type: 'high_memory',
+            severity: memoryUsageMB > 200 ? 'high' : 'medium',
+            timestamp: Date.now(),
+            details: { memoryUsageMB, totalHeapSize: memory.totalJSHeapSize / 1024 / 1024 }
+          });
+        }
       }
     }
   }
@@ -165,10 +167,11 @@ export class PerformanceMonitor {
   }
 
   getCurrentMetrics(): PerformanceMetrics {
+    const memory = ('memory' in performance) ?
+      (performance as { memory?: { usedJSHeapSize: number } }).memory : undefined;
     return {
       fps: this.fps,
-      memoryUsage: ('memory' in performance) ?
-        (performance as any).memory.usedJSHeapSize / 1024 / 1024 : undefined,
+      memoryUsage: memory ? memory.usedJSHeapSize / 1024 / 1024 : undefined,
       animationDuration: this.frameTimes.length > 0 ?
         this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length : 0,
       particleCount: deviceCapabilities.getParticleCount(),

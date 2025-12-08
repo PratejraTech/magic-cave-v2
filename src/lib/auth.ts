@@ -141,7 +141,7 @@ export class AuthService {
   /**
    * Sign up with email and password
    */
-  async signUpWithEmail(email: string, password: string, metadata?: any) {
+  async signUpWithEmail(email: string, password: string, metadata?: Record<string, unknown>) {
     const validation = AuthUtils.isValidPassword(password);
     if (!validation.valid) {
       throw new Error(`Password validation failed: ${validation.errors.join(', ')}`);
@@ -263,7 +263,7 @@ export class AuthService {
   /**
    * Listen to auth state changes
    */
-  onAuthStateChange(callback: (event: string, session: any) => void) {
+  onAuthStateChange(callback: (event: string, session: unknown) => void) {
     return this.supabase.auth.onAuthStateChange(callback);
   }
 }

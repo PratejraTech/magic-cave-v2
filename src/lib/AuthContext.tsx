@@ -52,7 +52,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const registerPushToken = async (userId: string) => {
     try {
       // Check if Firebase messaging is available
-      if (!('serviceWorker' in navigator) || !(window as any).firebaseMessaging) {
+      interface WindowWithFirebase extends Window {
+        firebaseMessaging?: unknown;
+      }
+      if (!('serviceWorker' in navigator) || !(window as WindowWithFirebase).firebaseMessaging) {
         console.log('Firebase messaging not available');
         return;
       }

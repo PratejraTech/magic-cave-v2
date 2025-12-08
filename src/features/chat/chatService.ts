@@ -98,6 +98,7 @@ export const getSessionId = () => {
   // Use cookie-based session ID for consistency with main app
   try {
     // Dynamic import to avoid circular dependencies
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const cookieStorage = require('../../lib/cookieStorage');
     return cookieStorage.getOrCreateSession();
   } catch {
@@ -312,7 +313,7 @@ export const requestDaddyResponse = async (
                   onChunk(parsed.chunk || '', fullReply);
                 }
               }
-            } catch (e) {
+            } catch {
               // Skip invalid JSON (like empty data: lines)
               if (data !== '') {
                 console.warn('Failed to parse SSE data:', data.substring(0, 100));

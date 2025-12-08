@@ -11,7 +11,7 @@ import { PersonalizationProfile, AdaptiveEffect } from '../components/winter/AIP
 interface CelebrationTrigger {
   type: string;
   position?: { x: number; y: number };
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 interface WinterEffectsState {
@@ -33,7 +33,7 @@ interface WinterEffectsContextType {
   handleAdaptiveEffect: (effect: AdaptiveEffect) => void;
 
   // Action triggers
-  triggerCelebration: (type: string, position?: { x: number; y: number }, metadata?: Record<string, any>) => void;
+  triggerCelebration: (type: string, position?: { x: number; y: number }, metadata?: Record<string, unknown>) => void;
   clearCelebration: () => void;
 
   // Utility functions
@@ -176,7 +176,7 @@ export const WinterEffectsProvider: React.FC<WinterEffectsProviderProps> = ({ ch
     }
   }, []);
 
-  const triggerCelebration = useCallback((type: string, position?: { x: number; y: number }, metadata?: Record<string, any>) => {
+  const triggerCelebration = useCallback((type: string, position?: { x: number; y: number }, metadata?: Record<string, unknown>) => {
     // Clear any existing celebration
     if (celebrationTimeoutRef.current) {
       clearTimeout(celebrationTimeoutRef.current);
