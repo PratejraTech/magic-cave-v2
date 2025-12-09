@@ -10,13 +10,15 @@ export function validateTemplateMetadata(metadata: unknown): metadata is Templat
     return false;
   }
 
+  const meta = metadata as TemplateMetadata;
+
   // Validate colors
-  if (!metadata.colors || typeof metadata.colors !== 'object') {
+  if (!meta.colors || typeof meta.colors !== 'object') {
     console.warn('Template colors are missing or invalid');
     return false;
   }
 
-  const { primary, secondary, accent } = metadata.colors;
+  const { primary, secondary, accent } = meta.colors;
   if (!isValidColor(primary) || !isValidColor(secondary) || !isValidColor(accent)) {
     console.warn('Template colors contain invalid color values');
     return false;
@@ -28,41 +30,41 @@ export function validateTemplateMetadata(metadata: unknown): metadata is Templat
   }
 
   // Validate fonts
-  if (!metadata.fonts || typeof metadata.fonts !== 'object') {
+  if (!meta.fonts || typeof meta.fonts !== 'object') {
     console.warn('Template fonts are missing or invalid');
     return false;
   }
 
-  const { heading, body } = metadata.fonts;
+  const { heading, body } = meta.fonts;
   if (!heading || !body || typeof heading !== 'string' || typeof body !== 'string') {
     console.warn('Template fonts are missing or invalid');
     return false;
   }
 
   // Validate icons
-  if (!Array.isArray(metadata.icons)) {
+  if (!Array.isArray(meta.icons)) {
     console.warn('Template icons must be an array');
     return false;
   }
 
   // Validate layout
   const validLayouts = ['rounded_tiles', 'square_tiles', 'hexagon_tiles'];
-  if (!validLayouts.includes(metadata.layout)) {
-    console.warn('Template layout is invalid:', metadata.layout);
+  if (!validLayouts.includes(meta.layout)) {
+    console.warn('Template layout is invalid:', meta.layout);
     return false;
   }
 
   // Validate gradients (optional)
-  if (metadata.gradients) {
-    if (typeof metadata.gradients !== 'object') {
+  if (meta.gradients) {
+    if (typeof meta.gradients !== 'object') {
       console.warn('Template gradients must be an object');
       return false;
     }
   }
 
   // Validate animations (optional)
-  if (metadata.animations) {
-    if (typeof metadata.animations !== 'object') {
+  if (meta.animations) {
+    if (typeof meta.animations !== 'object') {
       console.warn('Template animations must be an object');
       return false;
     }

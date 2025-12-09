@@ -211,7 +211,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (event === 'SIGNED_IN' && session) {
         // Validate session before accepting it
         const currentUser = await authService.getCurrentUser().catch(() => null);
-        if (currentUser) {
+        if (currentUser && session) {
           const isValidSession = await SessionManager.validateSession(session);
           if (!isValidSession) {
             // Invalid session, sign out
@@ -244,7 +244,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else if (event === 'TOKEN_REFRESHED' && session) {
         // Validate refreshed session
         const currentUser = await authService.getCurrentUser().catch(() => null);
-        if (currentUser) {
+        if (currentUser && session) {
           const isValidSession = await SessionManager.validateSession(session);
           if (isValidSession) {
             setSession(session);

@@ -122,7 +122,7 @@ export class ChildDataEncryption {
       const encryptedField = `${field}_encrypted`;
       if (decrypted[encryptedField] && decrypted[field]) {
         try {
-          decrypted[field] = DataEncryption.decrypt(decrypted[field]);
+          decrypted[field] = DataEncryption.decrypt(String(decrypted[field]));
           delete decrypted[encryptedField];
         } catch (error) {
           console.error(`Failed to decrypt field ${field}:`, error);

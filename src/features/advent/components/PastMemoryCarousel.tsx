@@ -116,7 +116,7 @@ export function PastMemoryCarousel({
     // Show carousel every 10 seconds
     const showCarousel = () => {
       // Generate new random position
-      const newPosition = generateRandomPosition(currentOpenDayId);
+      const newPosition = generateRandomPosition();
       setPosition(newPosition);
       setIsVisible(true);
       

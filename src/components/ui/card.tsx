@@ -4,7 +4,7 @@ import { cn } from '../../lib/utils';
 
 export type CardVariant = 'default' | 'feature' | 'stats' | 'content' | 'elevated';
 
-export interface CardProps extends React.ComponentProps<'div'> {
+export interface CardProps extends Omit<React.ComponentProps<'div'>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'> {
   variant?: CardVariant;
   hover?: boolean;
 }

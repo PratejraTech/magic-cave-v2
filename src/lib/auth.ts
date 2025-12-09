@@ -1,5 +1,5 @@
 // Authentication configuration and utilities for Supabase Auth
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type Session } from '@supabase/supabase-js';
 
 // Auth configuration
 export const AUTH_CONFIG = {
@@ -263,7 +263,7 @@ export class AuthService {
   /**
    * Listen to auth state changes
    */
-  onAuthStateChange(callback: (event: string, session: unknown) => void) {
+  onAuthStateChange(callback: (event: string, session: Session | null) => void) {
     return this.supabase.auth.onAuthStateChange(callback);
   }
 }

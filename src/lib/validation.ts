@@ -311,33 +311,42 @@ export class ValidationUtils {
     const inputData = data as Record<string, unknown>;
     const sanitizedData = { ...inputData };
 
-    if (sanitizedData.email) {
+    if (sanitizedData.email && typeof sanitizedData.email === 'string') {
       sanitizedData.email = Sanitizer.sanitizeEmail(sanitizedData.email);
     }
 
-    if (sanitizedData.name) {
+    if (sanitizedData.name && typeof sanitizedData.name === 'string') {
       sanitizedData.name = Sanitizer.sanitizeName(sanitizedData.name);
     }
 
-    if (sanitizedData.title) {
+    if (sanitizedData.title && typeof sanitizedData.title === 'string') {
       sanitizedData.title = Sanitizer.sanitizeText(sanitizedData.title, 200);
     }
 
-    if (sanitizedData.body) {
+    if (sanitizedData.body && typeof sanitizedData.body === 'string') {
       sanitizedData.body = Sanitizer.sanitizeText(sanitizedData.body, 2000);
     }
 
     // Recursively sanitize child profile
-    if (sanitizedData.childProfile?.name) {
-      sanitizedData.childProfile.name = Sanitizer.sanitizeName(sanitizedData.childProfile.name);
+    if (sanitizedData.childProfile && typeof sanitizedData.childProfile === 'object' && sanitizedData.childProfile !== null) {
+      const childProfile = sanitizedData.childProfile as Record<string, unknown>;
+      if (childProfile.name && typeof childProfile.name === 'string') {
+        childProfile.name = Sanitizer.sanitizeName(childProfile.name);
+      }
     }
 
-    if (sanitizedData.child?.name) {
-      sanitizedData.child.name = Sanitizer.sanitizeName(sanitizedData.child.name);
+    if (sanitizedData.child && typeof sanitizedData.child === 'object' && sanitizedData.child !== null) {
+      const child = sanitizedData.child as Record<string, unknown>;
+      if (child.name && typeof child.name === 'string') {
+        child.name = Sanitizer.sanitizeName(child.name);
+      }
     }
 
-    if (sanitizedData.parent?.name) {
-      sanitizedData.parent.name = Sanitizer.sanitizeName(sanitizedData.parent.name);
+    if (sanitizedData.parent && typeof sanitizedData.parent === 'object' && sanitizedData.parent !== null) {
+      const parent = sanitizedData.parent as Record<string, unknown>;
+      if (parent.name && typeof parent.name === 'string') {
+        parent.name = Sanitizer.sanitizeName(parent.name);
+      }
     }
 
     return this.validateInput(sanitizedData, schema);

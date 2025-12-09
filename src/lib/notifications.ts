@@ -449,10 +449,10 @@ export class NotificationService {
           }
 
           const parentId = calendar.parent_uuid;
-          const parents = calendar.parents as Record<string, unknown> | undefined;
-          const children = calendar.children as Record<string, unknown> | undefined;
-          const parentEmail = parents?.email as string | undefined;
-          const childName = children?.name as string | undefined;
+          const parents = calendar.parents as unknown;
+          const children = calendar.children as unknown;
+          const parentEmail = (Array.isArray(parents) && parents.length > 0 ? (parents[0] as Record<string, unknown>)?.email as string : '') || '';
+          const childName = (Array.isArray(children) && children.length > 0 ? (children[0] as Record<string, unknown>)?.name as string : 'Your Child') || 'Your Child';
 
           // Send the notification
           await this.sendTileAvailableNotification(

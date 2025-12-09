@@ -212,11 +212,14 @@ export function createSecureErrorResponse(
   status: number = 500,
   details?: unknown
 ): Response {
-  const errorResponse = {
+  const errorResponse: Record<string, unknown> = {
     error: message,
-    ...(details && { details }),
     timestamp: new Date().toISOString()
   };
+
+  if (details) {
+    errorResponse.details = details;
+  }
 
   return securityHeaders.createSecureResponse(errorResponse, {
     status,

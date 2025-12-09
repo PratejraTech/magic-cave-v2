@@ -136,7 +136,7 @@ export class GDPRCompliance {
             password_hash: '[REDACTED]',
             login_attempts: undefined,
             locked_until: undefined
-          } : null
+          } : {}
         },
         calendars: calendars || [],
         tiles: tiles || [],

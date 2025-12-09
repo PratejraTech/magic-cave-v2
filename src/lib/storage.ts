@@ -1,4 +1,3 @@
-// @ts-expect-error - Supabase types will be available at runtime
 import { createClient } from '@supabase/supabase-js';
 
 // Storage configuration for media assets
