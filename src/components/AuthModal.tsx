@@ -4,12 +4,14 @@ import TemplateSelector from './TemplateSelector';
 import { Button } from './ui/WonderButton';
 import { analytics } from '../lib/analytics';
 import { motion } from 'framer-motion';
+import type { User } from '@supabase/supabase-js';
+import type { Child } from '../types/calendar';
 
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (user: Record<string, unknown>, child?: Record<string, unknown>) => void;
+  onSuccess: (user: User, child?: Child) => void;
 }
 
 interface ChildProfile {

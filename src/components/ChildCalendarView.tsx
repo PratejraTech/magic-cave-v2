@@ -5,9 +5,10 @@ import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
 import { useEmotionalResponse } from '../lib/EmotionalBackground';
 import { useWinterEffects } from '../contexts/WinterEffectsContext';
-import { Gift, CalendarTile, GiftType, TemplateMetadata } from '../types/calendar';
+import { Gift, CalendarTile, GiftType, TemplateMetadata, Child } from '../types/calendar';
 import { applyTemplateStyling } from '../lib/templateStyling';
 import { VoiceCommandProcessor } from '../lib/voiceCommandProcessor';
+import type { VoiceCommand } from './winter/VoiceMagic';
 import { BackgroundGradientAnimation } from './ui/background-gradient-animation';
 import WonderlandLayout from './layout/WonderlandLayout';
 import { Button } from './ui/WonderButton';
@@ -67,7 +68,7 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
       }
     : calendarData;
   const [lastUnlockedGift, setLastUnlockedGift] = useState<Gift | null>(null);
-  const [childData, setChildData] = useState<Record<string, unknown> | null>(null);
+  const [childData, setChildData] = useState<Child | null>(null);
 
   // Check if user has access (authenticated child, guest, or test mode)
   const hasAccess = testMode ||
@@ -175,7 +176,7 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
   }, [unlockTile, tiles, triggerJoy, triggerCelebration, triggerAnticipation, showCelebration]);
 
   // Voice command handler (defined after handleUnlockTile to avoid hoisting issues)
-  const handleVoiceCommand = React.useCallback(async (command: Record<string, unknown>) => {
+  const handleVoiceCommand = React.useCallback(async (command: VoiceCommand) => {
     if (!voiceCommandProcessor) return;
 
     const result = voiceCommandProcessor.processCommand(command);
@@ -259,12 +260,12 @@ const ChildCalendarView: React.FC<ChildCalendarViewProps> = ({ testMode = false 
   // Connect voice command handler to WinterEffects context
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      (window as Record<string, unknown>).calendarVoiceHandler = handleVoiceCommand;
+      (window as Window & { calendarVoiceHandler?: (command: VoiceCommand) => Promise<void> }).calendarVoiceHandler = handleVoiceCommand;
     }
 
     return () => {
       if (typeof window !== 'undefined') {
-        delete (window as Record<string, unknown>).calendarVoiceHandler;
+        delete (window as Window & { calendarVoiceHandler?: (command: VoiceCommand) => Promise<void> }).calendarVoiceHandler;
       }
     };
   }, [handleVoiceCommand]);

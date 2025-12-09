@@ -4,7 +4,7 @@ import TemplateMarketplace from './TemplateMarketplace';
 import TemplateErrorBoundary from './TemplateErrorBoundary';
 import { useCalendarData } from '../lib/useCalendarData';
 import { useAuth } from '../lib/AuthContext';
-import { CalendarTile } from '../types/calendar';
+import { CalendarTile, Parent } from '../types/calendar';
 import { analytics } from '../lib/analytics';
 import { applyTemplateStyling } from '../lib/templateStyling';
 import { getTemplateDefinition } from '../data/templates';
@@ -551,10 +551,21 @@ const AnalyticsView: React.FC<{ tiles: CalendarTile[]; onExportPDF: () => void }
 };
 
 // Settings View Component
+interface ProfileFormData {
+  parentName: string;
+  childName: string;
+  childBirthdate: string;
+  childGender: 'male' | 'female' | 'other' | 'unspecified';
+  interests: Record<string, boolean>;
+  notificationsEnabled: boolean;
+  timezone: string;
+  systemPromptTemplate: string;
+}
+
 const SettingsView: React.FC<{
-  profileForm: Record<string, unknown>;
-  setProfileForm: (form: Record<string, unknown>) => void;
-  parent: Record<string, unknown>;
+  profileForm: ProfileFormData;
+  setProfileForm: (form: ProfileFormData) => void;
+  parent: Parent | null;
   logout: () => void;
 }> = ({ profileForm, setProfileForm, parent, logout }) => {
   return (
@@ -606,7 +617,7 @@ const SettingsView: React.FC<{
               <label className="block text-sm font-medium text-text-primary mb-2">Gender</label>
               <select
                 value={profileForm.childGender}
-                onChange={(e) => setProfileForm({ ...profileForm, childGender: e.target.value })}
+                onChange={(e) => setProfileForm({ ...profileForm, childGender: e.target.value as 'male' | 'female' | 'other' | 'unspecified' })}
                 className="w-full px-4 py-2 border border-bg-muted rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-rose focus:border-transparent"
               >
                 <option value="female">Female</option>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { contentLibrary, ContentItem } from '../lib/contentLibrary';
+import { contentLibrary, ContentItem, ContentLibrary } from '../lib/contentLibrary';
 
 interface ContentLibraryBrowserProps {
   childAge: number;
@@ -14,7 +14,7 @@ const ContentLibraryBrowser: React.FC<ContentLibraryBrowserProps> = ({
   onSelectContent,
   onClose
 }) => {
-  const [library, setLibrary] = useState<Record<string, unknown> | null>(null);
+  const [library, setLibrary] = useState<ContentLibrary | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string>('');
   const [availableThemes, setAvailableThemes] = useState<string[]>([]);
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);

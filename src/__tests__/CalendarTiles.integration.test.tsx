@@ -1,4 +1,4 @@
-import type { CalendarTile } from '../types/calendar';
+import type { CalendarTile, GiftType } from '../types/calendar';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ChildCalendar from '../components/ChildCalendar';
@@ -54,7 +54,7 @@ describe('ChildCalendar tile interactions', () => {
 
   it('opens the note prompt and unlocks a gift for a tile', async () => {
     const onUnlockTile = vi.fn(async () => ({
-      type: 'sticker',
+      type: 'sticker' as GiftType,
       title: 'Snowflake Sticker',
       description: 'Stick this on your journal',
       sticker: '❄️'

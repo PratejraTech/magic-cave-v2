@@ -8,7 +8,8 @@ const calendarRoutes = ['Start Calendar', 'Send Storybook Invite'] as const;
 
 let originalLocation: Location;
 const hrefSpy = vi.fn();
-let scrollSpy: ReturnType<typeof vi.spyOn> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let scrollSpy: any = null;
 const originalScrollIntoView = Element.prototype.scrollIntoView ?? null;
 
 class MockIntersectionObserver {
