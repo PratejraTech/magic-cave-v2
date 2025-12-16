@@ -3,6 +3,7 @@
 
 /* Import Design System */
 @import './styles/design-system.css';
+@import './styles/mobile-optimizations.css';
 
 @tailwind base;
 @tailwind components;

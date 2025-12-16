@@ -1,0 +1,351 @@
+/**
+ * Mobile Optimizations for Magic Cave Calendars
+ * Ensures beautiful experience on all screen sizes
+ */
+
+/* ============================================
+   RESPONSIVE CALENDAR GRID
+   ============================================ */
+
+.winter-calendar-grid {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+
+  /* Mobile first: 3 columns */
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Small phones (up to 375px) - 2 columns for better tap targets */
+@media (max-width: 375px) {
+  .winter-calendar-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+/* Tablets and small laptops (640px+) - 5 columns */
+@media (min-width: 640px) {
+  .winter-calendar-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+/* Large screens (1024px+) - 5 columns with more breathing room */
+@media (min-width: 1024px) {
+  .winter-calendar-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    padding: 2rem;
+  }
+}
+
+/* ============================================
+   CALENDAR TILES - RESPONSIVE SIZING
+   ============================================ */
+
+.winter-calendar-tile {
+  aspect-ratio: 1;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  /* Ensure good tap targets on mobile (min 44x44px) */
+  min-width: 44px;
+}
+
+@media (min-width: 640px) {
+  .winter-calendar-tile {
+    min-height: 100px;
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .winter-calendar-tile {
+    min-height: 120px;
+    padding: 1rem;
+    border-radius: 1.5rem;
+  }
+}
+
+/* Hover states - disabled on touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .winter-calendar-tile:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Active/pressed state for touch */
+.winter-calendar-tile:active {
+  transform: scale(0.95);
+}
+
+/* ============================================
+   TILE LABELS - RESPONSIVE TEXT
+   ============================================ */
+
+.winter-calendar-day-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .winter-calendar-day-label {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .winter-calendar-day-label {
+    font-size: 1rem;
+  }
+}
+
+.winter-calendar-title {
+  font-size: 0.625rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+@media (min-width: 640px) {
+  .winter-calendar-title {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 3;
+  }
+}
+
+.winter-calendar-meta {
+  font-size: 0.625rem;
+  margin-top: 0.25rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (min-width: 640px) {
+  .winter-calendar-meta {
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================
+   PARENT DASHBOARD - MOBILE SIDEBAR
+   ============================================ */
+
+/* Hide sidebar on mobile, show hamburger */
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    transition: left 0.3s ease;
+    z-index: 100;
+    background: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .dashboard-sidebar.mobile-open {
+    left: 0;
+  }
+
+  /* Mobile header with hamburger */
+  .dashboard-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .dashboard-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) {
+  .dashboard-mobile-header {
+    display: none;
+  }
+
+  .dashboard-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+}
+
+/* ============================================
+   MODALS - MOBILE OPTIMIZED
+   ============================================ */
+
+/* Full screen modals on small devices */
+@media (max-width: 640px) {
+  .modal-content {
+    border-radius: 1.5rem 1.5rem 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    margin: 0;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* ============================================
+   TOUCH-FRIENDLY INTERACTIONS
+   ============================================ */
+
+/* Larger tap targets for buttons */
+@media (max-width: 640px) {
+  button, .btn, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Form inputs */
+  input, textarea, select {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* ============================================
+   PREVENT HORIZONTAL SCROLL
+   ============================================ */
+
+body {
+  overflow-x: hidden;
+}
+
+.winter-effects-container,
+.snow-layer,
+.winter-wonderland-layout {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   SAFE AREA INSETS (iPhone notch, etc)
+   ============================================ */
+
+@supports (padding: env(safe-area-inset-top)) {
+  .app-header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .app-footer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .fixed-bottom {
+    bottom: calc(env(safe-area-inset-bottom) + 1rem);
+  }
+}
+
+/* ============================================
+   PERFORMANCE - REDUCE MOTION ON MOBILE
+   ============================================ */
+
+@media (max-width: 640px) and (prefers-reduced-motion: no-preference) {
+  /* Reduce snow particles on small screens */
+  .snow-layer[data-depth='background'] {
+    opacity: 0.3;
+  }
+
+  .snow-layer[data-depth='midground'] {
+    opacity: 0.5;
+  }
+
+  /* Reduce butterfly count */
+  .butterfly:nth-child(n+3) {
+    display: none;
+  }
+}
+
+/* ============================================
+   ORIENTATION HANDLING
+   ============================================ */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Compact layout for landscape phones */
+  .winter-calendar-grid {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .winter-calendar-tile {
+    min-height: 60px;
+    padding: 0.25rem;
+  }
+
+  .modal-content {
+    max-height: 85vh;
+  }
+}
+
+/* ============================================
+   PWA - STANDALONE MODE
+   ============================================ */
+
+@media (display-mode: standalone) {
+  /* Add extra padding for PWA status bar */
+  .app-container {
+    padding-top: 20px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY - HIGH CONTRAST
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  .winter-calendar-tile {
+    border: 3px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .winter-calendar-tile[data-state='locked'] {
+    border-color: #fbbf24;
+  }
+
+  .winter-calendar-tile[data-state='unlocked'] {
+    border-color: #10b981;
+  }
+}
