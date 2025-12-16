@@ -248,3 +248,4 @@ analytics.logLogin('parent', 'email');
 - Add ARIA labels for accessibility
 - Use TypeScript strictly
 - Maintain backward compatibility with legacy tokens
+- Never make destructive changes unless instructed.
