@@ -67,11 +67,38 @@
   --gradient-magical-soft: linear-gradient(135deg, #FFF0F8 0%, #F0F9FF 50%, #FFFBF0 100%);
 
   /* ========================================
+     CHRISTMAS MARKETING PALETTE
+     Modern Elegant Christmas (Option B)
+     ======================================== */
+
+  /* Primary Christmas Colors */
+  --color-christmas-emerald: #047857;        /* Deep emerald green */
+  --color-christmas-burgundy: #991b1b;       /* Rich burgundy red */
+  --color-christmas-gold: #d97706;           /* Warm gold */
+  --color-christmas-cream: #fef3c7;          /* Soft cream */
+  --color-christmas-white: #ffffff;          /* Pure white */
+  --color-christmas-charcoal: #1e293b;       /* Deep charcoal for text */
+
+  /* Christmas Gradients - Elegant */
+  --gradient-christmas-hero: linear-gradient(135deg, #fef3c7 0%, #ffffff 50%, #f0fdf4 100%);
+  --gradient-christmas-primary: linear-gradient(135deg, #047857 0%, #059669 100%);
+  --gradient-christmas-cta: linear-gradient(135deg, #991b1b 0%, #dc2626 50%, #d97706 100%);
+  --gradient-christmas-elegant: linear-gradient(135deg, #047857 0%, #991b1b 50%, #d97706 100%);
+
+  /* Christmas Accent Colors */
+  --color-christmas-pine: #065f46;           /* Deep pine */
+  --color-christmas-holly: #166534;          /* Holly green */
+  --color-christmas-crimson: #dc2626;        /* Bright crimson */
+  --color-christmas-amber: #f59e0b;          /* Amber gold */
+  --color-christmas-sage: #ecfdf5;           /* Sage green (light) */
+  --color-christmas-blush: #fef2f2;          /* Soft blush (light) */
+
+  /* ========================================
      TYPOGRAPHY
      ======================================== */
 
-  /* Font Families */
-  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  /* Font Families - Christmas Edition */
+  --font-display: 'Fredoka', 'Baloo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
 

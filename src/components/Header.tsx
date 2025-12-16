@@ -31,15 +31,15 @@ const Header: React.FC<HeaderProps> = ({
     <header
       className="sticky top-0 z-40 w-full border-b backdrop-blur-md transition-colors"
       style={{
-        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.8)',
-        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-bg-muted)'
+        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.95)',
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(4, 120, 87, 0.15)'
       }}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <div className="flex items-center gap-3">
           <motion.div
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary-peach to-primary-purple shadow-sm"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-amber-600 shadow-sm"
             whileHover={{ scale: 1.05, rotate: 3 }}
             transition={{ type: 'spring', stiffness: 400 }}
           >
@@ -47,13 +47,18 @@ const Header: React.FC<HeaderProps> = ({
           </motion.div>
           <div>
             <p
-              className="text-sm font-bold gradient-text"
-              style={{ backgroundImage: 'var(--gradient-primary)' }}
+              className="text-sm font-bold gradient-text font-display"
+              style={{
+                backgroundImage: isDark ? 'var(--gradient-primary)' : 'linear-gradient(135deg, #047857 0%, #991b1b 50%, #d97706 100%)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
             >
               Magic Cave Calendars
             </p>
-            <p className={isDark ? 'text-xs text-white/60' : 'text-xs text-text-tertiary'}>
-              Family Mission Control
+            <p className={isDark ? 'text-xs text-white/60' : 'text-xs text-emerald-700 font-medium'}>
+              Christmas Magic
             </p>
           </div>
         </div>
@@ -81,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({
                   style={{
                     background: isDark
                       ? 'linear-gradient(90deg, #4EFFD0, #8A77FF)'
-                      : 'var(--gradient-primary)'
+                      : 'linear-gradient(90deg, #047857, #d97706)'
                   }}
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
